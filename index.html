@@ -276,7 +276,7 @@ a.btn{text-decoration:none}
 /* ================= Catálogos ================= */
 const ETAPAS=['Corte láser','Soldador automático','Plegado','Rolado','Armado','Soldadura','Pruebas','Limpieza mecánica','Lavado jabonoso y químico'];
 const ALM='Almacén / Recepción';
-const CAPS=[1000,2200,3000,5000,7000,10000,15000];
+let CAPS=[1000,2200,3000,5000,7000,10000,15000];const CAPS0=CAPS.slice();
 const ACT=[
 [1,'Inspección de materiales provenientes de proveedor o material prefabricado',ALM],
 [2,'Preparación y trazado y corte de láminas','Corte láser'],
@@ -631,6 +631,7 @@ function alerts(){
    else if(!ex&&rr>0)A.push({n:'wa',k:'Etapa sin expectativa',t:`${p.num} · ${x} tiene ${nf(rr,0)} HH sin expectativa`,s:'Registrar expectativa de la etapa',proy:p.num})})});
  rs.filter(r=>r.clase==='retrabajo'&&!r.causa).forEach(r=>A.push({n:'er',k:'Retrabajo sin causa',t:`Retrabajo sin causa · ${r.proy} · ${hh(r.horas)} HH`,s:`${r.nombre} · ${dfull(r.fecha)}`,reg:r.id}));
  rs.filter(r=>r.clase==='retrabajo'&&r.causa&&!r.origen).forEach(r=>A.push({n:'wa',k:'Retrabajo sin origen',t:`Retrabajo sin origen · ${r.proy} · ${hh(r.horas)} HH`,s:`${r.nombre} · ${dfull(r.fecha)}`,reg:r.id}));
+ entregaAlerts(A);
  {const pv={};rs.filter(r=>r.pend).forEach(r=>{const k=r.tec+'|'+r.fecha;(pv[k]=pv[k]||{r,n:0}).n++});Object.values(pv).forEach(({r,n})=>A.push({n:'wa',k:'Por validar',t:`${n} registro${n>1?'s':''} por validar`,s:`${r.nombre} · ${dfull(r.fecha)}`,tec:r.tec,fecha:r.fecha,val:1}))}
  rs.filter(r=>r.estado==='Incompleto'&&!(r.clase==='retrabajo')).forEach(r=>A.push({n:'wa',k:'Registro incompleto',t:`Registro incompleto · ${r.nombre}`,s:dfull(r.fecha),reg:r.id}));
  rs.filter(r=>r.clase==='retrabajo').sort((a,b)=>a.ts<b.ts?1:-1).slice(0,6).forEach(r=>A.push({n:'i',k:'Retrabajo registrado',t:`Retrabajo ${hh(r.horas)} HH · ${r.proy} · ${r.macro}`,s:`${r.causa||'Sin causa'} · ${r.origen||'Sin origen'}${r.hallazgo?' · '+r.hallazgo:''}`,reg:r.id}));
@@ -1008,8 +1009,8 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.0',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: exporta los registros a CSV cada semana.</p>`)}</div></div>
- <div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (el número sale solo) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.3',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: exporta los registros a CSV cada semana.</p>`)}</div></div>
+ ${listasCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (CSV)','expCSV','','ghost')}${btn(icon('down',16)+' Respaldo completo (JSON)','expJSON','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:12px"><b style="color:var(--tx2)">CSV:</b> los registros, para abrirlos en Excel o Google Sheets. <b style="color:var(--tx2)">Respaldo (JSON):</b> copia de todos los datos que ves con tu rol. Haz una copia cada semana.</p><input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
 }
@@ -1312,12 +1313,12 @@ function pProyectos(){
  const cards=list.map(p=>{const e=p.exp||{total:0,et:{}};const pr=rn.filter(r=>r.proy===p.num);const real=sum(pr.filter(isProd)),ret=sum(pr.filter(r=>r.clase==='retrabajo'));const sumE=ETAPAS.reduce((a,x)=>a+(+e.et[x]||0),0);const ok=Math.abs(sumE-(+e.total||0))<.01;const s=semaf(real,e.total);
   const st=stageStats([p],pr);const dv=ETAPAS.reduce((a,x)=>a+st[x].dev,0);
   return `<section class="card pj"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px;letter-spacing:-.02em">${p.num}</b>${badge(esc(p.estado),p.estado==='Activo'?'ok':p.estado==='En pausa'?'wa':'n')}</div><div class="mut" style="margin:2px 0 10px">${esc(p.cliente)}</div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${badge(nf(p.cap,0)+' gal','i')}${badge(esc(stageOf(p)),'v')}${badge('Inicio '+dlabel(p.inicio),'n')}</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${badge(nf(p.cap,0)+' gal','i')}${p.comp?badge(p.comp+' comp.','n'):''}${p.ref?badge(esc(p.ref),'n'):''}${badge('Inicio '+dlabel(p.inicio),'n')}</div>${projTrack(p)}
   <div class="prog ${s.c==='ok'?'ok':s.c==='n'?'':'wa'}"><i style="width:${e.total?Math.min(100,real/e.total*100):0}%"></i></div>
   <div style="display:flex;justify-content:space-between;margin:8px 0 12px;font-size:12.5px"><span class="mut">${nf(real,0)} / ${e.total?nf(e.total,0):'sin expectativa'} HH</span><span>${e.total?badge(nf(real/e.total*100,0)+'% consumido',s.c==='er'?'er':s.c==='wa'?'wa':'n'):badge('Sin expectativa','wa')}${e.total&&!ok?' '+badge('etapas no suman','wa'):''}</span></div>
   <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:12px"><span class="mut">Retrabajo <b style="color:#fbbf24">${nf(ret,1)} HH</b></span><span class="mut">Desviación <b class="${dv>0?'dn':''}">${dv>0?'+':''}${nf(dv,0)} HH</b></span></div>
   ${G?`<div class="acts">${btn(icon('sliders',14)+' Expectativa','editExp',`data-p="${p.num}"`,'sm ghost')}${btn(icon('edit',14)+' Editar','editProj',`data-p="${p.num}"`,'sm ghost')}</div>`:''}</section>`}).join('');
- return `<div class="fbar">${sel('pEst',['Activo','En pausa','Finalizado'],U.pEst,{ph:'Todos los estados'})}<span class="mut" style="margin-left:6px">${list.length} proyecto${list.length===1?'':'s'} · numeración automática de 5 dígitos</span><div style="margin-left:auto">${G?btn(icon('plus',16)+' Crear proyecto '+nextProj(),'newProj'):''}</div></div>
+ return `<div class="fbar">${sel('pEst',['Activo','En pausa','Finalizado'],U.pEst,{ph:'Todos los estados'})}<span class="mut" style="margin-left:6px">${list.length} proyecto${list.length===1?'':'s'} · el número lo escribe Gerencia</span><div style="margin-left:auto">${G?btn(icon('plus',16)+' Crear proyecto','newProj'):''}</div></div>
  ${list.length?`<div class="pgrid">${cards}</div>`:card('Sin proyectos','',empty('No hay proyectos con este estado'))}
  <p class="mut3" style="margin-top:12px;font-size:12.5px">La capacidad es solo una característica: la expectativa de HH la define Gerencia. Con suficiente histórico se podrán calcular medias por capacidad.</p>`;
 }
@@ -1535,7 +1536,7 @@ Object.assign(A,{
  progPDF:async()=>{const j=M.cv.toDataURL('image/jpeg',.92).split(',')[1];const bin=atob(j),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);dlBlob(progNombre('pdf'),pdfDesdeJpeg(u,M.cv.width,M.cv.height))},
  progShare:async()=>{try{const b=await blobDe(M.cv,'image/png');const f=new File([b],progNombre('png'),{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Programación de turnos LATAMKS',text:progMsg(M.code)})}else toast('Compartir directo no está disponible aquí. Descarga la imagen y adjúntala.','wa')}catch(e){if(!e||e.name!=='AbortError')toast('No se pudo abrir “Compartir”. Descarga la imagen y adjúntala.','wa')}},
  progCopy:async()=>{try{const b=await blobDe(M.cv,'image/png');await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);toast('Imagen copiada: pégala en WhatsApp Web o en un correo','ok')}catch(e){toast('No se pudo copiar la imagen en esta vista. Usa Descargar imagen.','wa')}},
- progPrint:()=>{const ps=$('#printSheet');ps.innerHTML='<img src="'+M.cv.toDataURL('image/png')+'" style="width:100%">';try{window.print()}catch(e){toast('La impresión no está disponible aquí. Descarga el PDF e imprímelo.','wa')}},
+ progPrint:()=>{const ps=$('#printSheet');ps.innerHTML='';const im=new Image();im.style.width='100%';let done=false;const go=()=>{if(done)return;done=true;try{window.print()}catch(e){toast('La impresión no está disponible aquí. Descarga el PDF e imprímelo.','wa')}};im.onload=()=>{(im.decode?im.decode():Promise.resolve()).catch(()=>{}).then(()=>setTimeout(go,150))};im.onerror=()=>toast('No se pudo preparar la imagen. Usa Descargar PDF.','wa');ps.appendChild(im);im.src=M.cv.toDataURL('image/png');setTimeout(go,2500)},
  progMsgCopy:()=>A.copyTxt(),
  semCopy:()=>{const prev=S.rota[addDays(U.semW,-7)];if(!prev){toast('La semana anterior no tiene programación propia: ya usa los turnos por defecto','wa');return}S.rota[U.semW]=JSON.parse(JSON.stringify(prev));logH('Programación semanal','copiada de '+dCorta(addDays(U.semW,-7)),dCorta(U.semW));save();renderPage(true);toast('Semana copiada','ok')}
 });
@@ -1587,6 +1588,8 @@ function nbRows(){
  nbEnsureIds();const M=nbMaps();const out={};const mk=()=>new Map();
  const st=S.settings||{};
  out.ajustes=mk();['meta','rec','ali','recSab','empresa','url'].forEach(k=>{if(st[k]!==undefined&&st[k]!==null){const ck=k==='meta'?'meta_semanal':k;out.ajustes.set(ck,nbJ({clave:ck,valor:String(st[k])}))}});
+ if(Array.isArray(st.caps)&&st.caps.length)out.ajustes.set('capacidades',nbJ({clave:'capacidades',valor:st.caps.join(',')}));
+ if(Array.isArray(st.lineas)&&st.lineas.length)out.ajustes.set('lineas',nbJ({clave:'lineas',valor:st.lineas.join('|')}));
  out.turnos=mk();out.turno_dias=mk();
  S.turnos.forEach(t=>{
   out.turnos.set(t._id,nbJ({id:t._id,nombre:t.nombre,activo:t.activo!==0,modificado_por:(t.mod&&t.mod.por)||null,modificado_en:(t.mod&&t.mod.ts)||null}));
@@ -1596,7 +1599,7 @@ function nbRows(){
  S.tecnicos.forEach(t=>out.tecnicos.set(t._id,nbJ({id:t._id,codigo:t.codigo,iniciales:t.ini,nombre:t.nombre,area:t.area||'Sin área',especialidad:t.esp||null,turno_defecto_id:M.turnoUuid[t.turno]||null,rol:t.rol||rolDe(t.area),activo:t.activo!==false,registra_hh:!!t.registra,es_demo:!!t.demo})));
  out.proyectos=mk();out.expectativas_etapa=mk();
  S.proyectos.forEach(p=>{const e=p.exp||{total:0,et:{},cerradas:[]};const mod=e.mod||{};
-  out.proyectos.set(p._id,nbJ({id:p._id,numero:p.num,capacidad_gal:+p.cap,cliente:p.cliente,estado:p.estado||'Activo',fecha_creacion:p.creado||today(),fecha_inicio:p.inicio||today(),dias_plan:Math.max(1,Math.round(+p.dias||30)),expectativa_total:+e.total||0,es_demo:!!p.demo,modificado_por:mod.por||null,modificado_en:mod.ts||null}));
+  out.proyectos.set(p._id,nbJ({id:p._id,numero:p.num,capacidad_gal:+p.cap,cliente:p.cliente,estado:p.estado||'Activo',fecha_creacion:p.creado||today(),fecha_inicio:p.inicio||today(),fecha_entrega:p.entrega||null,linea:p.linea||'Tanques',compartimentos:p.comp?Math.round(+p.comp):null,referencia:p.ref||null,dias_plan:Math.max(1,Math.round(+p.dias||30)),expectativa_total:+e.total||0,es_demo:!!p.demo,modificado_por:mod.por||null,modificado_en:mod.ts||null}));
   ETAPAS.forEach(x=>out.expectativas_etapa.set(p._id+'|'+x,nbJ({proyecto_id:p._id,etapa:x,horas:+(e.et||{})[x]||0,terminada:(e.cerradas||[]).includes(x),modificado_por:mod.por||null,modificado_en:mod.ts||((p.creado||'2000-01-01')+'T00:00:00Z')})))});
  out.hallazgos=mk();
  S.hallazgos.forEach(h=>{if(!M.projUuid[h.proy])return;out.hallazgos.set(h.codigo,nbJ({codigo:h.codigo,proyecto_id:M.projUuid[h.proy],descripcion:h.desc||null,estado:h.estado||'Abierto',fecha:h.fecha||today(),es_demo:!!h.demo}))});
@@ -1630,7 +1633,7 @@ async function nbLoad(){
  let his=[],per=[];
  if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}
  const st={...NB_DEF,webapp:'',url:'',empresa:'LATAMKS S.A.S.'};
- aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor});
+ aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor;else if(a.clave==='capacidades')st.caps=String(a.valor).split(',').map(Number).filter(n=>n>0);else if(a.clave==='lineas')st.lineas=String(a.valor).split('|').filter(Boolean)});
  const tmap={},turnoByName={};
  const turnos=tu.map((t,i)=>{const id='T'+(i+1);tmap[t.id]=id;turnoByName[t.nombre]=turnoByName[t.nombre]||id;const dias={};for(let k=0;k<7;k++)dias[k]=mkDia(0,'07:30','17:00',0,0);
   td.filter(d=>d.turno_id===t.id).forEach(d=>{dias[d.dia]=mkDia(d.activo?1:0,String(d.hora_inicio||'07:30').slice(0,5),String(d.hora_fin||'17:00').slice(0,5),d.receso_min||0,d.alimentacion_min||0)});
@@ -1639,7 +1642,7 @@ async function nbLoad(){
  const tecnicos=te.map(t=>({codigo:t.codigo,ini:t.iniciales,nombre:t.nombre,area:t.area||'',esp:t.especialidad||'',turno:tmap[t.turno_defecto_id]||'',rol:t.rol,activo:t.activo!==false,registra:!!t.registra_hh,demo:t.es_demo?1:0,_id:t.id}));
  const numByUuid={};
  const proyectos=pr.map(p=>{numByUuid[p.id]=p.numero;const et={},cerradas=[];ex.filter(e=>e.proyecto_id===p.id).forEach(e=>{et[e.etapa]=+e.horas;if(e.terminada)cerradas.push(e.etapa)});
-  return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,dias:p.dias_plan,demo:p.es_demo?1:0,_id:p.id,
+  return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,entrega:p.fecha_entrega||'',linea:p.linea||'Tanques',comp:p.compartimentos||'',ref:p.referencia||'',dias:p.dias_plan,demo:p.es_demo?1:0,_id:p.id,
    exp:{total:+p.expectativa_total||0,et,cerradas,mod:{ts:p.modificado_en||'',por:p.modificado_por||''}}}});
  const hallazgos=ha.map(h=>({codigo:h.codigo,proy:numByUuid[h.proyecto_id]||'',desc:h.descripcion||'',estado:h.estado,fecha:h.fecha,demo:h.es_demo?1:0}));
  const rota={};
@@ -1648,7 +1651,7 @@ async function nbLoad(){
  const registros=rg.map(d=>nbFromReg(d,M));
  const names={};per.forEach(p=>{names[p.id]=p.nombre});
  const historial=his.slice().reverse().map(h=>({ts:h.fecha,por:names[h.usuario]||(h.usuario==='sistema'?'Sistema':'Usuario'),campo:h.tabla+'.'+h.campo,antes:String(h.valor_anterior??''),despues:String(h.valor_nuevo??''),ref:String(h.ref||'').slice(0,8)}));
- S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos,historial,demo:false};
+ S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos,historial,demo:false};nbApplyLists();
  NB.snap=nbSnapNow();
  let seeded=false;
  if(!S.turnos.length){S.turnos=turnosBase();S.turnos.forEach(t=>{t.nombre=t.nombre.replace(' (demo)','')});seeded=true}
@@ -1706,7 +1709,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.3</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -1816,9 +1819,106 @@ async function nbCapSave(){
  finally{NB.saving=false}}
 document.addEventListener('change',e=>{if(NB.kiosk&&e.target.dataset&&e.target.dataset.f==='c.fecha'&&NB.cred){const f=U.c.fecha||today();nbCtx(f).then(()=>renderPage(true)).catch(er=>toast(nbMsg(er),'er'))}});
 
+
+/* ---------- v3.3 · Proyectos: número libre, capacidades y líneas ampliables, entrega y semáforo ---------- */
+function nbApplyLists(){
+ const base=(S.settings&&Array.isArray(S.settings.caps)&&S.settings.caps.length)?S.settings.caps:CAPS0;
+ const set=new Set(base.map(Number));(S.proyectos||[]).forEach(p=>{if(+p.cap>0)set.add(+p.cap)});
+ CAPS=[...set].sort((a,b)=>a-b)}
+const daysB=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+function bdaysB(a,b){let n=0,d=pd(a);const e=pd(b);while(d<=e){if(d.getDay()!==0)n++;d.setDate(d.getDate()+1)}return Math.max(1,n)}
+function nextProj(){const n=S.proyectos.reduce((m,p)=>Math.max(m,parseInt(p.num,10)||0),0)+1;return String(n).padStart(5,'0')}
+function projAvance(p){
+ const e=p.exp||{et:{},cerradas:[]},cer=e.cerradas||[],rs=live().filter(r=>r.proy===p.num&&isProd(r));
+ const st=ETAPAS.map(x=>{const cl=cer.includes(x),ex=+(e.et||{})[x]||0,real=sum(rs.filter(r=>r.macro===x));return{x,cl,ex,real,f:cl?1:(ex>0?Math.min(.95,real/ex):0)}});
+ const n=st.filter(t=>t.ex>0).length,wsum=st.reduce((a,t)=>a+t.ex,0),avgW=n?wsum/n:1;
+ st.forEach(t=>{t.w=t.ex>0?t.ex:(t.cl?avgW:0)});
+ const W=st.reduce((a,t)=>a+t.w,0),av=W>0?st.reduce((a,t)=>a+t.f*t.w,0)/W:0;
+ const cerr=st.filter(t=>t.cl).length,tot=+e.total||0,real=sum(rs);
+ let actual;
+ if(cerr===ETAPAS.length)actual='Terminado';
+ else{const last=rs.filter(r=>r.macro&&!cer.includes(r.macro)).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:0)[0];
+  actual=last?last.macro:((st.find(t=>!t.cl&&t.ex>0)||st.find(t=>!t.cl)||{x:'—'}).x)}
+ return{st,cerr,av,real,tot,hhPct:tot?real/tot:0,actual,sinExp:W<=0}}
+function projSem(p,A0){
+ const Av=A0||projAvance(p);
+ if(p.estado==='Finalizado')return{c:'ok',txt:'Finalizado',left:''};
+ if(p.estado==='En pausa')return{c:'n',txt:'En pausa',left:''};
+ if(!p.entrega)return{c:'n',txt:'Sin fecha de entrega',left:''};
+ const hoy=today(),dr=daysB(hoy,p.entrega);
+ if(dr<0)return{c:'er',txt:'Vencido',left:'Pasó hace '+(-dr)+' día'+(-dr===1?'':'s'),dr};
+ const left=dr===0?'Entrega hoy':'Faltan '+dr+' día'+(dr===1?'':'s');
+ if(Av.sinExp)return{c:'n',txt:'Sin expectativa',left,dr,hint:'Define la expectativa por etapa para calcular el semáforo'};
+ const ini=p.inicio||hoy,tt=Math.max(1,daysB(ini,p.entrega)),el=Math.min(tt,Math.max(0,daysB(ini,hoy))),tp=el/tt;
+ const atraso=(tp-Av.av)*100,sub=Math.round(Av.av*100)+'% de avance · '+Math.round(tp*100)+'% del tiempo';
+ const lim=+(S.settings&&S.settings.semAm)||10;
+ if(atraso<=0)return{c:'ok',txt:'A tiempo',left,sub,dr};
+ if(atraso<=lim)return{c:'wa',txt:'Atención',left,sub,dr};
+ return{c:'er',txt:'En riesgo',left,sub,dr}}
+function projTrack(p){
+ const Av=projAvance(p),sm=projSem(p,Av);
+ const segs=Av.st.map(t=>{const cur=t.x===Av.actual,pc=Math.round(t.f*100);
+  const bg=t.cl?'var(--ok)':(pc>0?`linear-gradient(90deg,#38bdf8 ${pc}%,rgba(255,255,255,.12) ${pc}%)`:'rgba(255,255,255,.12)');
+  return `<i data-tip="${esc(t.x+(t.cl?' · terminada':t.ex?' · '+nf(t.real,0)+' de '+nf(t.ex,0)+' HH':''))}" style="flex:1;height:8px;border-radius:4px;background:${bg};${cur?'outline:2px solid #38bdf8;outline-offset:2px':''}"></i>`}).join('');
+ return `<div style="margin:2px 0 12px"><div style="display:flex;gap:4px">${segs}</div>
+ <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-top:8px"><span class="mut">Etapa actual: <b style="color:var(--tx)">${esc(Av.actual)}</b></span><span class="mut">${Av.cerr}/${ETAPAS.length} etapas terminadas</span></div>
+ <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">${badge(esc(sm.txt),sm.c)}<span class="mut" style="font-size:12.5px">${p.entrega?'Entrega '+dlabel(p.entrega)+(sm.left?' · '+sm.left:''):'Sin fecha de entrega'}</span></div>
+ ${sm.sub?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.sub}</div>`:sm.hint?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.hint}</div>`:''}</div>`}
+function entregaAlerts(arr){
+ S.proyectos.filter(p=>p.estado==='Activo').forEach(p=>{
+  if(!p.entrega){arr.push({n:'wa',k:'Sin fecha de entrega',t:`Proyecto ${p.num} sin fecha de entrega`,s:'Gerencia define la fecha para activar el semáforo de entrega',proy:p.num});return}
+  const s=projSem(p);
+  if(s.c==='er')arr.push({n:'er',k:'Entrega en riesgo',t:`Proyecto ${p.num}: ${s.txt==='Vencido'?'entrega vencida':'entrega en riesgo'}`,s:s.left+(s.sub?' · '+s.sub:''),proy:p.num});
+  else if(s.c==='wa')arr.push({n:'wa',k:'Entrega con atención',t:`Proyecto ${p.num}: el avance va algo atrasado frente al tiempo`,s:s.left+' · '+s.sub,proy:p.num})})}
+function projForm(p){
+ const cur=p?+p.cap:5000,inList=CAPS.includes(cur);
+ const lineas=(S.settings.lineas&&S.settings.lineas.length)?S.settings.lineas.slice():['Tanques'];const ln=p?(p.linea||lineas[0]):lineas[0];if(!lineas.includes(ln))lineas.push(ln);
+ const locked=!!p&&(S.registros.some(r=>r.proy===p.num)||S.hallazgos.some(h=>h.proy===p.num));
+ return `<div class="two">${fld('Número / código del proyecto *',`<input class="inp" id="p_num" maxlength="20" value="${esc(p?p.num:nextProj())}" ${locked?'disabled':''} placeholder="Ej. 00036"><small class="mut3" style="display:block;margin-top:4px">${locked?'Ya tiene horas u hallazgos: el número no se puede cambiar.':'Lo escribe Gerencia. Letras, números, punto o guion; debe ser único.'}</small>`)}
+ ${fld('Capacidad (galones) *',`<select class="sel" id="p_cap" onchange="document.getElementById('p_capw').style.display=this.value==='__otra'?'block':'none'">${CAPS.map(c=>`<option value="${c}"${c===cur&&inList?' selected':''}>${nf(c,0)} gal</option>`).join('')}<option value="__otra"${inList?'':' selected'}>Otra capacidad…</option></select><div id="p_capw" style="display:${inList?'none':'block'};margin-top:8px"><input class="inp" id="p_cap2" type="number" min="1" step="1" value="${inList?'':cur}" placeholder="Escribe la capacidad en galones"></div>`)}</div>
+ <div class="two">${fld('Línea de producción',selM('p_lin',lineas,ln))}${fld('Compartimientos (opcional)',`<input class="inp" id="p_comp" type="number" min="1" max="20" value="${p&&p.comp?p.comp:''}" placeholder="Ej. 3">`)}</div>
+ ${fld('Referencia / código del tanque (opcional)',`<input class="inp" id="p_ref" value="${esc(p&&p.ref?p.ref:'')}" placeholder="Ej. XT11.8ai3">`)}
+ ${fld('Cliente',`<input class="inp" id="p_cli" value="${esc(p?p.cliente:'')}" placeholder="Nombre del cliente">`)}
+ <div class="two">${fld('Fecha de inicio',`<input class="inp" type="date" id="p_ini" value="${p?p.inicio:today()}">`)}${fld('Fecha de entrega presupuestada',`<input class="inp" type="date" id="p_ent" value="${p&&p.entrega?p.entrega:''}">`)}</div>
+ ${p?fld('Estado',selM('p_est',['Activo','En pausa','Finalizado'],p.estado)):''}
+ <p class="mut3" style="font-size:12px;margin-top:8px">La fecha de entrega activa el semáforo del proyecto (verde, naranja o rojo) y puede cambiarse cuando el cliente la modifique. La etapa actual se calcula sola con las horas registradas.</p>`}
+function projSave(edit){
+ const old=edit?S.proyectos.find(x=>x.num===M.num):null;
+ const locked=edit&&$('#p_num')&&$('#p_num').disabled;
+ const num=locked?old.num:(val('p_num')||'').trim();
+ if(!/^[A-Za-z0-9][A-Za-z0-9._-]{0,19}$/.test(num)){toast('El número solo puede llevar letras, números, punto o guion (máximo 20).','er');return}
+ if(S.proyectos.some(x=>x.num.toLowerCase()===num.toLowerCase()&&x!==old)){toast('Ya existe un proyecto con el número '+num+'.','er');return}
+ const cv=val('p_cap'),cap=cv==='__otra'?Math.round(+val('p_cap2')):+cv;
+ if(!(cap>0&&cap<=1000000)){toast('Escribe una capacidad válida en galones.','er');return}
+ const ini=val('p_ini')||today(),ent=val('p_ent')||'';
+ if(ent&&ent<ini){toast('La fecha de entrega no puede ser anterior a la de inicio.','er');return}
+ const o={cap,cliente:(val('p_cli')||'').trim()||'Sin cliente',inicio:ini,entrega:ent,linea:val('p_lin')||'Tanques',comp:val('p_comp')?Math.round(+val('p_comp')):'',ref:(val('p_ref')||'').trim(),dias:ent?bdaysB(ini,ent):(old?old.dias||30:30)};
+ if(!CAPS.includes(cap)){S.settings.caps=[...new Set([...(S.settings.caps&&S.settings.caps.length?S.settings.caps:CAPS0),cap])].sort((a,b)=>a-b);nbApplyLists()}
+ if(edit){const p=old;
+  [['num',num],['cap',o.cap],['cliente',o.cliente],['inicio',o.inicio],['entrega',o.entrega],['linea',o.linea],['comp',o.comp],['ref',o.ref]].forEach(([k,v])=>{if(String(p[k]??'')!==String(v))logH('Proyecto '+k,p[k]??'',v,p.num)});
+  const e=val('p_est');if(e!==p.estado)logH('Estado proyecto',p.estado,e,p.num);
+  Object.assign(p,o,{num,estado:e});save();closeModal();renderAll(true);toast('Proyecto actualizado','ok')}
+ else{S.proyectos.push({num,...o,estado:'Activo',creado:today(),exp:{total:0,et:{},cerradas:[],mod:{ts:new Date().toISOString(),por:U.name}}});save();toast('Proyecto '+num+' creado','ok');expOpen(num)}}
+function listasCard(){
+ const lin=(S.settings.lineas&&S.settings.lineas.length)?S.settings.lineas:['Tanques'];
+ const chips=(arr,del,fmt)=>arr.map(v=>badge(`<span style="display:inline-flex;align-items:center;gap:6px">${esc(fmt?fmt(v):String(v))}<button class="ib" style="width:20px;height:20px" data-act="${del}" data-v="${esc(String(v))}" aria-label="Quitar ${esc(String(v))}">${icon('x',12)}</button></span>`,'n')).join(' ');
+ return `<div class="g12"><div class="c6">${card('Capacidades de tanque (galones)','Son las que se ofrecen al crear un proyecto',`<div style="display:flex;gap:6px;flex-wrap:wrap">${chips(CAPS,'capDel',v=>nf(v,0)+' gal')}</div><div style="display:flex;gap:8px;margin-top:12px;align-items:center"><input class="inp" id="capNew" type="number" min="1" placeholder="Ej. 11800" style="max-width:170px">${btn('Agregar','capAdd','','sm')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">También puedes escribir una capacidad nueva directamente al crear un proyecto. No se puede quitar una capacidad que ya usa un proyecto.</p>`)}</div>
+ <div class="c6">${card('Líneas de producción','Para cuando exista una línea nueva',`<div style="display:flex;gap:6px;flex-wrap:wrap">${chips(lin,'linDel')}</div><div style="display:flex;gap:8px;margin-top:12px;align-items:center"><input class="inp" id="linNew" placeholder="Ej. Semirremolques" style="max-width:220px" maxlength="40">${btn('Agregar','linAdd','','sm')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">Cada proyecto pertenece a una línea. Hoy todos están en la línea actual; agregar una línea no cambia nada de lo existente.</p>`)}</div></div>`}
+
 /* ---------- Validación del supervisor ---------- */
 function nbValidar(rs){const t=new Date().toISOString(),por=U.name+' ('+U.role+')';rs.forEach(r=>{r.pend=false;r.valPor=por;r.valTs=t});save()}
 Object.assign(A,{
+ capAdd:()=>{const v=Math.round(+val('capNew'));if(!(v>0&&v<=1000000)){toast('Escribe una capacidad válida en galones.','er');return}
+  if(CAPS.includes(v)){toast('Esa capacidad ya está en la lista.','wa');return}
+  S.settings.caps=[...new Set([...(S.settings.caps&&S.settings.caps.length?S.settings.caps:CAPS0),v])].sort((a,b)=>a-b);nbApplyLists();logH('Lista de capacidades','',v+' gal','Ajustes');save();renderPage(true);toast('Capacidad agregada','ok')},
+ capDel:t=>{const v=+t.dataset.v;if(S.proyectos.some(p=>+p.cap===v)){toast('Hay proyectos con esa capacidad; no se puede quitar.','wa');return}
+  S.settings.caps=(S.settings.caps&&S.settings.caps.length?S.settings.caps:CAPS0).filter(x=>+x!==v);nbApplyLists();logH('Lista de capacidades',v+' gal','','Ajustes');save();renderPage(true)},
+ linAdd:()=>{const v=(val('linNew')||'').trim();if(!v||v.includes('|')){toast('Escribe el nombre de la línea.','er');return}
+  const cur=(S.settings.lineas&&S.settings.lineas.length)?S.settings.lineas:['Tanques'];if(cur.some(x=>x.toLowerCase()===v.toLowerCase())){toast('Esa línea ya existe.','wa');return}
+  S.settings.lineas=[...cur,v];logH('Líneas de producción','',v,'Ajustes');save();renderPage(true);toast('Línea agregada','ok')},
+ linDel:t=>{const v=t.dataset.v;if(S.proyectos.some(p=>(p.linea||'Tanques')===v)){toast('Hay proyectos en esa línea; no se puede quitar.','wa');return}
+  const cur=(S.settings.lineas&&S.settings.lineas.length)?S.settings.lineas:['Tanques'];if(cur.length<=1){toast('Debe quedar al menos una línea.','wa');return}
+  S.settings.lineas=cur.filter(x=>x!==v);logH('Líneas de producción',v,'','Ajustes');save();renderPage(true)},
  login:()=>nbLogin(),logout:()=>nbLogout(),
  verPass:t=>{const i=document.getElementById(t.dataset.for);if(!i)return;const v=i.type==='password';i.type=v?'text':'password';t.textContent=v?'Ocultar':'Ver'},
  olvide:()=>nbShowForgot(),volverLogin:()=>nbShowLogin(''),enviarRec:()=>nbSendRec(),guardarPass:()=>nbSaveNewPass(),
