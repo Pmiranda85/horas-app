@@ -250,7 +250,7 @@ table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 #printSheet.cards{padding:6mm 0!important;text-align:left!important}
 @media print{@page{size:letter;margin:6mm}#printSheet.cards .tcards{gap:0}}
 @media(max-width:700px){.tcards{grid-template-columns:1fr;justify-items:center}}
-body.guest [data-act^="hall"],body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
+body.guest [data-act^="hall"],body.guest [data-act^="hf"],body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
 body.guest select[data-tur],body.guest input[data-tf]{pointer-events:none;opacity:.75}
 @media(max-width:820px){.minis{grid-template-columns:repeat(2,1fr)!important}.minis>div{grid-column:span 1!important}}
 
@@ -1095,7 +1095,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.6',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1743,17 +1743,17 @@ function nbSinceNote(){
  return `<p class="mut3" style="font-size:12.5px;margin-top:12px">Se cargan los últimos 90 días (o desde el inicio de los proyectos activos): hoy ves desde <b style="color:var(--tx2)">${dlabel(NB.since)}</b>. Las tablas, gráficos y el Excel incluyen solo lo cargado. ${btn('Cargar todo el historial','loadAll','','sm ghost')}</p>`}
 async function nbLoad(){
  const safe=(p,def)=>p.catch(e=>{if(e&&(e.status===401))throw e;return def});
- let aj,tu,td,te,pr,ex,ha,hs=[],pg,rg,his=[],per=[];
+ let aj,tu,td,te,pr,ex,ha,hs=[],hf=[],pg,rg,his=[],per=[];
  if(NB.guest){
   const g=await nbRpc('invitado_datos',{p_codigo:NB.guest.codigo,p_todo:!!NB.all},false);
   if(!g){nbGuestEnd();const er=new Error('Invitación vencida');er.guestEnd=true;throw er}
-  NB.guest.nombre=g.invitado.nombre;NB.guest.vence=g.invitado.vence;NB.since=g.desde||'';
+  hf=[];NB.guest.nombre=g.invitado.nombre;NB.guest.vence=g.invitado.vence;NB.since=g.desde||'';
   aj=g.ajustes||[];tu=g.turnos||[];td=g.turno_dias||[];te=g.tecnicos||[];pr=g.proyectos||[];ex=g.expectativas_etapa||[];ha=g.hallazgos||[];hs=g.hallazgo_historial||[];pg=g.programacion||[];rg=g.registros_hh||[]}
  else{
-  [aj,tu,td,te,pr,ex,ha,pg,hs]=await Promise.all([
+  [aj,tu,td,te,pr,ex,ha,pg,hs,hf]=await Promise.all([
    safe(nbSel('ajustes'),[]),safe(nbSel('turnos','select=*&order=creado.asc,id.asc'),[]),safe(nbSel('turno_dias'),[]),safe(nbSel('tecnicos','select=*&order=codigo.asc'),[]),
    safe(nbSel('proyectos','select=*&order=numero.asc'),[]),safe(nbSel('expectativas_etapa'),[]),safe(nbSel('hallazgos','select=*&order=codigo.asc'),[]),
-   safe(nbSel('programacion'),[]),safe(nbSel('hallazgo_historial','select=*&order=id.asc'),[])]);
+   safe(nbSel('programacion'),[]),safe(nbSel('hallazgo_historial','select=*&order=id.asc'),[]),safe(nbSel('hallazgo_fotos','select=*&order=subido_en.asc'),[])]);
   const since=nbSince(pr);NB.since=since;
   rg=await nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc'+(since?'&fecha=gte.'+since:''));
   if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}}
@@ -1775,14 +1775,14 @@ async function nbLoad(){
  const registros=rg.map(d=>nbFromReg(d,M));
  const names={};per.forEach(p=>{names[p.id]=p.nombre});
  const historial=his.slice().reverse().map(h=>({ts:h.fecha,por:names[h.usuario]||(h.usuario==='sistema'?'Sistema':'Usuario'),campo:h.tabla+'.'+h.campo,antes:String(h.valor_anterior??''),despues:String(h.valor_nuevo??''),ref:String(h.ref||'').slice(0,8)}));
- S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos:[],hhist:[],historial,demo:false};nbSetHall(ha,hs,numByUuid);nbApplyLists();
+ S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos:[],hhist:[],historial,demo:false};nbSetHall(ha,hs,numByUuid,hf);nbApplyLists();
  NB.snap=nbSnapNow();
  let seeded=false;
  if(!S.turnos.length){S.turnos=turnosBase();S.turnos.forEach(t=>{t.nombre=t.nombre.replace(' (demo)','')});seeded=true}
  if(seeded){if(NB.perfil&&NB.perfil.rol==='Gerencia'){nbSave()}else NB.snap=nbSnapNow()}
  NB.sig=nbSig()}
 function nbSnapNow(){const r=nbRows();const o={};NB_ORDER.forEach(([c])=>{o[c]=r[c]});return o}
-function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado+(x.ciclos||0)+(x.esc?1:0)+(x.autEn?1:0)+(x.asigIni||'')).join(',')+(S.hhist||[]).length+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
+function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado+(x.ciclos||0)+(x.esc?1:0)+(x.autEn?1:0)+(x.asigIni||'')).join(',')+(S.hhist||[]).length+'f'+(S.hfotos||[]).length+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
  for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return s.length+':'+h}
 
 /* ---------- Guardado en la nube (solo cambios) ---------- */
@@ -1836,7 +1836,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.6</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.7</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -2116,7 +2116,7 @@ const fmtDT=iso=>{try{return new Date(iso).toLocaleString('es-CO',{day:'2-digit'
 const isGer=()=>!!(NB.perfil&&NB.perfil.rol==='Gerencia'&&!NB.guest&&NB.sess);
 
 /* ---------- Copia de seguridad (archivo .sql que se restaura pegándolo en el Editor SQL de Supabase) ---------- */
-const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
+const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['hallazgo_fotos','subido_en.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
 async function nbBackup(){
  if(!isGer()){toast('Solo Gerencia puede descargar la copia de seguridad.','wa');return}
  if(NB.bak)return;NB.bak=true;toast('Preparando la copia de seguridad… puede tardar unos segundos.','ok');
@@ -2185,7 +2185,7 @@ function nbGuestBar(){
  b.innerHTML=`<b>Modo invitado · solo lectura</b> · Válido hasta ${esc(fmtDT(NB.guest.vence))}`}
 function nbGuestGuard(){
  if(NB.guardOn)return;NB.guardOn=true;
- const BLK=/^(edit|new|save|val|falt|tec|reg|expSave|fSave|hall|nt|rt|tDay|tDel|tSave|tActive|ren|proj(New|Edit)|cap|lin|unasg|xUse|delDemo|loadDemo|impJSON|backup|inv|addH|libre|tarjPrint)/;
+ const BLK=/^(edit|new|save|val|falt|tec|reg|expSave|fSave|hall|hf|nt|rt|tDay|tDel|tSave|tActive|ren|proj(New|Edit)|cap|lin|unasg|xUse|delDemo|loadDemo|impJSON|backup|inv|addH|libre|tarjPrint)/;
  const OKM=/^(mClose|palGo|pal|go|none|help|copy|share|sem|prog|tarjUna|tarjTodas)/;
  window.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
   const inModal=!!t.closest('#modal');
@@ -2270,14 +2270,15 @@ function hMap(d,numByUuid){return{codigo:d.codigo,proy:numByUuid[d.proyecto_id]|
  cierEn:d.cerrado_en||'',cierPor:d.cerrado_por||'',cierTipo:d.cierre_tipo||'',obsCier:d.obs_cierre||'',ciclos:+d.ciclos||0,
  esc:!!d.escalado,escEn:d.escalado_en||'',escPor:d.escalado_por||'',escNota:d.nota_escalamiento||'',autEn:d.autorizado_en||'',autPor:d.autorizado_por||'',autProd:d.autorizacion_produccion||'',autNota:d.autorizacion_nota||'',
  anuEn:d.anulado_en||'',anuPor:d.anulado_por||'',anuMot:d.motivo_anulacion||''}}
-function nbSetHall(ha,hs,numByUuid){
+function nbSetHall(ha,hs,numByUuid,hf){
+ S.hfotos=(hf||[]).filter(x=>!x.quitada_en).map(x=>({id:x.id,codigo:x.codigo,mom:x.momento,ciclo:+x.ciclo||0,ruta:x.ruta,bytes:+x.bytes||0,por:x.subido_por||'',rol:x.rol||'',ts:x.subido_en,}));
  S.hallazgos=(ha||[]).map(d=>hMap(d,numByUuid));
  S.hhist=(hs||[]).map(x=>({id:x.id,codigo:x.codigo,ciclo:x.ciclo,fecha:x.fecha,accion:x.accion,ant:x.estado_anterior||'',nue:x.estado_nuevo||'',res:x.resultado||'',usuario:x.usuario||'',rol:x.rol||'',tec:x.tecnico||'',com:x.comentario||''}));
  NB.hallKnown=new Set(S.hallazgos.map(h=>h.codigo))}
 async function nbReloadHall(){
  const pr=await nbSel('proyectos','select=id,numero&order=numero.asc');const nb={};pr.forEach(p=>{nb[p.id]=p.numero});
- const [ha,hs]=await Promise.all([nbSel('hallazgos','select=*&order=codigo.asc'),nbSel('hallazgo_historial','select=*&order=id.asc')]);
- nbSetHall(ha,hs,nb);NB.sig=nbSig()}
+ const [ha,hs,hf]=await Promise.all([nbSel('hallazgos','select=*&order=codigo.asc'),nbSel('hallazgo_historial','select=*&order=id.asc'),nbSel('hallazgo_fotos','select=*&order=subido_en.asc').catch(()=>[])]);
+ nbSetHall(ha,hs,nb,hf);NB.sig=nbSig()}
 function hLink(code){return invBase()+'#hallazgos'}
 
 /* ---------- Alertas por rol ---------- */
@@ -2361,8 +2362,8 @@ function hDet(code){
  ${hRow('Corrección',h.corEn?esc(dt(h.corEn))+' · '+esc(h.obsCor):'')}${hRow('Verificación',h.verEn?esc(h.verRes)+' · '+esc(h.verPor)+' · '+esc(dt(h.verEn))+(h.obsVer?' · '+esc(h.obsVer):''):'')}
  ${hRow('Cierre',h.cierEn?esc(h.cierTipo||'')+' · '+esc(h.cierPor)+' · '+esc(dt(h.cierEn))+(h.obsCier?' · '+esc(h.obsCier):''):'')}${hRow('Anulación',h.anuEn?esc(h.anuMot)+' · '+esc(h.anuPor):'')}
  ${hRow('Horas de retrabajo',rr.length?nf(sum(rr),1)+' HH en '+rr.length+' registro'+(rr.length>1?'s':'')+': '+uniq(rr.map(r=>r.ini||r.nombre)).map(esc).join(', '):'')}
- <div class="lb" style="margin:14px 0 4px">Historial</div>${tl}
- <div class="mf" style="flex-wrap:wrap">${acciones.join('')}${btn('Avisar por WhatsApp','hWA',`data-c="${esc(code)}"`,'ghost')}${btn('Cerrar','mClose','','ghost')}</div>`,'w')}
+ ${hFotosBlock(h)}<div class="lb" style="margin:14px 0 4px">Historial</div>${tl}
+ <div class="mf" style="flex-wrap:wrap">${acciones.join('')}${btn('Avisar por WhatsApp','hWA',`data-c="${esc(code)}"`,'ghost')}${btn('Cerrar','mClose','','ghost')}</div>`,'w');hFotosLoad()}
 
 /* ---------- Diálogos de acción ---------- */
 function hTxt(id,ph,rows=3){return `<textarea class="inp" id="${id}" rows="${rows}" style="height:auto;padding:10px" placeholder="${esc(ph||'')}"></textarea>`}
@@ -2495,6 +2496,97 @@ Object.assign(A,{
   openModal(mh('Cambiar de turno a '+esc(c.nombre))+`<p class="mut" style="margin-bottom:10px">Una persona siempre debe tener un turno por defecto. Hoy está en <b style="color:var(--tx)">${esc(turnoName(c.turno))}</b>. ¿A cuál turno pasa?</p>`+fld('Nuevo turno',selM('un_t',otros.map(x=>[x.id,x.nombre]),otros[0].id))+`<div class="mf">${btn('Cancelar','mClose','','ghost')}${btn('Cambiar de turno','unasgDo','data-c="'+esc(c.codigo)+'"')}</div>`,'s')},
  unasgDo:t=>{const c=S.tecnicos.find(x=>x.codigo===t.dataset.c),n=val('un_t');if(!c||!n)return;
   logH('Turno de '+c.nombre,turnoName(c.turno),turnoName(n),c.codigo);c.turno=n;save();closeModal();renderPage(true);toast(c.nombre+' pasó a '+turnoName(n),'ok')}});
+/* ================= v3.7 · FOTOS en hallazgos (fase 2) ================= */
+const HF_MOM={apertura:'Apertura',correccion:'Corrección',verificacion:'Verificación'};
+const HF_MAX=3,HF_LADO=1600;
+NB.fcache=NB.fcache||{};
+function hfPuede(h,m){
+ if(NB.guest||NB.kiosk||['Cerrado','Anulado'].includes(h.estado))return false;
+ if(m==='apertura')return can(['Calidad','Gerencia']);
+ if(m==='correccion')return can(['Supervisor','Gerencia'])&&['Asignado','En corrección'].includes(h.estado);
+ if(m==='verificacion')return can(['Calidad','Gerencia'])&&['Pendiente de verificación','Verificado'].includes(h.estado);
+ return false}
+const hfCiclo=(h,m)=>m==='apertura'?0:(h.ciclos||0);
+const hfLista=(code,m,c)=>(S.hfotos||[]).filter(f=>f.codigo===code&&(!m||f.mom===m)&&(c==null||f.ciclo===c));
+function hFotosBlock(h){
+ if(NB.guest)return `<div class="lb" style="margin:14px 0 4px">Fotos</div><p class="mut3" style="font-size:12.5px">Las fotos solo se ven con sesión iniciada.</p>`;
+ const all=hfLista(h.codigo);
+ const grupos=[];
+ ['apertura','correccion','verificacion'].forEach(m=>{
+  const ciclos=[...new Set(all.filter(f=>f.mom===m).map(f=>f.ciclo))].sort((a,b)=>a-b);
+  const act=hfCiclo(h,m);if(!ciclos.includes(act)&&hfPuede(h,m))ciclos.push(act);
+  ciclos.forEach(c=>grupos.push([m,c]))});
+ if(!grupos.length)return '';
+ return `<div class="lb" style="margin:14px 0 4px">Fotos</div>`+grupos.map(([m,c])=>{
+  const L=hfLista(h.codigo,m,c);
+  const tit=HF_MOM[m]+(m==='apertura'?'':' · ciclo '+c);
+  const add=hfPuede(h,m)&&c===hfCiclo(h,m)&&L.length<HF_MAX?btn(icon('plus',14)+' Agregar foto','hfAdd',`data-c="${esc(h.codigo)}" data-m="${m}"`,'sm ghost'):'';
+  return `<div style="margin:8px 0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px"><b style="font-size:13px">${esc(tit)}</b><span class="mut3" style="font-size:12px">${L.length}/${HF_MAX}</span>${add}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${L.length?L.map(f=>`<button type="button" class="hfth" data-act="hfVer" data-id="${f.id}" aria-label="Ver foto" style="width:96px;height:96px;border-radius:10px;border:1px solid var(--bd);background:var(--bg2,#0f1520);padding:0;overflow:hidden;cursor:pointer"><img data-ruta="${esc(f.ruta)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.4"></button>`).join(''):'<span class="mut3" style="font-size:12.5px">Sin fotos</span>'}</div></div>`}).join('')}
+/* Descarga autenticada de una imagen privada */
+async function hfBlobUrl(ruta){
+ if(NB.fcache[ruta])return NB.fcache[ruta];
+ const h={apikey:NUBE.key};if(NB.sess){if(Date.now()>NB.sess.exp-60000)await nbRefresh();h.Authorization='Bearer '+NB.sess.access_token}
+ const r=await fetch(NUBE.url+'/storage/v1/object/authenticated/hallazgos/'+ruta.split('/').map(encodeURIComponent).join('/'),{headers:h});
+ if(!r.ok)throw new Error('No se pudo cargar la foto');
+ const u=URL.createObjectURL(await r.blob());NB.fcache[ruta]=u;return u}
+function hFotosLoad(){
+ document.querySelectorAll('#modal img[data-ruta]').forEach(im=>{
+  hfBlobUrl(im.dataset.ruta).then(u=>{im.src=u;im.style.opacity=1}).catch(()=>{im.alt='sin imagen'})})}
+/* Reducir la foto antes de subirla: lado mayor 1600 px, JPEG */
+async function hfComprimir(file){
+ let bmp;try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){throw new Error('Ese archivo no es una imagen que se pueda usar.')}
+ const k=Math.min(1,HF_LADO/Math.max(bmp.width,bmp.height));
+ const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bmp,0,0,c.width,c.height);
+ let q=.72,blob;
+ for(let i=0;i<4;i++){blob=await new Promise(r=>c.toBlob(r,'image/jpeg',q));if(blob&&blob.size<=700*1024)break;q-=.12}
+ if(!blob||blob.size>2000*1024)throw new Error('La foto es demasiado pesada. Intenta con otra.');
+ return blob}
+async function hfSubir(path,blob){
+ const h={apikey:NUBE.key,'Content-Type':'image/jpeg'};
+ if(NB.sess){if(Date.now()>NB.sess.exp-60000)await nbRefresh();h.Authorization='Bearer '+NB.sess.access_token}
+ let r;try{r=await fetch(NUBE.url+'/storage/v1/object/hallazgos/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:h,body:blob})}catch(e){throw new Error('Sin conexión con la nube')}
+ if(!r.ok){let m='No se pudo subir la foto ('+r.status+')';try{const j=await r.json();if(j&&j.message)m=j.message}catch(e){}throw new Error(m)}}
+async function hfBorrarArchivo(path){
+ try{const h={apikey:NUBE.key,Authorization:'Bearer '+NB.sess.access_token};await fetch(NUBE.url+'/storage/v1/object/hallazgos/'+path.split('/').map(encodeURIComponent).join('/'),{method:'DELETE',headers:h})}catch(e){}}
+function hfInput(){
+ let i=document.getElementById('hfIn');if(i)return i;
+ i=document.createElement('input');i.type='file';i.id='hfIn';i.accept='image/*';i.multiple=true;i.style.display='none';document.body.appendChild(i);
+ i.addEventListener('change',()=>hfProcesar(Array.from(i.files||[])).finally(()=>{i.value=''}));return i}
+async function hfProcesar(files){
+ const ctx=NB.hfCtx;if(!ctx||!files.length)return;
+ const h=S.hallazgos.find(x=>x.codigo===ctx.code);if(!h||NB.hbusy)return;
+ const cupo=HF_MAX-hfLista(ctx.code,ctx.m,hfCiclo(h,ctx.m)).length;
+ if(cupo<=0){toast('Ya hay 3 fotos en este momento.','wa');return}
+ NB.hbusy=true;let ok=0;const sobra=files.length>cupo;
+ try{
+  toast('Subiendo '+Math.min(files.length,cupo)+' foto(s)…','ok');
+  for(const f of files.slice(0,cupo)){
+   const blob=await hfComprimir(f);const path=ctx.code+'/'+nbUuid()+'.jpg';
+   await hfSubir(path,blob);
+   try{await nbRpc('hallazgo_foto_registrar',{p_codigo:ctx.code,p_momento:ctx.m,p_ruta:path,p_bytes:blob.size});ok++}
+   catch(e){await hfBorrarArchivo(path);throw e}}
+ }catch(e){toast(nbMsg(e),'er')}
+ finally{NB.hbusy=false}
+ if(ok){await nbReloadHall();renderPage(true);hDet(ctx.code);toast(ok+' foto(s) guardada(s)'+(sobra?' · el resto no cupo (máximo 3)':''),'ok')}}
+function hfVer(id){
+ const f=(S.hfotos||[]).find(x=>x.id===id);if(!f)return;const h=S.hallazgos.find(x=>x.codigo===f.codigo)||{};
+ M={type:'hfver',id};
+ openModal(mh('Foto · '+esc(f.codigo))+`<div style="text-align:center"><img id="hfBig" alt="Foto del hallazgo" style="max-width:100%;max-height:60vh;border-radius:10px;opacity:.4"></div>
+ <p class="mut" style="font-size:13px;margin:10px 0">${esc(HF_MOM[f.mom])}${f.mom==='apertura'?'':' · ciclo '+f.ciclo} · ${esc(f.por||'')} (${esc(f.rol||'')}) · ${esc(fmtDT(f.ts))} · ${nf(f.bytes/1024,0)} KB</p>
+ <div class="mf">${btn('Volver','hdet',`data-c="${esc(f.codigo)}"`,'ghost')}${can(['Calidad','Gerencia'])&&!['Cerrado','Anulado'].includes(h.estado)?btn('Quitar foto','hfQuitar',`data-id="${esc(id)}"`,'dng sm'):''}</div>`,'w');
+ hfBlobUrl(f.ruta).then(u=>{const im=document.getElementById('hfBig');if(im){im.src=u;im.style.opacity=1}}).catch(()=>toast('No se pudo cargar la foto','er'))}
+async function hfQuitar(id){
+ const f=(S.hfotos||[]).find(x=>x.id===id);if(!f||NB.hbusy)return;
+ NB.hbusy=true;
+ try{const r=await nbRpc('hallazgo_foto_quitar',{p_id:id,p_motivo:'Quitada por '+(U.name||'')});await hfBorrarArchivo(f.ruta);delete NB.fcache[f.ruta];
+  await nbReloadHall();renderPage(true);toast('Foto quitada','ok');hDet(f.codigo)}
+ catch(e){toast(nbMsg(e),'er')}finally{NB.hbusy=false}}
+Object.assign(A,{
+ hfAdd:t=>{NB.hfCtx={code:t.dataset.c,m:t.dataset.m};hfInput().click()},
+ hfVer:t=>hfVer(t.dataset.id),
+ hfQuitar:t=>{const id=t.dataset.id;confirmM('Quitar foto','¿Quitar esta foto? La acción queda en el historial.','Quitar',()=>hfQuitar(id),true)}});
 
 nubeBoot();
 
