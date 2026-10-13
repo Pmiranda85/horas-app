@@ -250,7 +250,7 @@ table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 #printSheet.cards{padding:6mm 0!important;text-align:left!important}
 @media print{@page{size:letter;margin:6mm}#printSheet.cards .tcards{gap:0}}
 @media(max-width:700px){.tcards{grid-template-columns:1fr;justify-items:center}}
-body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
+body.guest [data-act^="hall"],body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
 body.guest select[data-tur],body.guest input[data-tf]{pointer-events:none;opacity:.75}
 @media(max-width:820px){.minis{grid-template-columns:repeat(2,1fr)!important}.minis>div{grid-column:span 1!important}}
 
@@ -922,7 +922,7 @@ function pRegistros(){
 /* ================= Alertas ================= */
 function alertRow(a){
  const ic=a.n==='er'?'warn':a.n==='wa'?'warn':'info';
- const b=a.val?btn('Validar','valDia',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.tec?btn('Completar','faltModal',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.reg?btn('Revisar','editReg',`data-id="${a.reg}"`,'sm ghost'):a.proy?btn('Ver','goProj',`data-p="${a.proy}"`,'sm ghost'):'';
+ const b=a.hall?btn('Abrir','hdet',`data-c="${esc(a.hall)}"`,'sm ghost'):a.val?btn('Validar','valDia',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.tec?btn('Completar','faltModal',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.reg?btn('Revisar','editReg',`data-id="${a.reg}"`,'sm ghost'):a.proy?btn('Ver','goProj',`data-p="${a.proy}"`,'sm ghost'):'';
  return `<div class="alrt ${a.n}"><div class="ai">${icon(ic,17)}</div><div style="flex:1;min-width:0"><b>${esc(a.t)}</b><small>${esc(a.s||'')}</small></div>${b}</div>`;
 }
 function pAlertas(){
@@ -1095,7 +1095,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.5',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.6',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1711,8 +1711,6 @@ function nbRows(){
  S.proyectos.forEach(p=>{const e=p.exp||{total:0,et:{},cerradas:[]};const mod=e.mod||{};
   out.proyectos.set(p._id,nbJ({id:p._id,numero:p.num,capacidad_gal:+p.cap,cliente:p.cliente,estado:p.estado||'Activo',fecha_creacion:p.creado||today(),fecha_inicio:p.inicio||today(),fecha_entrega:p.entrega||null,linea:p.linea||'Tanques',compartimentos:p.comp?Math.round(+p.comp):null,referencia:p.ref||null,dias_plan:Math.max(1,Math.round(+p.dias||30)),expectativa_total:+e.total||0,pausa_desde:p.pausaDesde||null,dias_pausa:Math.max(0,Math.round(+p.diasPausa||0)),es_demo:!!p.demo,modificado_por:mod.por||null,modificado_en:mod.ts||null}));
   ETAPAS.forEach(x=>out.expectativas_etapa.set(p._id+'|'+x,nbJ({proyecto_id:p._id,etapa:x,horas:+(e.et||{})[x]||0,dias:Math.max(0,Math.round(+(e.dias||{})[x]||0)),terminada:(e.cerradas||[]).includes(x),modificado_por:mod.por||null,modificado_en:mod.ts||((p.creado||'2000-01-01')+'T00:00:00Z')})))});
- out.hallazgos=mk();
- S.hallazgos.forEach(h=>{if(!M.projUuid[h.proy])return;out.hallazgos.set(h.codigo,nbJ({codigo:h.codigo,proyecto_id:M.projUuid[h.proy],descripcion:h.desc||null,estado:h.estado||'Abierto',fecha:h.fecha||today(),es_demo:!!h.demo}))});
  out.programacion=mk();
  Object.keys(S.rota||{}).forEach(w=>{const wk_=S.rota[w]||{};Object.keys(wk_).forEach(code=>{const tid=M.tecUuid[code];if(!tid)return;let v=wk_[code];
   for(let d=0;d<7;d++){const val=(v&&typeof v==='object')?v[d]:v;if(val===undefined||val===null||val==='')continue;
@@ -1726,7 +1724,7 @@ function nbRows(){
    persona_relacionada_id:M.tecUuid[r.persona]||null,codigo_hallazgo:r.hallazgo||null,descripcion:r.desc||null,registrado_por:r.por||null,registrado_en:r.ts,estado:r.estado,es_demo:!!r.demo,
    pendiente_validacion:!!r.pend,validado_por:r.valPor||null,validado_en:r.valTs||null}))});
  return out}
-const NB_ORDER=[['ajustes','clave'],['turnos','id'],['turno_dias','turno_id,dia'],['tecnicos','id'],['proyectos','id'],['expectativas_etapa','proyecto_id,etapa'],['hallazgos','codigo'],['programacion','semana,tecnico_id,dia'],['registros_hh','id']];
+const NB_ORDER=[['ajustes','clave'],['turnos','id'],['turno_dias','turno_id,dia'],['tecnicos','id'],['proyectos','id'],['expectativas_etapa','proyecto_id,etapa'],['programacion','semana,tecnico_id,dia'],['registros_hh','id']];
 
 function nbFromReg(d,M){return{id:d.id,fecha:d.fecha,tec:d.codigo_tecnico,ini:d.iniciales||'',nombre:d.nombre||'',area:d.area||'',esp:d.especialidad||'',turno:(M&&M.turnoByName&&M.turnoByName[d.turno])||'',
  proy:d.numero_proyecto||'',cap:d.capacidad_gal||'',cli:d.cliente||'',macro:d.macroetapa||'',act:d.actividad||'',actId:d.actividad_codigo||'',horas:+d.horas,tipo:d.tipo_trabajo,clase:d.clase,kind:d.kind||'proy',cat:d.categoria||'',
@@ -1745,17 +1743,17 @@ function nbSinceNote(){
  return `<p class="mut3" style="font-size:12.5px;margin-top:12px">Se cargan los últimos 90 días (o desde el inicio de los proyectos activos): hoy ves desde <b style="color:var(--tx2)">${dlabel(NB.since)}</b>. Las tablas, gráficos y el Excel incluyen solo lo cargado. ${btn('Cargar todo el historial','loadAll','','sm ghost')}</p>`}
 async function nbLoad(){
  const safe=(p,def)=>p.catch(e=>{if(e&&(e.status===401))throw e;return def});
- let aj,tu,td,te,pr,ex,ha,pg,rg,his=[],per=[];
+ let aj,tu,td,te,pr,ex,ha,hs=[],pg,rg,his=[],per=[];
  if(NB.guest){
   const g=await nbRpc('invitado_datos',{p_codigo:NB.guest.codigo,p_todo:!!NB.all},false);
   if(!g){nbGuestEnd();const er=new Error('Invitación vencida');er.guestEnd=true;throw er}
   NB.guest.nombre=g.invitado.nombre;NB.guest.vence=g.invitado.vence;NB.since=g.desde||'';
-  aj=g.ajustes||[];tu=g.turnos||[];td=g.turno_dias||[];te=g.tecnicos||[];pr=g.proyectos||[];ex=g.expectativas_etapa||[];ha=g.hallazgos||[];pg=g.programacion||[];rg=g.registros_hh||[]}
+  aj=g.ajustes||[];tu=g.turnos||[];td=g.turno_dias||[];te=g.tecnicos||[];pr=g.proyectos||[];ex=g.expectativas_etapa||[];ha=g.hallazgos||[];hs=g.hallazgo_historial||[];pg=g.programacion||[];rg=g.registros_hh||[]}
  else{
-  [aj,tu,td,te,pr,ex,ha,pg]=await Promise.all([
+  [aj,tu,td,te,pr,ex,ha,pg,hs]=await Promise.all([
    safe(nbSel('ajustes'),[]),safe(nbSel('turnos','select=*&order=creado.asc,id.asc'),[]),safe(nbSel('turno_dias'),[]),safe(nbSel('tecnicos','select=*&order=codigo.asc'),[]),
    safe(nbSel('proyectos','select=*&order=numero.asc'),[]),safe(nbSel('expectativas_etapa'),[]),safe(nbSel('hallazgos','select=*&order=codigo.asc'),[]),
-   safe(nbSel('programacion'),[])]);
+   safe(nbSel('programacion'),[]),safe(nbSel('hallazgo_historial','select=*&order=id.asc'),[])]);
   const since=nbSince(pr);NB.since=since;
   rg=await nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc'+(since?'&fecha=gte.'+since:''));
   if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}}
@@ -1771,21 +1769,20 @@ async function nbLoad(){
  const proyectos=pr.map(p=>{numByUuid[p.id]=p.numero;const et={},cerradas=[];const dm={};ex.filter(e=>e.proyecto_id===p.id).forEach(e=>{et[e.etapa]=+e.horas;dm[e.etapa]=+e.dias||0;if(e.terminada)cerradas.push(e.etapa)});
   return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,entrega:p.fecha_entrega||'',linea:p.linea||'Tanques',comp:p.compartimentos||'',ref:p.referencia||'',dias:p.dias_plan,pausaDesde:p.pausa_desde||'',diasPausa:+p.dias_pausa||0,demo:p.es_demo?1:0,_id:p.id,
    exp:{total:+p.expectativa_total||0,et,dias:dm,cerradas,mod:{ts:p.modificado_en||'',por:p.modificado_por||''}}}});
- const hallazgos=ha.map(h=>({codigo:h.codigo,proy:numByUuid[h.proyecto_id]||'',desc:h.descripcion||'',estado:h.estado,fecha:h.fecha,demo:h.es_demo?1:0}));
  const rota={};
  pg.forEach(g=>{const code=codeByUuid[g.tecnico_id];if(!code)return;const w=g.semana;rota[w]=rota[w]||{};rota[w][code]=rota[w][code]||{};rota[w][code][g.dia]=g.libre?'LIBRE':(tmap[g.turno_id]||'')});
  const M={turnoByName,codeByUuid};
  const registros=rg.map(d=>nbFromReg(d,M));
  const names={};per.forEach(p=>{names[p.id]=p.nombre});
  const historial=his.slice().reverse().map(h=>({ts:h.fecha,por:names[h.usuario]||(h.usuario==='sistema'?'Sistema':'Usuario'),campo:h.tabla+'.'+h.campo,antes:String(h.valor_anterior??''),despues:String(h.valor_nuevo??''),ref:String(h.ref||'').slice(0,8)}));
- S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos,historial,demo:false};nbApplyLists();
+ S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos:[],hhist:[],historial,demo:false};nbSetHall(ha,hs,numByUuid);nbApplyLists();
  NB.snap=nbSnapNow();
  let seeded=false;
  if(!S.turnos.length){S.turnos=turnosBase();S.turnos.forEach(t=>{t.nombre=t.nombre.replace(' (demo)','')});seeded=true}
  if(seeded){if(NB.perfil&&NB.perfil.rol==='Gerencia'){nbSave()}else NB.snap=nbSnapNow()}
  NB.sig=nbSig()}
 function nbSnapNow(){const r=nbRows();const o={};NB_ORDER.forEach(([c])=>{o[c]=r[c]});return o}
-function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado).join(',')+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
+function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado+(x.ciclos||0)+(x.esc?1:0)+(x.autEn?1:0)+(x.asigIni||'')).join(',')+(S.hhist||[]).length+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
  for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return s.length+':'+h}
 
 /* ---------- Guardado en la nube (solo cambios) ---------- */
@@ -1807,6 +1804,8 @@ async function nbPushInner(){
   gp.forEach(k=>snap.programacion.delete(k))}
  /* 2) guardar lo nuevo o modificado, en orden de dependencia */
  for(const [c,conf] of NB_ORDER){const up=diff(c);if(!up.length)continue;
+  if(c==='registros_hh'&&!NB.kiosk){const need=new Set();up.forEach(([k,j])=>{const cd=JSON.parse(j).codigo_hallazgo;if(cd&&!(NB.hallKnown&&NB.hallKnown.has(cd)))need.add(cd)});
+   for(const cd of need){const h=S.hallazgos.find(x=>x.codigo===cd)||{};await nbRpc('hallazgo_asegurar',{p_codigo:cd,p_proyecto:h.proy||(S.registros.find(r=>r.hallazgo===cd)||{}).proy||'',p_desc:h.desc||null});NB.hallKnown.add(cd)}}
   await nbUp(c,up.map(x=>JSON.parse(x[1])),conf);up.forEach(([k,j])=>snap[c].set(k,j))}
  /* 3) borrar turnos eliminados (ya sin personas ni programación que dependan de ellos) */
  const gt=gone('turnos');
@@ -1837,7 +1836,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.5</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.6</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -2024,6 +2023,7 @@ function projTrack(p){
  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">${badge(esc(sm.txt),sm.c)}<span class="mut" style="font-size:12.5px">${p.entrega?'Entrega '+dlabel(p.entrega)+(sm.left?' · '+sm.left:''):''}</span></div>
  ${sm.sub?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.sub}</div>`:sm.hint?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.hint}</div>`:''}</div>`}
 function entregaAlerts(arr){
+ if(typeof hallAlerts==='function')hallAlerts(arr);
  S.proyectos.filter(p=>p.estado==='Activo').forEach(p=>{
   if(!p.entrega){arr.push({n:'wa',k:'Sin fecha de entrega',t:`Proyecto ${p.num} sin fecha de entrega`,s:'Gerencia define la fecha para activar el semáforo de entrega',proy:p.num});return}
   const s=projSem(p);
@@ -2116,7 +2116,7 @@ const fmtDT=iso=>{try{return new Date(iso).toLocaleString('es-CO',{day:'2-digit'
 const isGer=()=>!!(NB.perfil&&NB.perfil.rol==='Gerencia'&&!NB.guest&&NB.sess);
 
 /* ---------- Copia de seguridad (archivo .sql que se restaura pegándolo en el Editor SQL de Supabase) ---------- */
-const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
+const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
 async function nbBackup(){
  if(!isGer()){toast('Solo Gerencia puede descargar la copia de seguridad.','wa');return}
  if(NB.bak)return;NB.bak=true;toast('Preparando la copia de seguridad… puede tardar unos segundos.','ok');
@@ -2128,9 +2128,9 @@ async function nbBackup(){
    const rows=await nbSel(t,q);cuenta[t]=rows.length;
    for(let i=0;i<rows.length;i+=400){
     let js=JSON.stringify(rows.slice(i,i+400));let tag='j';while(js.includes('$'+tag+'$'))tag+='x';
-    partes.push(`insert into public.${t}${t==='historial'?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
+    partes.push(`insert into public.${t}${(t==='historial'||t==='hallazgo_historial')?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
   const cab=`-- LATAMKS HH · COPIA DE SEGURIDAD · ${hoy}\n-- Filas: ${BAK_TABLAS.map(([t])=>t+' '+cuenta[t]).join(' · ')}\n-- Para restaurar: Supabase > SQL Editor > pegar este archivo completo > Run. Es seguro repetirlo (no duplica nada).\n-- Las cuentas de acceso (correos y contraseñas) no van en este archivo: se vuelven a crear en Authentication.\nbegin;\n`;
-  const pie=`\nselect setval(pg_get_serial_sequence('public.historial','id'), (select coalesce(max(id),1) from public.historial));\ncommit;\n`;
+  const pie=`\nselect setval(pg_get_serial_sequence('public.historial','id'), (select coalesce(max(id),1) from public.historial));\nselect setval(pg_get_serial_sequence('public.hallazgo_historial','id'), (select coalesce(max(id),1) from public.hallazgo_historial));\ncommit;\n`;
   nbDownload('latamks-hh_copia-seguridad_'+hoy+'.sql',new Blob([cab+partes.join('\n')+pie],{type:'text/plain;charset=utf-8'}));
   S.settings.respaldo=hoy;save();nbBakCheck();if(U.page==='ajustes')renderPage(true);
   toast('Copia lista · '+cuenta.registros_hh+' registros de horas. Guárdala fuera de esta computadora (correo o Drive).','ok')}
@@ -2249,6 +2249,252 @@ Object.assign(A,{
  invCopy:()=>{const v=M.link||'';try{navigator.clipboard.writeText(v).then(()=>toast('Enlace copiado','ok'),()=>{$('#invLink').select();toast('Selecciona y copia el enlace','wa')})}catch(e){$('#invLink').select()}},
  invWA:()=>{const m=`Acceso de solo lectura a Latamks HH (${M.nombre||'invitado'}). Válido hasta ${fmtDT(M.vence)}:\n${M.link}`;window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank','noopener')}
 });
+
+/* ================= v3.6 · HALLAZGOS fase 1: flujo de 6 estados, alertas, indicadores y Excel ================= */
+const H_ESPEC=['Soldadura','Armado','Corte láser','Plegado','Rolado','Acabado superficial','Limpieza y lavado','Pruebas','Material','Ingeniería / Diseño','Otra'];
+const H_VENC={Alta:3,Media:7,Baja:15};
+const H_BADGE={'Abierto':'wa','Asignado':'i','En corrección':'v','Pendiente de verificación':'wa','Verificado':'ok','Cerrado':'ok','Anulado':'n'};
+const hAb=h=>!['Cerrado','Anulado'].includes(h.estado||'Abierto');
+const hDate=ts=>ts?new Date(ts).toLocaleDateString('sv'):'';
+const hPlazo=h=>H_VENC[h.prio||'Media']||7;
+function hDias(h){const fin=h.cierEn?hDate(h.cierEn):today();return Math.max(0,daysB(h.fecha||today(),fin))}
+const hVenc=h=>hAb(h)&&hDias(h)>hPlazo(h);
+const isCal=()=>can(['Calidad','Gerencia']),isSupG=()=>can(['Supervisor','Gerencia']);
+function hFmtDur(d){if(d==null||isNaN(d))return '—';return d<1?nf(d*24,0)+' h':nf(d,1)+' d'}
+const hMs=(a,b)=>(a&&b)?(new Date(b)-new Date(a))/864e5:null;
+function hAvg(L){const v=L.filter(x=>x!=null&&x>=0);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+function hMap(d,numByUuid){return{codigo:d.codigo,proy:numByUuid[d.proyecto_id]||'',desc:d.descripcion||'',estado:d.estado||'Abierto',fecha:d.fecha||'',demo:d.es_demo?1:0,
+ esp:d.especialidad||'',etapa:d.etapa||'',ubic:d.ubicacion||'',prio:d.prioridad||'Media',reinc:!!d.reincidencia,reDe:d.reincide_de||'',insp:d.inspector_apertura||'',creado:d.creado_en||'',
+ asigCod:d.asignado_codigo||'',asigIni:d.asignado_ini||'',asigNom:d.asignado_nombre||'',asigPor:d.asignado_por||'',asigEn:d.asignado_en||'',iniEn:d.inicio_correccion_en||'',
+ corEn:d.corregido_en||'',corPor:d.corregido_por||'',obsCor:d.obs_correccion||'',verEn:d.verificado_en||'',verPor:d.verificado_por||'',verRes:d.resultado_verificacion||'',obsVer:d.obs_verificacion||'',
+ cierEn:d.cerrado_en||'',cierPor:d.cerrado_por||'',cierTipo:d.cierre_tipo||'',obsCier:d.obs_cierre||'',ciclos:+d.ciclos||0,
+ esc:!!d.escalado,escEn:d.escalado_en||'',escPor:d.escalado_por||'',escNota:d.nota_escalamiento||'',autEn:d.autorizado_en||'',autPor:d.autorizado_por||'',autProd:d.autorizacion_produccion||'',autNota:d.autorizacion_nota||'',
+ anuEn:d.anulado_en||'',anuPor:d.anulado_por||'',anuMot:d.motivo_anulacion||''}}
+function nbSetHall(ha,hs,numByUuid){
+ S.hallazgos=(ha||[]).map(d=>hMap(d,numByUuid));
+ S.hhist=(hs||[]).map(x=>({id:x.id,codigo:x.codigo,ciclo:x.ciclo,fecha:x.fecha,accion:x.accion,ant:x.estado_anterior||'',nue:x.estado_nuevo||'',res:x.resultado||'',usuario:x.usuario||'',rol:x.rol||'',tec:x.tecnico||'',com:x.comentario||''}));
+ NB.hallKnown=new Set(S.hallazgos.map(h=>h.codigo))}
+async function nbReloadHall(){
+ const pr=await nbSel('proyectos','select=id,numero&order=numero.asc');const nb={};pr.forEach(p=>{nb[p.id]=p.numero});
+ const [ha,hs]=await Promise.all([nbSel('hallazgos','select=*&order=codigo.asc'),nbSel('hallazgo_historial','select=*&order=id.asc')]);
+ nbSetHall(ha,hs,nb);NB.sig=nbSig()}
+function hLink(code){return invBase()+'#hallazgos'}
+
+/* ---------- Alertas por rol ---------- */
+function hallAlerts(A){
+ if(NB.kiosk)return;
+ const sup=can(['Supervisor','Gerencia']),cal=can(['Calidad','Gerencia']),ger=can('Gerencia');
+ S.hallazgos.filter(h=>hAb(h)).forEach(h=>{
+  const base=`${h.codigo} · Proyecto ${h.proy}${h.etapa?' · '+h.etapa:''}`,d=hDias(h);
+  if(hVenc(h))A.push({n:'er',k:'Hallazgo vencido',t:`${h.codigo} lleva ${d} días abierto (plazo ${hPlazo(h)})`,s:base+' · '+h.estado,hall:h.codigo});
+  if(h.esc&&!h.autEn&&ger)A.push({n:'er',k:'Escalado a Gerencia',t:`Calidad escaló ${h.codigo}: requiere decisión de Gerencia`,s:base,hall:h.codigo});
+  if(h.estado==='Abierto'&&sup)A.push({n:h.prio==='Alta'?'er':'wa',k:'Hallazgo sin asignar',t:`Hallazgo ${h.codigo} sin responsable de corrección`,s:`Prioridad ${h.prio} · abierto por ${h.insp||'Calidad'} · ${base}`,hall:h.codigo});
+  if(h.estado==='En corrección'&&h.ciclos>1&&sup)A.push({n:'wa',k:'Corrección rechazada',t:`Calidad no aprobó la corrección de ${h.codigo}: corregir de nuevo`,s:`${h.asigIni||'Sin técnico'} · ${h.obsVer||''}`.slice(0,140),hall:h.codigo});
+  if(h.estado==='Pendiente de verificación'&&cal){const hrs=h.corEn?(Date.now()-new Date(h.corEn))/36e5:0;A.push({n:hrs>24?'er':'wa',k:'Por verificar',t:`${h.codigo} corregido por ${h.asigIni||'Producción'}: pendiente de verificación de Calidad`,s:`Esperando hace ${hrs<1?'menos de 1 h':hrs<48?nf(hrs,0)+' h':nf(hrs/24,0)+' días'} · ${base}`,hall:h.codigo})}
+  if(h.estado==='Verificado'&&cal)A.push({n:'i',k:'Por cerrar',t:`${h.codigo} verificado: falta cerrarlo`,s:base,hall:h.codigo})})}
+
+/* ---------- Página ---------- */
+const hMini=(l,v,c='',act='',tip='')=>`<div class="c3" style="grid-column:span 2"><div class="card mini flat ${act?'clk':''}" ${act?`data-act="hFiltro" data-v="${act}"`:''}><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div></div></div></div>`;
+function hScope(){const q=U.hq=U.hq||{est:'activos',proy:'',prio:'',tec:'',txt:''};return q}
+function hFiltrar(){
+ const q=hScope(),t=(q.txt||'').toLowerCase().trim();
+ return S.hallazgos.filter(h=>{
+  if(q.proy&&h.proy!==q.proy)return 0;if(q.prio&&h.prio!==q.prio)return 0;if(q.tec&&h.asigCod!==q.tec)return 0;
+  const e=q.est||'activos';
+  if(e==='activos'&&!hAb(h))return 0;
+  if(e==='vencidos'&&!hVenc(h))return 0;
+  if(e==='escalados'&&!(h.esc&&hAb(h)))return 0;
+  if(H_BADGE[e]&&e!=='activos'&&h.estado!==e)return 0;
+  if(e==='todos'&&h.estado==='Anulado')return 0;
+  if(t&&![h.codigo,h.desc,h.etapa,h.esp,h.asigNom,h.asigIni,h.insp,h.ubic].join(' ').toLowerCase().includes(t))return 0;
+  return 1}).sort((a,b)=>(b.fecha||'')<(a.fecha||'')?-1:(b.fecha||'')>(a.fecha||'')?1:(a.codigo<b.codigo?1:-1))}
+function hCard(h){
+ const rr=live().filter(r=>r.hallazgo===h.codigo),d=hDias(h);
+ return `<section class="card hcard" data-act="hdet" data-c="${esc(h.codigo)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b style="font-size:15px">${esc(h.codigo)}</b><span style="display:flex;gap:5px;flex-wrap:wrap">${hVenc(h)?badge('Vencido','er'):''}${h.esc&&hAb(h)?badge(h.autEn?'Excepción autorizada':'Escalado','er'):''}${badge(esc(h.estado),H_BADGE[h.estado]||'n')}</span></div>
+ <div class="mut3" style="font-size:12px;margin:3px 0 8px">Proyecto ${esc(h.proy)} · ${esc(h.etapa||'sin etapa')} · ${esc(h.esp||'sin especialidad')}</div>
+ <div style="min-height:40px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(h.desc||'Sin descripción')}</div>
+ <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${badge('Prioridad '+esc(h.prio),h.prio==='Alta'?'er':h.prio==='Baja'?'n':'wa')}${h.reinc?badge('Reincidencia','er'):''}${h.ciclos>1?badge(h.ciclos+' ciclos','wa'):''}</div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px;font-size:12.5px" class="mut"><span>${h.asigIni?`<b style="color:var(--tx)">${esc(h.asigIni)}</b> · ${esc(h.asigNom.split(' ')[0]||'')}`:'Sin asignar'}</span><span>${hAb(h)?d+' d abierto':'Cerrado en '+d+' d'}${rr.length?' · '+nf(sum(rr),1)+' HH':''}</span></div></section>`}
+function hLista(){
+ const q=hScope(),L=hFiltrar(),all=S.hallazgos.filter(h=>h.estado!=='Anulado'),ab=all.filter(hAb);
+ const cnt=(f)=>all.filter(f).length;
+ const minis=[hMini('Abiertos',ab.length,'','activos'),hMini('Sin asignar',cnt(h=>h.estado==='Abierto'),cnt(h=>h.estado==='Abierto')?'dn':'','Abierto'),hMini('En corrección',cnt(h=>h.estado==='En corrección'),'','En corrección'),
+  hMini('Por verificar',cnt(h=>h.estado==='Pendiente de verificación'),cnt(h=>h.estado==='Pendiente de verificación')?'dn':'','Pendiente de verificación'),hMini('Vencidos',cnt(hVenc),cnt(hVenc)?'dn':'','vencidos'),hMini('Escalados',cnt(h=>h.esc&&hAb(h)),cnt(h=>h.esc&&hAb(h))?'dn':'','escalados')].join('');
+ const ests=[['activos','Abiertos (todos los pasos)'],...['Abierto','Asignado','En corrección','Pendiente de verificación','Verificado'].map(e=>[e,e]),['vencidos','Vencidos'],['escalados','Escalados a Gerencia'],['Cerrado','Cerrados'],['Anulado','Anulados'],['todos','Todos (sin anulados)']];
+ const tecs=uniq(S.hallazgos.filter(h=>h.asigCod).map(h=>h.asigCod)).map(c=>{const h=S.hallazgos.find(x=>x.asigCod===c);return [c,(h.asigIni||c)+' · '+h.asigNom]});
+ return `<div class="g12 minis">${minis}</div>
+ <div class="fbar" style="margin-top:6px">${sel('hq.est',ests,q.est||'activos')}${sel('hq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}${sel('hq.prio',['Alta','Media','Baja'],q.prio,{ph:'Toda prioridad'})}${sel('hq.tec',tecs,q.tec,{ph:'Todo técnico'})}<input class="inp" style="max-width:240px" placeholder="Buscar…" data-f="hq.txt" value="${esc(q.txt||'')}"><span class="mut" style="margin-left:6px">${L.length} hallazgo${L.length===1?'':'s'}</span></div>
+ ${L.length?`<div class="pgrid">${L.slice(0,120).map(hCard).join('')}</div>${L.length>120?'<p class="mut3" style="text-align:center">Se muestran los 120 más recientes. Usa los filtros.</p>':''}`:card('Sin hallazgos','',empty(S.hallazgos.length?'No hay hallazgos con estos filtros':'Aún no hay hallazgos. Calidad crea el primero con “Nuevo hallazgo”.'))}`}
+
+function pHallazgos(){
+ const tab=U.hTab||'lista';
+ const acts=`<div class="seg" role="group" aria-label="Vista">${[['lista','Hallazgos'],['kpi','Indicadores']].map(([v,l])=>`<button class="${tab===v?'on':''}" data-act="hTab" data-v="${v}">${l}</button>`).join('')}</div>
+  <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${can(['Gerencia','Calidad','Supervisor'])?btn(icon('plus',16)+' Nuevo hallazgo','hallNew'):''}${can(['Gerencia','Calidad'])||NB.guest?btn(icon('down',16)+' Exportar a Excel','hExp','','ghost'):''}</div>`;
+ return `<div class="fbar">${acts}</div>`+(tab==='kpi'?hKpi():hLista())}
+
+/* ---------- Detalle ---------- */
+function hRow(l,v){return v?`<div style="display:flex;gap:10px;padding:5px 0;border-top:1px solid var(--bd);font-size:13.5px"><span class="mut" style="min-width:120px">${l}</span><span style="flex:1;word-break:break-word">${v}</span></div>`:''}
+function hDet(code){
+ const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;M={type:'hdet',code};
+ const rr=live().filter(r=>r.hallazgo===code),hist=S.hhist.filter(x=>x.codigo===code);
+ const dt=ts=>ts?fmtDT(ts):'';
+ const acciones=[];
+ if(!NB.guest){
+  if(isSupG()&&['Abierto','Asignado','En corrección'].includes(h.estado))acciones.push(btn(h.asigCod?'Reasignar técnico':'Asignar técnico','hallAct','data-k="asignar" data-c="'+esc(code)+'"',h.estado==='Abierto'?'':'ghost'));
+  if(isSupG()&&h.estado==='Asignado')acciones.push(btn('Iniciar corrección','hallDo','data-k="iniciar" data-c="'+esc(code)+'"'));
+  if(isSupG()&&h.estado==='En corrección')acciones.push(btn('Reportar como corregido','hallAct','data-k="corregida" data-c="'+esc(code)+'"'));
+  if(isCal()&&h.estado==='Pendiente de verificación')acciones.push(btn('Verificar corrección','hallAct','data-k="verificar" data-c="'+esc(code)+'"'));
+  if(isCal()&&h.estado==='Verificado')acciones.push(btn('Cerrar hallazgo','hallAct','data-k="cerrar" data-c="'+esc(code)+'"'));
+  if(isCal()&&hAb(h)&&!h.esc)acciones.push(btn('Escalar a Gerencia','hallAct','data-k="escalar" data-c="'+esc(code)+'"','ghost'));
+  if(can('Gerencia')&&hAb(h)&&h.esc&&!h.autEn)acciones.push(btn('Autorizar continuar','hallAct','data-k="autorizar" data-c="'+esc(code)+'"'));
+  if(isCal()&&hAb(h)&&h.autEn&&h.estado!=='Verificado')acciones.push(btn('Cerrar con excepción','hallAct','data-k="cerrar" data-c="'+esc(code)+'"'));
+  if(isCal()&&hAb(h))acciones.push(btn('Editar','hallEdit','data-c="'+esc(code)+'"','ghost'),btn('Anular','hallAct','data-k="anular" data-c="'+esc(code)+'"','dng sm'));
+  if(isCal()&&!hAb(h))acciones.push(btn('Reabrir','hallAct','data-k="reabrir" data-c="'+esc(code)+'"','ghost'));
+ }
+ const tl=hist.length?hist.map(x=>`<div style="display:flex;gap:10px;padding:8px 0"><div style="width:10px;height:10px;border-radius:50%;background:var(--pri);margin-top:5px;flex:none"></div><div style="flex:1;min-width:0"><div style="font-size:13.5px"><b>${esc(x.accion)}</b>${x.ant&&x.nue&&x.ant!==x.nue?` <span class="mut">${esc(x.ant)} → ${esc(x.nue)}</span>`:''} ${x.res?badge(esc(x.res),x.res==='Cumple'||x.res==='Excepción autorizada'||x.res==='Autoriza continuar'?'ok':'er'):''}</div><div class="mut3" style="font-size:12px">${esc(dt(x.fecha))} · ${esc(x.usuario)}${x.rol?' ('+esc(x.rol)+')':''}${x.tec?' · técnico '+esc(x.tec):''}${x.ciclo?' · ciclo '+x.ciclo:''}</div>${x.com?`<div style="font-size:13.5px;margin-top:3px">${esc(x.com)}</div>`:''}</div></div>`).join(''):'<p class="mut3">Sin movimientos.</p>';
+ const esc2=h.esc?`<div class="sub-panel" style="margin:10px 0;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.06)"><div class="ttl" style="color:#fca5a5">${h.autEn?'Excepción autorizada por Gerencia':'Escalado a Gerencia'}</div><p style="font-size:13.5px;margin:4px 0"><b>Nota de Calidad (${esc(h.escPor)}, ${esc(dt(h.escEn))}):</b> ${esc(h.escNota)}</p>${h.autEn?`<p style="font-size:13.5px;margin:4px 0"><b>Autorizó:</b> ${esc(h.autPor)} · ${esc(dt(h.autEn))}<br><b>Producción responsable:</b> ${esc(h.autProd)}${h.autNota?'<br>'+esc(h.autNota):''}</p>`:'<p class="mut3" style="font-size:12.5px;margin:4px 0">Calidad no detiene la producción: la decisión de continuar es de Gerencia y Producción.</p>'}</div>`:'';
+ openModal(mh(esc(h.codigo))+`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${badge(esc(h.estado),H_BADGE[h.estado]||'n')}${badge('Prioridad '+esc(h.prio),h.prio==='Alta'?'er':h.prio==='Baja'?'n':'wa')}${hVenc(h)?badge('Vencido','er'):''}${h.reinc?badge('Reincidencia'+(h.reDe?' de '+esc(h.reDe):''),'er'):''}${h.ciclos>1?badge(h.ciclos+' ciclos de corrección','wa'):''}${h.cierTipo&&h.cierTipo!=='Cumple'?badge(esc(h.cierTipo),'er'):''}</div>
+ <p style="font-size:15px;margin:6px 0 10px">${esc(h.desc||'Sin descripción')}</p>${esc2}
+ ${hRow('Proyecto',esc(h.proy)+' · '+esc(((S.proyectos.find(p=>p.num===h.proy)||{}).cap)||'')+' gal')}${hRow('Etapa · especialidad',esc(h.etapa)+' · '+esc(h.esp))}${hRow('Ubicación',esc(h.ubic))}
+ ${hRow('Abierto',esc(dlabel(h.fecha||today()))+' por '+esc(h.insp||'—')+' · '+hDias(h)+' día(s)'+(hAb(h)?' (plazo '+hPlazo(h)+')':''))}
+ ${hRow('Responsable',h.asigIni?`<b>${esc(h.asigIni)}</b> · ${esc(h.asigNom)} <span class="mut">(asignó ${esc(h.asigPor)})</span>`:'Sin asignar')}
+ ${hRow('Corrección',h.corEn?esc(dt(h.corEn))+' · '+esc(h.obsCor):'')}${hRow('Verificación',h.verEn?esc(h.verRes)+' · '+esc(h.verPor)+' · '+esc(dt(h.verEn))+(h.obsVer?' · '+esc(h.obsVer):''):'')}
+ ${hRow('Cierre',h.cierEn?esc(h.cierTipo||'')+' · '+esc(h.cierPor)+' · '+esc(dt(h.cierEn))+(h.obsCier?' · '+esc(h.obsCier):''):'')}${hRow('Anulación',h.anuEn?esc(h.anuMot)+' · '+esc(h.anuPor):'')}
+ ${hRow('Horas de retrabajo',rr.length?nf(sum(rr),1)+' HH en '+rr.length+' registro'+(rr.length>1?'s':'')+': '+uniq(rr.map(r=>r.ini||r.nombre)).map(esc).join(', '):'')}
+ <div class="lb" style="margin:14px 0 4px">Historial</div>${tl}
+ <div class="mf" style="flex-wrap:wrap">${acciones.join('')}${btn('Avisar por WhatsApp','hWA',`data-c="${esc(code)}"`,'ghost')}${btn('Cerrar','mClose','','ghost')}</div>`,'w')}
+
+/* ---------- Diálogos de acción ---------- */
+function hTxt(id,ph,rows=3){return `<textarea class="inp" id="${id}" rows="${rows}" style="height:auto;padding:10px" placeholder="${esc(ph||'')}"></textarea>`}
+function hAct(k,code){
+ const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;M={type:'hact',kind:k,code};
+ const T={
+  asignar:['Asignar responsable de corrección',fld('Técnico que corregirá',selM('ha_tec',S.tecnicos.filter(t=>t.registra&&t.activo!==false).map(t=>[t.codigo,t.ini+' · '+t.nombre+' ('+t.area+')']),h.asigCod||''))+fld('Instrucción (opcional)',hTxt('ha_txt','Ej.: respetar el tiempo de espera entre pasadas')),'Asignar'],
+  corregida:['Reportar como corregido',fld('¿Qué se hizo para corregirlo? *',hTxt('ha_txt','Ej.: se cortó la brida y se soldó de nuevo con pausas de enfriamiento')),'Enviar a verificación'],
+  verificar:['Verificar la corrección',`<p class="mut" style="margin-bottom:8px">Responsable: <b style="color:var(--tx)">${esc(h.asigIni)} · ${esc(h.asigNom)}</b><br>Corrección: ${esc(h.obsCor)}</p>`+fld('Resultado',selM('ha_res',[['1','Cumple los criterios'],['0','No cumple · vuelve a corrección']],'1'))+fld('Observación (obligatoria si no cumple)',hTxt('ha_txt','')),'Registrar verificación'],
+  cerrar:[h.estado==='Verificado'?'Cerrar hallazgo':'Cerrar con excepción autorizada',fld(h.estado==='Verificado'?'Observación de cierre (opcional)':'Observación de cierre *',hTxt('ha_txt','Ej.: cumple criterios AWS D18.1')),'Cerrar'],
+  escalar:['Escalar a Gerencia',`<p class="mut" style="margin-bottom:8px">Calidad no detiene la producción: deja constancia técnica y la decisión pasa a Gerencia y Producción.</p>`+fld('Motivo técnico *',hTxt('ha_txt','Qué no se pudo corregir y por qué ese componente, cordón o montaje no debería salir de planta',4)),'Escalar'],
+  autorizar:['Autorizar continuar bajo responsabilidad',`<p class="mut" style="margin-bottom:8px">Nota de Calidad: ${esc(h.escNota)}</p>`+fld('Quién de Producción comparte la responsabilidad *',`<input class="inp" id="ha_prod" placeholder="Nombre y cargo">`)+fld('Nota (opcional)',hTxt('ha_txt','')),'Autorizar'],
+  anular:['Anular hallazgo',fld('Motivo *',hTxt('ha_txt','Ej.: creado por error / duplicado')),'Anular'],
+  reabrir:['Reabrir hallazgo',fld('Motivo *',hTxt('ha_txt','')),'Reabrir']}[k];
+ if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+`<div class="mf">${btn('Volver','hdet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'hallDo',`data-k="${k}" data-c="${esc(code)}"`,k==='anular'?'dng':'')}</div>`,'s')}
+async function hRpc(fn,args,ok,code){
+ if(NB.hbusy)return;NB.hbusy=true;
+ try{await nbRpc(fn,args);await nbReloadHall();renderPage(true);toast(ok,'ok');const h=S.hallazgos.find(x=>x.codigo===(code||args.p_codigo));if(h)hDet(h.codigo);else closeModal()}
+ catch(e){toast(nbMsg(e),'er')}finally{NB.hbusy=false}}
+function hDo(k,code){
+ const tx=(val('ha_txt')||'').trim();
+ const R={
+  iniciar:()=>hRpc('hallazgo_iniciar',{p_codigo:code},'Corrección iniciada'),
+  asignar:()=>{const t=val('ha_tec');if(!t){toast('Elige el técnico.','wa');return}hRpc('hallazgo_asignar',{p_codigo:code,p_tecnico:t,p_comentario:tx},'Responsable asignado')},
+  corregida:()=>{if(!tx){toast('Describe qué se hizo.','wa');return}hRpc('hallazgo_corregida',{p_codigo:code,p_obs:tx},'Enviado a verificación de Calidad')},
+  verificar:()=>{const ok=val('ha_res')==='1';if(!ok&&!tx){toast('Si no cumple, explica por qué.','wa');return}hRpc('hallazgo_verificar',{p_codigo:code,p_cumple:ok,p_obs:tx},ok?'Verificado: cumple':'No cumple: vuelve a corrección')},
+  cerrar:()=>hRpc('hallazgo_cerrar',{p_codigo:code,p_obs:tx},'Hallazgo cerrado'),
+  escalar:()=>{if(!tx){toast('Escribe el motivo técnico.','wa');return}hRpc('hallazgo_escalar',{p_codigo:code,p_nota:tx},'Escalado a Gerencia')},
+  autorizar:()=>{const p=(val('ha_prod')||'').trim();if(!p){toast('Escribe quién de Producción comparte la responsabilidad.','wa');return}hRpc('hallazgo_autorizar',{p_codigo:code,p_produccion:p,p_nota:tx},'Autorización registrada')},
+  anular:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_anular',{p_codigo:code,p_motivo:tx},'Hallazgo anulado')},
+  reabrir:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_reabrir',{p_codigo:code,p_motivo:tx},'Hallazgo reabierto')}}[k];
+ if(R)R()}
+
+/* ---------- Crear / editar ---------- */
+function hForm(h){
+ const pj=h?h.proy:((U.hq&&U.hq.proy)||(S.proyectos.find(p=>p.estado==='Activo')||S.proyectos[0]||{}).num||'');
+ const ie=h&&h.ubic?(h.ubic.split(' · ')[0]):'',det=h&&h.ubic?h.ubic.split(' · ').slice(1).join(' · '):'';
+ const previos=S.hallazgos.filter(x=>x.proy===pj&&(!h||x.codigo!==h.codigo)).map(x=>[x.codigo,x.codigo+' · '+(x.desc||'').slice(0,40)]);
+ return `${h?`<p class="mut" style="margin-bottom:8px">Proyecto ${esc(h.proy)} (no cambia)</p>`:fld('Proyecto *',selM('hf_p',S.proyectos.map(p=>[p.num,p.num+' · '+nf(p.cap,0)+' gal · '+p.cliente+(p.estado==='Activo'?'':' ('+p.estado+')')]),pj))}
+ ${fld('Descripción del hallazgo *',`<textarea class="inp" id="hf_d" rows="3" style="height:auto;padding:10px" placeholder="Qué se encontró, con la mayor precisión posible">${esc(h?h.desc:'')}</textarea>`)}
+ <div class="two">${fld('Etapa *',selM('hf_e',ETAPAS,h?h.etapa:''))}${fld('Especialidad *',selM('hf_s',H_ESPEC,h?h.esp:''))}</div>
+ <div class="two">${fld('Interior / exterior',selM('hf_ie',[['','No aplica'],'Interior','Exterior'],ie))}${fld('Ubicación (cuerpo, zona, detalle)',`<input class="inp" id="hf_u" value="${esc(det)}" placeholder="Ej. cuerpo principal, parte inferior, junto a la boquilla">`)}</div>
+ <div class="two">${fld('Prioridad',selM('hf_pr',['Alta','Media','Baja'],h?h.prio:'Media'))}${fld('¿Es reincidencia?',selM('hf_r',[['0','No'],['1','Sí']],h&&h.reinc?'1':'0'))}</div>
+ ${fld('Reincidencia de (opcional)',selM('hf_rd',[['','—'],...previos],h?h.reDe:''))}
+ <p class="mut3" style="font-size:12px">${h?'Los cambios quedan en el historial.':'El código lo genera el sistema (LQ-proyecto-consecutivo). El inspector que abre queda registrado.'}</p>`}
+function hNew(){M={type:'hnew'};openModal(mh('Nuevo hallazgo')+hForm(null)+mf('Crear hallazgo','hallSave'),'w')}
+function hEdit(code){const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;M={type:'hedit',code};openModal(mh('Editar '+esc(code))+hForm(h)+mf('Guardar cambios','hallSave'),'w')}
+async function hSave(){
+ if(NB.hbusy)return;
+ const d=(val('hf_d')||'').trim(),e=val('hf_e'),s=val('hf_s');
+ if(!d||!e||!s){toast('Completa descripción, etapa y especialidad.','wa');return}
+ const ub=[val('hf_ie'),(val('hf_u')||'').trim()].filter(Boolean).join(' · ');
+ NB.hbusy=true;
+ try{
+  if(M.type==='hedit'){await nbRpc('hallazgo_editar',{p_codigo:M.code,p_descripcion:d,p_especialidad:s,p_etapa:e,p_ubicacion:ub,p_prioridad:val('hf_pr'),p_reincidencia:val('hf_r')==='1',p_reincide_de:val('hf_rd')||''});
+   const c=M.code;await nbReloadHall();renderPage(true);toast('Cambios guardados','ok');hDet(c)}
+  else{const p=val('hf_p');if(!p){toast('Elige el proyecto.','wa');NB.hbusy=false;return}
+   const r=await nbRpc('hallazgo_crear',{p_proyecto:p,p_descripcion:d,p_especialidad:s,p_etapa:e,p_ubicacion:ub,p_prioridad:val('hf_pr'),p_reincidencia:val('hf_r')==='1',p_reincide_de:val('hf_rd')||''});
+   await nbReloadHall();renderPage(true);toast('Hallazgo '+r.codigo+' creado','ok');hDet(r.codigo)}}
+ catch(er){toast(nbMsg(er),'er')}finally{NB.hbusy=false}}
+function hWA(code){const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;
+ const m=`Hallazgo ${h.codigo} · Proyecto ${h.proy}\nEstado: ${h.estado} · Prioridad ${h.prio}\n${h.desc}\n${h.etapa}${h.esp?' · '+h.esp:''}${h.asigIni?'\nResponsable: '+h.asigIni+' · '+h.asigNom:''}\nAbrir la app: ${invBase()}`;
+ window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank','noopener')}
+
+/* ---------- Indicadores ---------- */
+function hKpi(){
+ const per=U.hkp||'0',q=hScope();const d0=+per?addDays(today(),-(+per)+1):'';
+ const L=S.hallazgos.filter(h=>h.estado!=='Anulado'&&(!q.proy||h.proy===q.proy)&&(!d0||(h.fecha||'')>=d0));
+ const cer=L.filter(h=>h.estado==='Cerrado'),abi=L.filter(hAb);
+ const t_asig=hAvg(L.map(h=>hMs(h.creado||h.fecha,h.asigEn))),t_corr=hAvg(L.map(h=>hMs(h.asigEn,h.corEn))),t_ver=hAvg(L.map(h=>hMs(h.corEn,h.verEn))),t_tot=hAvg(cer.map(h=>hMs(h.creado||h.fecha,h.cierEn)));
+ const prim=cer.filter(h=>h.ciclos<=1).length,rein=L.filter(h=>h.reinc).length,rech=L.reduce((a,h)=>a+Math.max(0,h.ciclos-1),0);
+ const m=(l,v,c='',sub='')=>`<div class="c3" style="grid-column:span 2"><div class="card mini flat"><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div>${sub?`<div class="mut3" style="font-size:11.5px">${sub}</div>`:''}</div></div></div>`;
+ /* tendencia semanal */
+ const sem=[];for(let i=11;i>=0;i--)sem.push(addDays(today(),-7*i));
+ const wkOf=f=>{for(let i=sem.length-1;i>=0;i--)if(f>=addDays(sem[i],-6))return i;return -1};
+ const op=sem.map(()=>0),cl=sem.map(()=>0);
+ L.forEach(h=>{const a=wkOf(h.fecha||'');if(a>=0&&h.fecha<=today())op[a]++;if(h.cierEn){const b=wkOf(hDate(h.cierEn));if(b>=0)cl[b]++}});
+ const tabTec=(()=>{const g={};L.filter(h=>h.asigCod).forEach(h=>{const o=g[h.asigCod]=g[h.asigCod]||{ini:h.asigIni,nom:h.asigNom,n:0,cer:0,prim:0,rech:0,tc:[],hh:0,rein:0};o.n++;if(h.estado==='Cerrado'){o.cer++;if(h.ciclos<=1)o.prim++}o.rech+=Math.max(0,h.ciclos-1);o.tc.push(hMs(h.asigEn,h.corEn));if(h.reinc)o.rein++;o.hh+=sum(live().filter(r=>r.hallazgo===h.codigo&&r.tec===h.asigCod))});
+  return Object.values(g).sort((a,b)=>b.n-a.n).map(o=>`<tr><td><b>${esc(o.ini)}</b> <span class="sub">${esc(o.nom)}</span></td><td class="num">${o.n}</td><td class="num">${o.cer}</td><td class="num">${hFmtDur(hAvg(o.tc))}</td><td class="num">${o.cer?nf(o.prim/o.cer*100,0)+'%':'—'}</td><td class="num">${o.rech}</td><td class="num">${o.rein}</td><td class="num">${nf(o.hh,1)}</td></tr>`).join('')})();
+ const tabInsp=(()=>{const g={};L.forEach(h=>{const k=h.insp||'—';const o=g[k]=g[k]||{n:0,ab:0,cer:0,tv:[],rein:0};o.n++;if(hAb(h))o.ab++;if(h.estado==='Cerrado')o.cer++;o.tv.push(hMs(h.corEn,h.verEn));if(h.reinc)o.rein++});
+  return Object.entries(g).sort((a,b)=>b[1].n-a[1].n).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td class="num">${o.n}</td><td class="num">${o.ab}</td><td class="num">${o.cer}</td><td class="num">${hFmtDur(hAvg(o.tv))}</td><td class="num">${o.rein}</td></tr>`).join('')})();
+ const tabSup=(()=>{const g={};L.filter(h=>h.asigPor).forEach(h=>{const o=g[h.asigPor]=g[h.asigPor]||{n:0,t:[]};o.n++;o.t.push(hMs(h.creado||h.fecha,h.asigEn))});
+  return Object.entries(g).sort((a,b)=>b[1].n-a[1].n).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td class="num">${o.n}</td><td class="num">${hFmtDur(hAvg(o.t))}</td></tr>`).join('')})();
+ const cnt=(f)=>sumBy(L.map(h=>({k:f(h)||'Sin dato',v:1})),x=>x.k,x=>x.v).map((x,i)=>({k:x.k,v:x.v,c:PAL[i%9],tip:x.k+'\n'+x.v+' hallazgo'+(x.v>1?'s':'')})).sort((a,b)=>b.v-a.v);
+ const esca=L.filter(h=>h.esc);
+ return `<div class="fbar"><div class="seg" role="group" aria-label="Periodo">${[['30','30 días'],['90','90 días'],['0','Todo']].map(([v,l])=>`<button class="${per===v?'on':''}" data-act="hPer" data-v="${v}">${l}</button>`).join('')}</div>${sel('hq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}<span class="mut" style="margin-left:6px">${L.length} hallazgo${L.length===1?'':'s'} en el periodo · el periodo cuenta desde la fecha de apertura</span></div>
+ <div class="g12">${m('Registrados',L.length)}${m('Abiertos',abi.length,abi.length?'dn':'')}${m('Cerrados',cer.length,'up')}${m('Vencidos',abi.filter(hVenc).length,abi.filter(hVenc).length?'dn':'')}${m('Aprobados a la primera',cer.length?nf(prim/cer.length*100,0)+'%':'—','',cer.length?prim+' de '+cer.length+' cerrados':'')}${m('Reincidencias',L.length?nf(rein/L.length*100,0)+'%':'—','',rein+' de '+L.length)}</div>
+ <div class="g12"><div class="c6">${card('Tiempos del ciclo','Promedios medidos con la fecha y hora de cada paso',`<div class="tw"><table class="t"><tbody>
+  <tr><td>Apertura → asignación<div class="sub">Reacción de Supervisión</div></td><td class="num"><b>${hFmtDur(t_asig)}</b></td></tr>
+  <tr><td>Asignación → corrección reportada<div class="sub">Tiempo de corrección de Producción</div></td><td class="num"><b>${hFmtDur(t_corr)}</b></td></tr>
+  <tr><td>Corrección → verificación<div class="sub">Reacción de Calidad</div></td><td class="num"><b>${hFmtDur(t_ver)}</b></td></tr>
+  <tr><td>Apertura → cierre<div class="sub">Tiempo total del hallazgo</div></td><td class="num"><b>${hFmtDur(t_tot)}</b></td></tr>
+  <tr><td>Correcciones rechazadas por Calidad<div class="sub">Veces que “no cumple” devolvió el hallazgo</div></td><td class="num"><b>${rech}</b></td></tr></tbody></table></div>`)}</div>
+ <div class="c6">${card('Abiertos y cerrados por semana','Últimas 12 semanas',lineChart({labels:sem,fx:dlabel,series:[{name:'Abiertos',color:'#F59E0B',vals:op},{name:'Cerrados',color:'#22C55E',vals:cl,area:1}],h:210}))}</div></div>
+ <div class="g12"><div class="c12">${card('Por técnico responsable','Eficiencia de corrección (por iniciales)',tabTec?`<div class="tw"><table class="t"><thead><tr><th>Técnico</th><th class="r">Asignados</th><th class="r">Cerrados</th><th class="r">Tiempo medio de corrección</th><th class="r">Aprobados a la primera</th><th class="r">Rechazos</th><th class="r">Reincidencias</th><th class="r">HH de retrabajo</th></tr></thead><tbody>${tabTec}</tbody></table></div><p class="mut3" style="font-size:12px;margin-top:8px">El objetivo es mejorar el proceso, no señalar personas: un rechazo muchas veces indica instrucciones o criterios poco claros.</p>`:empty('Aún no hay hallazgos asignados'))}</div></div>
+ <div class="g12"><div class="c7">${card('Por inspector de Calidad','Aperturas y rapidez de verificación',tabInsp?`<div class="tw"><table class="t"><thead><tr><th>Inspector</th><th class="r">Abiertos por él</th><th class="r">Aún abiertos</th><th class="r">Cerrados</th><th class="r">Tiempo medio de verificación</th><th class="r">Reincidencias</th></tr></thead><tbody>${tabInsp}</tbody></table></div>`:empty())}</div>
+ <div class="c5">${card('Por supervisor','Rapidez para asignar',tabSup?`<div class="tw"><table class="t"><thead><tr><th>Supervisor</th><th class="r">Asignó</th><th class="r">Tiempo medio</th></tr></thead><tbody>${tabSup}</tbody></table></div>`:empty())}</div></div>
+ <div class="g12"><div class="c4">${card('Por etapa','Dónde se concentran',hbars(cnt(h=>h.etapa)))}</div><div class="c4">${card('Por especialidad','Disciplina involucrada',hbars(cnt(h=>h.esp)))}</div><div class="c4">${card('Por proyecto','Cantidad de hallazgos',hbars(cnt(h=>h.proy)))}</div></div>
+ <div class="g12"><div class="c12">${card('Escalados a Gerencia y excepciones','Decisiones que no corresponden a Calidad',esca.length?`<div class="tw"><table class="t"><thead><tr><th>Hallazgo</th><th>Estado</th><th>Nota de Calidad</th><th>Autorizó</th><th>Producción</th></tr></thead><tbody>${esca.map(h=>`<tr class="clk" data-act="hdet" data-c="${esc(h.codigo)}"><td>${badge(esc(h.codigo),'v')}</td><td>${esc(h.estado)}${h.cierTipo&&h.cierTipo!=='Cumple'?' · '+esc(h.cierTipo):''}</td><td>${esc(h.escNota)}</td><td>${h.autEn?esc(h.autPor)+'<div class="sub">'+esc(fmtDT(h.autEn))+'</div>':badge('Pendiente de decisión','er')}</td><td>${esc(h.autProd||'—')}</td></tr>`).join('')}</tbody></table></div>`:empty('Ningún hallazgo escalado'))}</div></div>`}
+
+/* ---------- Excel (formato del Excel de hallazgos) ---------- */
+function hXlsx(){
+ const q=hScope();
+ const L=S.hallazgos.filter(h=>h.estado!=='Anulado'&&(!q.proy||h.proy===q.proy)).sort((a,b)=>a.codigo<b.codigo?-1:1);
+ const cap=h=>((S.proyectos.find(p=>p.num===h.proy)||{}).cap)||'';
+ const d1=ts=>ts?hDate(ts):'';
+ const A=L.map(h=>[h.codigo,cap(h),h.fecha,h.insp||'',h.proy,h.desc,h.esp,h.etapa,h.cierEn?d1(h.cierEn):(h.verEn&&h.verRes==='Cumple'?d1(h.verEn):''),h.cierPor||(h.verRes==='Cumple'?h.verPor:''),h.estado,hDias(h),h.reinc?'SI':'NO',
+  (h.cierTipo&&h.cierTipo!=='Cumple'?'['+h.cierTipo+(h.autPor?' · autoriza '+h.autPor+(h.autProd?' con '+h.autProd:''):'')+'] ':'')+(h.obsCier||h.obsVer||'')]);
+ const sA={name:'Hallazgos',cols:[{h:'ID HALLAZGO',w:16},{h:'CAPACIDAD (GAL)',w:15,t:'n'},{h:'FECHA APERTURA',w:14,t:'d'},{h:'INSPECTOR APERTURA',w:22},{h:'PROYECTO',w:11},{h:'DESCRIPCIÓN DEL HALLAZGO',w:50},{h:'ESPECIALIDAD',w:18},{h:'ETAPA',w:20},{h:'FECHA VERIFICACIÓN CIERRE',w:16,t:'d'},{h:'INSPECTOR CIERRE',w:22},{h:'ESTADO',w:22},{h:'DÍAS ABIERTO',w:12,t:'n'},{h:'REINCIDENCIA (SI/NO)',w:14},{h:'OBSERVACIÓN DE CIERRE',w:48}],rows:A};
+ const D=L.map(h=>{const rr=live().filter(r=>r.hallazgo===h.codigo);const t=(a,b)=>{const v=hMs(a,b);return v==null?'':r2(v)};
+  return [h.codigo,h.prio,h.ubic,h.asigIni,h.asigNom,h.asigPor,d1(h.asigEn),d1(h.corEn),h.ciclos,Math.max(0,h.ciclos-1),h.verPor,h.verRes,t(h.creado||h.fecha,h.asigEn),t(h.asigEn,h.corEn),t(h.corEn,h.verEn),t(h.creado||h.fecha,h.cierEn),h.cierTipo,h.esc?'SI':'NO',h.escNota,h.autPor,h.autProd,r2(sum(rr))]});
+ const sB={name:'Detalle y tiempos',cols:[{h:'ID HALLAZGO',w:16},{h:'PRIORIDAD',w:11},{h:'UBICACIÓN',w:30},{h:'INICIALES TÉCNICO',w:11},{h:'TÉCNICO RESPONSABLE',w:24},{h:'ASIGNÓ',w:22},{h:'FECHA ASIGNACIÓN',w:14,t:'d'},{h:'FECHA CORRECCIÓN',w:14,t:'d'},{h:'CICLOS',w:9,t:'n'},{h:'RECHAZOS',w:10,t:'n'},{h:'VERIFICÓ',w:22},{h:'RESULTADO',w:11},{h:'DÍAS APERTURA→ASIGNACIÓN',w:14,t:'n'},{h:'DÍAS ASIGNACIÓN→CORRECCIÓN',w:14,t:'n'},{h:'DÍAS CORRECCIÓN→VERIFICACIÓN',w:14,t:'n'},{h:'DÍAS APERTURA→CIERRE',w:14,t:'n'},{h:'TIPO DE CIERRE',w:20},{h:'ESCALADO',w:10},{h:'NOTA DE CALIDAD',w:40},{h:'AUTORIZÓ',w:22},{h:'PRODUCCIÓN RESPONSABLE',w:26},{h:'HH RETRABAJO',w:12,t:'n'}],rows:D};
+ const cods=new Set(L.map(h=>h.codigo));
+ const H=S.hhist.filter(x=>cods.has(x.codigo)).map(x=>[x.codigo,hDate(x.fecha),new Date(x.fecha).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),x.accion,x.ant,x.nue,x.res,x.usuario,x.rol,x.tec,x.ciclo,x.com]);
+ const sC={name:'Historial',cols:[{h:'ID HALLAZGO',w:16},{h:'FECHA',w:12,t:'d'},{h:'HORA',w:9},{h:'ACCIÓN',w:24},{h:'ESTADO ANTERIOR',w:22},{h:'ESTADO NUEVO',w:22},{h:'RESULTADO',w:18},{h:'USUARIO',w:22},{h:'ROL',w:12},{h:'TÉCNICO',w:26},{h:'CICLO',w:8,t:'n'},{h:'COMENTARIO',w:60}],rows:H};
+ try{dlBlob('hallazgos_latamks_'+today()+'.xlsx',xlsxBlob([sA,sB,sC]));toast('Excel de hallazgos descargado ('+L.length+')','ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}}
+
+Object.assign(A,{
+ hdet:t=>hDet(t.dataset.c),hTab:t=>{U.hTab=t.dataset.v;renderPage(true)},hPer:t=>{U.hkp=t.dataset.v;renderPage(true)},
+ hFiltro:t=>{hScope().est=t.dataset.v;U.hTab='lista';renderPage(true)},
+ hExp:()=>hXlsx(),hWA:t=>hWA(t.dataset.c),
+ hallNew:()=>hNew(),newHall:()=>hNew(),hallEdit:t=>hEdit(t.dataset.c),hallAct:t=>hAct(t.dataset.k,t.dataset.c),hallDo:t=>hDo(t.dataset.k,t.dataset.c),hallSave:()=>hSave()
+});
+
+/* ---------- Quitar a una persona de un turno: preguntar a cuál pasa ---------- */
+Object.assign(A,{
+ unasg:t=>{const c=S.tecnicos.find(x=>x.codigo===t.dataset.c);if(!c)return;
+  const otros=activeTurnos().filter(x=>x.id!==c.turno);
+  if(!otros.length){toast('No hay otro turno activo al que pasarlo. Crea o activa otro turno primero.','wa');return}
+  openModal(mh('Cambiar de turno a '+esc(c.nombre))+`<p class="mut" style="margin-bottom:10px">Una persona siempre debe tener un turno por defecto. Hoy está en <b style="color:var(--tx)">${esc(turnoName(c.turno))}</b>. ¿A cuál turno pasa?</p>`+fld('Nuevo turno',selM('un_t',otros.map(x=>[x.id,x.nombre]),otros[0].id))+`<div class="mf">${btn('Cancelar','mClose','','ghost')}${btn('Cambiar de turno','unasgDo','data-c="'+esc(c.codigo)+'"')}</div>`,'s')},
+ unasgDo:t=>{const c=S.tecnicos.find(x=>x.codigo===t.dataset.c),n=val('un_t');if(!c||!n)return;
+  logH('Turno de '+c.nombre,turnoName(c.turno),turnoName(n),c.codigo);c.turno=n;save();closeModal();renderPage(true);toast(c.nombre+' pasó a '+turnoName(n),'ok')}});
 
 nubeBoot();
 
