@@ -3,6 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Latamks HH · Control de horas hombre</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#0b1220"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Latamks HH"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -237,6 +239,21 @@ table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 .kiosk .side,.kiosk .top .hamb,.kiosk .top .crumb,.kiosk .top .noK{display:none}
 .kiosk .main{margin-left:0}
 #printSheet{display:none}
+.tcards{display:grid;grid-template-columns:repeat(2,90mm);gap:2mm;justify-content:center}
+.tcard{width:90mm;height:49mm;border:1px dashed #888;background:#fff;color:#000;overflow:hidden;text-align:left;break-inside:avoid;page-break-inside:avoid;display:flex;flex-direction:column;font-family:Arial,Helvetica,sans-serif}
+.tcard .th{background:#0f172a;color:#fff;font-size:11px;font-weight:700;padding:2.6mm 4mm;border-bottom:1mm solid #38bdf8;letter-spacing:.02em}
+.tcard .tb{display:flex;flex:1;padding:1.5mm 4mm 0;gap:3mm;align-items:center}
+.tcard .tx{flex:1;min-width:0}.tcard .tn{font-size:12px;font-weight:700;margin-bottom:1.5mm;line-height:1.2}
+.tcard .tl{font-size:7.5px;color:#666;letter-spacing:.05em}.tcard .tv{font-size:18px;font-weight:700;color:#0284c7;line-height:1.1;margin-bottom:1.2mm}
+.tcard .tq{width:30mm;height:30mm;flex:none}.tcard .tq img,.tcard .tq canvas{width:30mm!important;height:30mm!important}
+.tcard .tf{font-size:6.5px;color:#666;padding:0 4mm 2mm}
+#printSheet.cards{padding:6mm 0!important;text-align:left!important}
+@media print{@page{size:letter;margin:6mm}#printSheet.cards .tcards{gap:0}}
+@media(max-width:700px){.tcards{grid-template-columns:1fr;justify-items:center}}
+body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
+body.guest select[data-tur],body.guest input[data-tf]{pointer-events:none;opacity:.75}
+@media(max-width:820px){.minis{grid-template-columns:repeat(2,1fr)!important}.minis>div{grid-column:span 1!important}}
+
 @media print{body>*:not(#printSheet){display:none!important}#printSheet{display:block!important;color:#000;background:#fff;text-align:center;padding:40px}#printSheet h1{font-size:34px;margin:20px 0 6px}#printSheet p{font-size:18px;color:#333}}
 @media(max-width:1180px){.c3{grid-column:span 6}.c4{grid-column:span 6}.c5,.c7,.c8{grid-column:span 12}}
 @media(max-width:900px){.c6{grid-column:span 12}}
@@ -266,6 +283,19 @@ table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 .pj .prog{height:8px}
 a.btn{text-decoration:none}
 
+
+/* v3.5 */
+.algrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:8px 18px}
+@media(max-width:760px){
+ table.t.stkm thead{display:none}
+ table.t.stkm,table.t.stkm tbody{display:block;width:100%}
+ table.t.stkm tr{display:block;padding:12px 4px;border-top:1px solid var(--bd)}
+ table.t.stkm td{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 0;border:0;text-align:right}
+ table.t.stkm td[data-l]::before{content:attr(data-l);color:var(--mut,#8b95a7);font-size:12.5px;text-align:left}
+ table.t.stkm td.nm{display:block;text-align:left}
+ table.t.stkm td.hm{display:none}
+ table.t.stkm td.ac{justify-content:flex-start;flex-wrap:wrap;margin-top:6px}
+}
 </style></head>
 <body>
 <div class="app" id="app"></div>
@@ -600,6 +630,15 @@ function kpis(){
 }
 function dailySeries(rs,n=14,fn=r=>true){const t0=today();const out=[];for(let i=n-1;i>=0;i--){const d=addDays(t0,-i);out.push(sum(rs.filter(r=>r.fecha===d&&fn(r))))}return out}
 function stageOf(p){const rs=live().filter(r=>r.proy===p.num&&isProd(r)&&r.macro);if(!rs.length)return '—';rs.sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:0);return rs[0].macro}
+function stagePlan(p){const e=p.exp||{},dm=e.dias||{},et=e.et||{};
+ const sumH=ETAPAS.reduce((a,x)=>a+(+et[x]||0),0);if(!(sumH>0))return null;
+ const spec=ETAPAS.reduce((a,x)=>a+((+et[x]>0&&+dm[x]>0)?+dm[x]:0),0);if(!(spec>0))return null;
+ const unH=ETAPAS.reduce((a,x)=>a+((+et[x]>0&&!(+dm[x]>0))?+et[x]:0),0);
+ const rem=unH?Math.max(1,(+p.dias||30)-spec):0,k=(+e.total||sumH)/sumH;let s=0;const out=[];
+ ETAPAS.forEach(x=>{const hv=+et[x]||0;if(!(hv>0))return;const d=+dm[x]>0?+dm[x]:Math.max(1,rem*hv/unH);out.push({x,h:hv*k,s,d});s+=d});
+ return out}
+function expAt(p,k){const pl=stagePlan(p);if(!pl)return(+(p.exp&&p.exp.total)||0)*Math.min(1,k/(p.dias||30));
+ return pl.reduce((a,z)=>a+z.h*Math.min(1,Math.max(0,(k-z.s)/z.d)),0)}
 function curve(P,rn){
  const pr=rn.filter(isProd);if(!P.length)return{labels:[],exp:[],real:[]};
  const d0=P.map(p=>p.inicio).sort()[0];const last=pr.map(r=>r.fecha).sort().pop()||today();const d1=last>today()?last:today();
@@ -610,7 +649,7 @@ function curve(P,rn){
   acc+=byD[d]||0;
   if(d>today())break;
   labels.push(d);real.push(r2(acc));
-  exp.push(r2(P.reduce((a,p)=>a+(+(p.exp&&p.exp.total)||0)*Math.min(1,(cnt[p.num]||0)/(p.dias||30)),0)));
+  exp.push(r2(P.reduce((a,p)=>a+expAt(p,cnt[p.num]||0),0)));
  }
  return{labels,exp,real};
 }
@@ -709,6 +748,52 @@ function filterBar(){
 const HDR=['ID','Fecha','Código técnico','Iniciales','Nombre','Área','Especialidad','Turno','Proyecto','Capacidad','Cliente','Macroetapa','Actividad','Horas','Tipo de trabajo','Causa','Origen','Persona relacionada','Código hallazgo','Descripción','Fecha/hora de registro','Registrado por','Estado'];
 const pName=c=>{const t=S.tecnicos.find(x=>x.codigo===c);return t?t.nombre:(c||'')};
 const rowOf=r=>[r.id,r.fecha,r.tec,r.ini,r.nombre,r.area,r.esp,r.turno,r.proy,r.cap,r.cli,r.macro,r.act,r.horas,r.tipo,r.causa,r.origen,pName(r.persona),r.hallazgo,r.desc,r.ts,r.por,r.estado];
+
+/* ===== Excel (.xlsx) mínimo: sin librerías ===== */
+function crc32(u){let c,crc=-1;if(!crc32.t){crc32.t=[];for(let n=0;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;crc32.t[n]=c}}for(let i=0;i<u.length;i++)crc=crc32.t[(crc^u[i])&255]^(crc>>>8);return(crc^-1)>>>0}
+function zipStore(files){const enc=new TextEncoder(),out=[],cd=[];let off=0;const d=new Date(),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+ const w2=n=>[n&255,(n>>8)&255],w4=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>>24)&255];
+ files.forEach(f=>{const nm=enc.encode(f.name),data=enc.encode(f.text),crc=crc32(data),sz=data.length;
+  const lh=new Uint8Array([0x50,0x4b,3,4,20,0,0,8,0,0,...w2(tm),...w2(dt),...w4(crc),...w4(sz),...w4(sz),...w2(nm.length),0,0,...nm]);
+  out.push(lh,data);
+  cd.push(new Uint8Array([0x50,0x4b,1,2,20,0,20,0,0,8,0,0,...w2(tm),...w2(dt),...w4(crc),...w4(sz),...w4(sz),...w2(nm.length),0,0,0,0,0,0,0,0,0,0,0,0,...w4(off),...nm]));
+  off+=lh.length+sz});
+ let cds=0;cd.forEach(c=>{out.push(c);cds+=c.length});
+ out.push(new Uint8Array([0x50,0x4b,5,6,0,0,0,0,...w2(files.length),...w2(files.length),...w4(cds),...w4(off),0,0]));
+ return new Blob(out,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+const xlsxEsc=s=>String(s==null?'':s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const xlsxCol=i=>{let s='';i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26)}return s};
+const xlsxDate=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||''));return m?Math.round((Date.UTC(+m[1],+m[2]-1,+m[3])-Date.UTC(1899,11,30))/864e5):null};
+function xlsxSheet(sh){
+ const nc=sh.cols.length;let x='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols>';
+ sh.cols.forEach((c,i)=>{x+=`<col min="${i+1}" max="${i+1}" width="${c.w||14}" customWidth="1"/>`});x+='</cols><sheetData>';
+ x+='<row r="1" ht="26" customHeight="1">'+sh.cols.map((c,i)=>`<c r="${xlsxCol(i)}1" s="1" t="inlineStr"><is><t>${xlsxEsc(c.h)}</t></is></c>`).join('')+'</row>';
+ sh.rows.forEach((r,ri)=>{const n=ri+2,z=ri%2?4:0;x+=`<row r="${n}">`+r.map((v,i)=>{const ref=xlsxCol(i)+n,t=sh.cols[i].t||'s';
+  if(v==null||v==='')return `<c r="${ref}" s="${t==='s'?(z?5:0):t==='d'?(z?7:2):(z?8:3)}"/>`;
+  if(t==='d'){const d=xlsxDate(v);return d==null?`<c r="${ref}" t="inlineStr"><is><t>${xlsxEsc(v)}</t></is></c>`:`<c r="${ref}" s="${z?7:2}"><v>${d}</v></c>`}
+  if(t==='n')return `<c r="${ref}" s="${z?8:3}"><v>${+v||0}</v></c>`;
+  return `<c r="${ref}" s="${z?5:0}" t="inlineStr"><is><t xml:space="preserve">${xlsxEsc(v)}</t></is></c>`}).join('')+'</row>'});
+ x+=`</sheetData><autoFilter ref="A1:${xlsxCol(nc-1)}${Math.max(1,sh.rows.length+1)}"/><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToHeight="0"/></worksheet>`;return x}
+function xlsxBlob(sheets){
+ const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+ const files=[
+ {name:'[Content_Types].xml',text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')+'</Types>'},
+ {name:'_rels/.rels',text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${rel}/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+ {name:'xl/workbook.xml',text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}" xmlns:r="${rel}"><sheets>`+sheets.map((s,i)=>`<sheet name="${xlsxEsc(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')+`</sheets></workbook>`},
+ {name:'xl/_rels/workbook.xml.rels',text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">`+sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="${rel}/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')+`<Relationship Id="rId${sheets.length+1}" Type="${rel}/styles" Target="styles.xml"/></Relationships>`},
+ {name:'xl/styles.xml',text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${ns}"><numFmts count="2"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/><numFmt numFmtId="165" formatCode="#,##0.00"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B6FA4"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF1F5F9"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="9"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"><alignment vertical="center" horizontal="center" wrapText="1"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"><alignment horizontal="right" vertical="center"/></xf><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="3" borderId="0" xfId="0" applyNumberFormat="1" applyFill="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="165" fontId="0" fillId="3" borderId="0" xfId="0" applyNumberFormat="1" applyFill="1"><alignment horizontal="right" vertical="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`}];
+ sheets.forEach((s,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`,text:xlsxSheet(s)}));
+ return zipStore(files)}
+function xlsxRegistros(){
+ const rs=filt(S.registros.filter(r=>r.estado!=='Anulado')).sort((a,b)=>a.fecha<b.fecha?-1:a.fecha>b.fecha?1:(a.nombre<b.nombre?-1:1));
+ const A=rs.map(r=>[r.fecha,r.nombre,r.area,r.turno?((S.turnos.find(t=>t.id===r.turno)||{}).nombre||r.turno):'',r.proy||'',r.macro||'',r.act||'',r.horas,r.tipo,r.causa||'',r.origen||'',r.hallazgo||'',r.estado,r.por||'']);
+ const sA={name:'Registros',cols:[{h:'Fecha',w:12,t:'d'},{h:'Técnico',w:26},{h:'Área',w:20},{h:'Turno',w:18},{h:'Proyecto',w:11},{h:'Etapa',w:20},{h:'Actividad',w:34},{h:'Horas',w:9,t:'n'},{h:'Tipo de trabajo',w:16},{h:'Causa',w:22},{h:'Origen',w:18},{h:'Hallazgo',w:14},{h:'Estado',w:12},{h:'Registrado por',w:22}],rows:A};
+ const bt={};rs.forEach(r=>{const k=r.nombre;const o=bt[k]=bt[k]||{n:r.nombre,a:r.area||'',t:0,nor:0,ret:0,otr:0};o.t+=r.horas;if(r.clase==='normal')o.nor+=r.horas;else if(r.clase==='retrabajo')o.ret+=r.horas;else o.otr+=r.horas});
+ const sB={name:'Por técnico',cols:[{h:'Técnico',w:28},{h:'Área',w:22},{h:'HH totales',w:13,t:'n'},{h:'HH normales',w:13,t:'n'},{h:'HH retrabajo',w:13,t:'n'},{h:'Otras (apoyo, ausencias…)',w:24,t:'n'}],rows:Object.values(bt).sort((a,b)=>b.t-a.t).map(o=>[o.n,o.a,r2(o.t),r2(o.nor),r2(o.ret),r2(o.otr)])};
+ const bp={};rs.filter(r=>r.proy&&isProd(r)).forEach(r=>{const k=r.proy+'|'+r.macro;const o=bp[k]=bp[k]||{p:r.proy,m:r.macro||'',nor:0,ret:0};if(r.clase==='retrabajo')o.ret+=r.horas;else o.nor+=r.horas});
+ const sC={name:'Por proyecto y etapa',cols:[{h:'Proyecto',w:12},{h:'Etapa',w:24},{h:'HH normales',w:14,t:'n'},{h:'HH retrabajo',w:14,t:'n'},{h:'HH totales',w:14,t:'n'}],rows:Object.values(bp).sort((a,b)=>a.p<b.p?-1:a.p>b.p?1:(ETAPAS.indexOf(a.m)-ETAPAS.indexOf(b.m))).map(o=>[o.p,o.m,r2(o.nor),r2(o.ret),r2(o.nor+o.ret)])};
+ return xlsxBlob([sA,sB,sC])}
+
 const csvOf=(hd,rows)=>'\ufeff'+[hd,...rows].map(a=>a.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
 async function dl(name,data,alt){if(!(window.claude&&window.claude.use)){nbDownload(name,new Blob([data],{type:'text/plain;charset=utf-8'}));return}
  let ok=false;
@@ -811,14 +896,15 @@ function pSupervisor(){
  const mini=(l,v,c='')=>`<div class="card mini flat"><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div></div></div>`;
  const A=alerts().filter(a=>a.fecha===d||(a.reg&&rd.some(r=>r.id===a.reg)));
  const act=S.proyectos.filter(p=>p.estado==='Activo').map(p=>{const hd=sum(rd.filter(r=>r.proy===p.num&&isProd(r)));const real=sum(live().filter(r=>r.proy===p.num&&isProd(r)));const s=semaf(real,p.exp&&p.exp.total);return{p,hd,real,s}});
- return `<div class="fbar"><input type="date" class="inp" style="width:170px" data-f="supF" value="${d}" aria-label="Fecha">${sel('supT',S.turnos.map(t=>[t.id,t.nombre]),U.supT,{ph:'Todos los turnos'})}${btn('Hoy','supHoy','','ghost sm')}<span class="mut" style="margin-left:6px">${dfull(d)}</span></div>
- <div class="g12">${[mini('Personal del turno',rows.length),mini('HH programadas',hh(P)),mini('HH registradas',hh(G)),mini('HH faltantes',hh(falt),falt>.01?'dn':''),mini('HH excedentes',hh(exc),exc>.01?'dn':'')].map(x=>`<div class="c3" style="grid-column:span 2">${x}</div>`).join('')}<div class="c3" style="grid-column:span 2">${mini('Retrabajos del día',rets.length)}</div></div>
- <div class="g12"><div class="c8">${card('Personal y jornada','Programadas vs registradas del día',rows.length?`<div class="tw"><table class="t"><thead><tr><th>Técnico</th><th>Turno</th><th class="r">Prog.</th><th class="r">Reg.</th><th>Estado</th><th>Distribución</th><th></th></tr></thead><tbody>${rows.map(({t,j})=>{
+ return `<div class="fbar"><input type="date" class="inp" style="width:170px" data-f="supF" value="${d}" aria-label="Fecha">${sel('supT',S.turnos.map(t=>[t.id,t.nombre]),U.supT,{ph:'Todos los turnos'})}${btn('Hoy','supHoy','','ghost sm')}<span class="mut" style="margin-left:6px">${dfull(d)}</span><div style="margin-left:auto">${btn(icon('print',14)+' Tarjetas','tarjTodas','','ghost sm')}</div></div>
+ <div class="g12 minis">${[mini('Personal del turno',rows.length),mini('HH programadas',hh(P)),mini('HH registradas',hh(G)),mini('HH faltantes',hh(falt),falt>.01?'dn':''),mini('HH excedentes',hh(exc),exc>.01?'dn':'')].map(x=>`<div class="c3" style="grid-column:span 2">${x}</div>`).join('')}<div class="c3" style="grid-column:span 2">${mini('Retrabajos del día',rets.length)}</div></div>
+ <div class="g12"><div class="c12">${card('Alertas del día',`${A.length} activa${A.length===1?'':'s'}`,A.length?`<div class="algrid">${A.slice(0,8).map(alertRow).join('')}</div>`:`<div class="empty">${icon('check',26)}<p>Sin alertas para esta fecha</p></div>`)}</div></div>
+ <div class="g12"><div class="c12">${card('Personal y jornada','Programadas vs registradas del día',rows.length?`<div class="tw"><table class="t stkm"><thead><tr><th>Técnico</th><th>Turno</th><th class="r">Prog.</th><th class="r">Reg.</th><th>Estado</th><th>Distribución</th><th></th></tr></thead><tbody>${rows.map(({t,j})=>{
   const st=!j.p&&!j.g?badge('Sin jornada','n'):Math.abs(j.df)<.01?badge('Completa','ok'):j.df<0?badge('Faltan '+hh(-j.df),'wa'):badge('+'+hh(j.df)+' exced.','er');
   const seg=Object.keys(CL).map(k=>({k,v:sum(j.rs.filter(r=>r.clase===k))})).filter(x=>x.v>0);const mx=Math.max(j.p,j.g,1);
-  return `<tr><td><div class="ttl">${esc(t.nombre)}</div><div class="sub">${esc(t.area)}</div></td><td>${esc(turnoDe(t,d))}</td><td class="num">${hh(j.p)}</td><td class="num">${hh(j.g)}</td><td>${st}</td><td><div class="stk">${seg.map(x=>`<i style="width:${x.v/mx*100}%;background:${CL[x.k].c}" data-tip="${esc(CL[x.k].n+'\n'+hh(x.v)+' HH')}"></i>`).join('')}</div></td>
-  <td style="white-space:nowrap">${btn('Registrar','regFor',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm ghost')} ${j.df<-.01?btn('Completar','faltModal',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm'):''} ${j.rs.some(r=>r.pend)?btn('Validar ('+j.rs.filter(r=>r.pend).length+')','valDia',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm'):''}</td></tr>`}).join('')}</tbody></table></div>`:empty('No hay personal activo en este turno'))}</div>
- <div class="c4">${card('Alertas del día',`${A.length} activa${A.length===1?'':'s'}`,A.length?A.slice(0,6).map(alertRow).join(''):`<div class="empty">${icon('check',26)}<p>Sin alertas para esta fecha</p></div>`)}</div></div>
+  return `<tr><td class="nm"><div class="ttl">${esc(t.nombre)}</div><div class="sub">${esc(t.area)}</div></td><td data-l="Turno">${esc(turnoDe(t,d))}</td><td class="num" data-l="Programadas">${hh(j.p)}</td><td class="num" data-l="Registradas">${hh(j.g)}</td><td data-l="Estado">${st}</td><td class="hm"><div class="stk">${seg.map(x=>`<i style="width:${x.v/mx*100}%;background:${CL[x.k].c}" data-tip="${esc(CL[x.k].n+'\n'+hh(x.v)+' HH')}"></i>`).join('')}</div></td>
+  <td class="ac" style="white-space:nowrap">${btn('Registrar','regFor',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm ghost')} ${j.df<-.01?btn('Completar','faltModal',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm'):''} ${j.rs.some(r=>r.pend)?btn('Validar ('+j.rs.filter(r=>r.pend).length+')','valDia',`data-tec="${t.codigo}" data-fecha="${d}"`,'sm'):''}</td></tr>`}).join('')}</tbody></table></div>`:empty('No hay personal activo en este turno'))}</div>
+ </div></div>
  <div class="g12"><div class="c4">${card('Proyectos activos','HH de producción del día y acumuladas',act.length?act.map(x=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--bd)"><span class="stat" style="--c:${x.s.col}"></span><div style="flex:1"><b>${x.p.num}</b> <span class="mut">${x.p.cap} gal</span><div class="mut3" style="font-size:12px">${esc(stageOf(x.p))}</div></div><div style="text-align:right"><b>${hh(x.hd)}</b><div class="mut3" style="font-size:12px">${nf(x.real,0)} acum.</div></div></div>`).join(''):empty('Sin proyectos activos'))}</div>
  <div class="c4">${card('Retrabajos del día','Fuentes de horas adicionales',rets.length?rets.map(r=>`<div style="padding:9px 0;border-top:1px solid var(--bd);display:flex;gap:10px;align-items:center"><div style="flex:1;min-width:0"><b>${r.proy}</b> · ${esc(r.macro)} <div class="mut3" style="font-size:12px">${esc(r.causa||'Sin causa')} · ${esc(r.origen||'Sin origen')}${r.hallazgo?' · '+esc(r.hallazgo):''}</div></div><b>${hh(r.horas)}</b><button class="ib" style="width:30px;height:30px" data-act="editReg" data-id="${r.id}" aria-label="Editar">${icon('edit',15)}</button></div>`).join(''):empty('Sin retrabajos registrados'))}</div>
  <div class="c4">${card('Novedades','Ausencias, capacitaciones y esperas',nov.length?nov.map(r=>`<div style="padding:9px 0;border-top:1px solid var(--bd);display:flex;gap:10px;align-items:center"><span style="width:8px;height:8px;border-radius:50%;background:${CL[r.clase].c}"></span><div style="flex:1"><b>${esc(r.nombre)}</b><div class="mut3" style="font-size:12px">${esc(r.causa||r.cat||r.act)}</div></div><b>${hh(r.horas)}</b></div>`).join(''):empty('Sin novedades'))}</div></div>`;
@@ -831,7 +917,7 @@ function pRegistros(){
  rs=rs.slice().sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.ts<b.ts?1:-1);const tot=sum(rs.filter(r=>r.estado!=='Anulado'));const shown=rs.slice(0,U.rlim);
  return filterBar()+card('Registros de horas',`${nf(rs.length,0)} registros · ${nf(tot,1)} HH`,`<div class="fbar"><input class="inp" style="max-width:320px" placeholder="Buscar por técnico, proyecto, causa, hallazgo…" data-f="rq" value="${esc(U.rq||'')}"><label class="mut" style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-f="showAn" ${U.showAn?'checked':''}> Ver anulados</label></div>
  ${shown.length?`<div class="tw"><table class="t"><thead><tr><th>Fecha</th><th>Técnico</th><th>Proyecto</th><th>Etapa / actividad</th><th class="r">HH</th><th>Tipo</th><th>Causa / origen</th><th>Hallazgo</th><th>Estado</th><th></th></tr></thead><tbody>${shown.map(r=>`<tr style="${r.estado==='Anulado'?'opacity:.45;text-decoration:line-through':''}"><td>${dlabel(r.fecha)}</td><td>${esc(r.nombre)}</td><td>${r.proy?`<b>${r.proy}</b> <span class="sub">${r.cap} gal</span>`:'—'}</td><td><div class="ttl">${esc(r.macro||r.tipo)}</div><div class="sub" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.act)}</div></td><td class="num">${hh(r.horas)}</td><td><span class="stat" style="--c:${CL[r.clase].c}">${esc(CL[r.clase].n)}</span></td><td><div>${esc(r.causa||'')}</div><div class="sub">${esc(r.origen||'')}${r.persona?' · '+esc(pName(r.persona)):''}</div></td><td>${r.hallazgo?badge(esc(r.hallazgo),'v'):''}</td><td>${r.pend?badge('Por validar','wa')+' ':''}${r.estado==='Completo'?badge('Completo','ok'):r.estado==='Anulado'?badge('Anulado','n'):badge('Incompleto','wa')}</td><td style="white-space:nowrap">${r.pend&&r.estado!=='Anulado'&&can(['Gerencia','Supervisor'])?`<button class="ib" style="width:30px;height:30px" data-act="valReg" data-id="${r.id}" data-tip="Validar" aria-label="Validar registro">${icon('check',15)}</button> `:''}<button class="ib" style="width:30px;height:30px" data-act="editReg" data-id="${r.id}" aria-label="Editar registro">${icon('edit',15)}</button></td></tr>`).join('')}</tbody></table></div>
- ${rs.length>shown.length?`<div style="text-align:center;margin-top:12px">${btn('Ver más registros','moreR','','ghost')}</div>`:''}`:empty('No hay registros con estos filtros')}`,{acts:btn(icon('down',16)+' Exportar CSV','expCSV','','ghost')});
+ ${rs.length>shown.length?`<div style="text-align:center;margin-top:12px">${btn('Ver más registros','moreR','','ghost')}</div>`:''}`:empty('No hay registros con estos filtros')}${nbSinceNote()}`,{acts:btn(icon('down',16)+' Exportar a Excel','expXLSX','','ghost')});
 }
 /* ================= Alertas ================= */
 function alertRow(a){
@@ -884,7 +970,7 @@ function pDashboardBase(){
  const sx=(l,v,c='')=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--bd)"><span class="mut">${l}</span><b class="${c}">${v}</b></div>`;
  const sumCard=card(proj1?`Proyecto ${proj1.num}`:'Todos los proyectos',proj1?`${proj1.cap} gal · ${esc(proj1.cliente)}`:'Acumulado del filtro actual',
   `${sx('Expectativa',nf(K.exp,0)+' HH')}${sx('Real',nf(K.real,0)+' HH')}${sx('Desviación',(dv>0?'+':'')+nf(dv,0)+' HH',dvc==='ok'?'up':dv>0?'dn':'')}${sx('% desviación',nf(dvp,1)+'%')}${sx('HH normales',nf(sn,0))}${sx('HH retrabajo',nf(sr,0))}${sx('HH improductivas',nf(si,0))}`,{});
- const curveCard=card('Curva de expectativa vs. realidad','HH acumuladas de producción. La expectativa avanza a ritmo lineal según la duración estimada de cada proyecto',lineChart({labels:cv.labels,fx:dlabel,series:[{name:'Expectativa acumulada',color:'#8B95A7',vals:cv.exp,dash:1},{name:'HH reales acumuladas',color:'#38BDF8',vals:cv.real,area:1}],h:270}));
+ const curveCard=card('Curva de expectativa vs. realidad','HH acumuladas de producción. La expectativa sigue el avance por etapas (horas y días de cada una); si no se han definido los días, avanza en línea recta',lineChart({labels:cv.labels,fx:dlabel,series:[{name:'Expectativa acumulada',color:'#8B95A7',vals:cv.exp,dash:1},{name:'HH reales acumuladas',color:'#38BDF8',vals:cv.real,area:1}],h:270}));
  /* gráficos */
  const perProj=P.map(p=>{const s=stageStats([p],rn);const e=ETAPAS.reduce((a,x)=>a+s[x].exp,0),r=ETAPAS.reduce((a,x)=>a+s[x].real,0);return{label:`${p.num} · ${p.cap} gal`,exp:e,real:r,fset:['proy',p.num]}});
  const perEt=ETAPAS.map(e=>({label:e,exp:st[e].exp,real:st[e].real,closed:P.length===1&&((P[0].exp&&P[0].exp.cerradas)||[]).includes(e),fset:['macro',e]}));
@@ -920,7 +1006,7 @@ function pEtapas(){
   const m=(l,v,c='')=>`<div class="c3" style="grid-column:span 2"><div class="card mini flat"><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div></div></div></div>`;
   det=`<div class="g12" style="margin-top:4px">${m('Esperado',nf(s.exp,0)+' HH')}${m('Real',nf(s.real,0)+' HH')}${m('Desviación',(r>0?'+':'')+nf(r,0)+' HH',r>0?'dn':'up')}${m('% desviación',s.exp?nf(r/s.exp*100,1)+'%':'—')}${m('Retrabajo',nf(s.ret,1)+' HH','')}${m('Improductivas',nf(s.imp,1)+' HH','')}</div>
   <div class="g12"><div class="c7">${card('Proyectos en '+sel1,'Esperado vs. real por proyecto',pairRows(pr.map(x=>({label:`${x.p.num} · ${x.p.cap} gal`,exp:x.ss.exp,real:x.ss.real,closed:x.cl}))))}</div><div class="c5">${card('Actividades de '+sel1,'HH de producción por actividad',hbars(acts))}</div></div>`}
- return filterBar()+`<div class="g12"><div class="c12">${card('Comparación entre etapas','Selecciona una etapa para ver proyectos y actividades',`<div class="tw"><table class="t"><thead><tr><th>Etapa</th><th class="r">Esperado</th><th class="r">Real</th><th class="r">Desviación</th><th class="r">% desv.</th><th class="r">Retrabajo</th><th class="r">Improd.</th></tr></thead><tbody>${rows}</tbody></table></div>`,{acts:sel1?btn('Ver todas','pickEtapa','data-v=""','sm ghost'):''})}</div></div>${det}`;
+ return filterBar()+`<div class="g12"><div class="c12">${card('Comparación entre etapas','Selecciona una etapa para ver proyectos y actividades',`<div class="tw"><table class="t"><thead><tr><th>Etapa</th><th class="r">Esperado</th><th class="r">Real</th><th class="r">Desviación</th><th class="r">% desv.</th><th class="r">Retrabajo</th><th class="r">Improd.</th></tr></thead><tbody>${rows}</tbody></table></div>`,{acts:btn('Comparar con proyecto de éxito','cmpToggle','',U.cmpOn?'sm':'sm ghost')+(sel1?' '+btn('Ver todas','pickEtapa','data-v=""','sm ghost'):'')})}</div></div>${cmpPanel()}${det}`;
 }
 /* ================= Análisis de retrabajo ================= */
 function pRetrabajo(){
@@ -1009,9 +1095,9 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.4',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: exporta los registros a CSV cada semana.</p>`)}</div></div>
- ${listasCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
-  <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (CSV)','expCSV','','ghost')}${btn(icon('down',16)+' Respaldo completo (JSON)','expJSON','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:12px"><b style="color:var(--tx2)">CSV:</b> los registros, para abrirlos en Excel o Google Sheets. <b style="color:var(--tx2)">Respaldo (JSON):</b> copia de todos los datos que ves con tu rol. Haz una copia cada semana.</p><input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.5',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
+  <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
 }
 /* ================= Navegación ================= */
@@ -1100,20 +1186,20 @@ function projSave(edit){const cli=(val('p_cli')||'').trim()||'Sin cliente';const
  else{const num=nextProj();S.proyectos.push({num,...o,estado:'Activo',creado:today(),exp:{total:0,et:{},cerradas:[],mod:{ts:new Date().toISOString(),por:U.name}}});save();toast('Proyecto '+num+' creado','ok');expOpen(num)}}
 function expOpen(num){const p=S.proyectos.find(x=>x.num===num);if(!p)return;M={type:'exp',num};const e=p.exp||{total:0,et:{},cerradas:[]};
  openModal(mh('Expectativa de HH · Proyecto '+num)+`<p class="mut" style="margin-bottom:14px">Gerencia define los valores libremente. Ningún valor es un estándar oficial.</p><div id="expForm">${fld('Expectativa total del proyecto (HH)',`<input class="inp big" id="x_tot" inputmode="decimal" value="${e.total||''}" placeholder="Ej.: 1060">`)}
- <div style="margin:14px 0 6px" class="lb">Distribución por etapa productiva</div>${ETAPAS.map((x,i)=>`<div style="display:grid;grid-template-columns:1fr 110px 110px;gap:10px;align-items:center;padding:5px 0;border-top:1px solid var(--bd)"><span>${x}</span><input class="inp" inputmode="decimal" data-xe="${i}" value="${e.et[x]!=null&&e.et[x]!==''?e.et[x]:''}" placeholder="0"><label class="mut" style="font-size:12.5px;display:flex;gap:6px;align-items:center"><input type="checkbox" data-xc="${i}" ${(e.cerradas||[]).includes(x)?'checked':''}> Terminada</label></div>`).join('')}
- <div id="xSum" style="margin-top:14px"></div></div><p class="mut3" style="font-size:12px;margin-top:8px">“Terminada” hace que la desviación de esa etapa cuente también cuando quedó por debajo de lo esperado.</p>${mf('Guardar expectativa','expSave')}`,'w');expLive()}
+ <div style="margin:14px 0 2px" class="lb">Distribución por etapa productiva</div><div style="display:grid;grid-template-columns:1fr 84px 84px 96px;gap:8px;padding:4px 0;font-size:12px" class="mut3"><span></span><span>HH</span><span>Días</span><span></span></div>${ETAPAS.map((x,i)=>`<div style="display:grid;grid-template-columns:1fr 84px 84px 96px;gap:8px;align-items:center;padding:5px 0;border-top:1px solid var(--bd)"><span>${x}</span><input class="inp" inputmode="decimal" data-xe="${i}" value="${e.et[x]!=null&&e.et[x]!==''?e.et[x]:''}" placeholder="0"><input class="inp" inputmode="numeric" data-xd="${i}" value="${(e.dias||{})[x]?(e.dias||{})[x]:''}" placeholder="días"><label class="mut" style="font-size:12px;display:flex;gap:5px;align-items:center"><input type="checkbox" data-xc="${i}" ${(e.cerradas||[]).includes(x)?'checked':''}> Terminada</label></div>`).join('')}
+ <div id="xSum" style="margin-top:14px"></div></div><p class="mut3" style="font-size:12px;margin-top:8px">“Terminada” hace que la desviación de esa etapa cuente también cuando quedó por debajo de lo esperado. <b>Días:</b> cuántos días hábiles dura cada etapa; las etapas se encadenan una tras otra y con eso la curva de expectativa se quiebra por etapas. Si no llenas los días, la curva avanza en línea recta.</p>${mf('Guardar expectativa','expSave')}`,'w');expLive()}
 function expLive(){const t=num(val('x_tot'));const s=$$('[data-xe]').reduce((a,e)=>a+num(e.value),0);const ok=Math.abs(s-t)<.01;const e=$('#xSum');if(e)e.innerHTML=`<div class="alrt ${ok?'i':'wa'}" style="margin:0"><div class="ai">${icon(ok?'check':'warn',17)}</div><div><b>Suma de etapas: ${nf(s,2)} HH · Total: ${nf(t,2)} HH</b><small>${ok?'Coincide con la expectativa total.':'No coincide (diferencia de '+nf(s-t,2)+' HH). Puedes guardar y ajustar después.'}</small></div>${!ok?`<button class="btn sm ghost" data-act="xUse" style="margin-left:auto">Usar suma como total</button>`:''}</div>`}
 function expSave(){const p=S.proyectos.find(x=>x.num===M.num);const e=p.exp||{total:0,et:{},cerradas:[]};const t=num(val('x_tot'));if(t!==(+e.total||0))logH('Expectativa total',e.total||0,t,p.num);const et={};
- ETAPAS.forEach((x,i)=>{const v=num($(`[data-xe="${i}"]`).value);et[x]=v;if(v!==(+e.et[x]||0))logH('Expectativa '+x,e.et[x]||0,v,p.num)});
- p.exp={total:t,et,cerradas:ETAPAS.filter((x,i)=>$(`[data-xc="${i}"]`).checked),mod:{ts:new Date().toISOString(),por:U.name+' ('+U.role+')'}};save();closeModal();renderAll(true);toast('Expectativa guardada','ok')}
+ const dias={};ETAPAS.forEach((x,i)=>{const v=num($(`[data-xe="${i}"]`).value);et[x]=v;if(v!==(+e.et[x]||0))logH('Expectativa '+x,e.et[x]||0,v,p.num);const dd=Math.max(0,Math.round(num($(`[data-xd="${i}"]`).value)));dias[x]=dd;if(dd!==(+(e.dias||{})[x]||0))logH('Días '+x,(e.dias||{})[x]||0,dd,p.num)});
+ p.exp={total:t,et,dias,cerradas:ETAPAS.filter((x,i)=>$(`[data-xc="${i}"]`).checked),mod:{ts:new Date().toISOString(),por:U.name+' ('+U.role+')'}};save();closeModal();renderAll(true);toast('Expectativa guardada','ok')}
 /* --- técnicos --- */
 function tecOpen(code){const t=code?S.tecnicos.find(x=>x.codigo===code):null;M={type:'tec',code};const nx='TEC'+String(S.tecnicos.reduce((m,x)=>Math.max(m,parseInt(x.codigo.slice(3),10)||0),0)+1).padStart(3,'0');
- openModal(mh(t?'Editar técnico':'Nuevo técnico')+`<div class="two">${fld('Código',`<input class="inp" id="t_cod" value="${t?t.codigo:nx}" ${t?'disabled':''}>`)}${fld('Iniciales',`<input class="inp" id="t_ini" maxlength="4" value="${t?esc(t.ini):''}" style="text-transform:uppercase">`)}</div>${fld('Nombre',`<input class="inp" id="t_nom" value="${t?esc(t.nombre):''}">`)}<div class="two">${fld('Rol',selM('t_rol',ROLES_P,t?(t.rol||rolDe(t.area)):'Técnico'))}${fld('Estado',selM('t_act',[['1','Activo'],['0','Inactivo']],t&&t.activo===false?'0':'1'))}</div><div class="two">${fld('Área principal',`<input class="inp" id="t_area" list="areas" value="${t?esc(t.area):''}"><datalist id="areas">${uniq(S.tecnicos.map(x=>x.area)).map(a=>`<option value="${esc(a)}">`).join('')}</datalist>`)}${fld('Especialidad',`<input class="inp" id="t_esp" value="${t?esc(t.esp):''}">`)}</div>${fld('Turno por defecto',selM('t_tur',activeTurnos().map(u=>[u.id,u.nombre]),t?t.turno:activeTurnos()[0].id))}<label class="mut" style="display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="t_reg" ${!t||t.registra?'checked':''}> Registra horas de producción (desmarcar para Calidad, Ingeniería, Almacén…)</label>${mf('Guardar','tecSave')}`)}
+ openModal(mh(t?'Editar técnico':'Nuevo técnico')+`<div class="two">${fld('Código',`<input class="inp" id="t_cod" value="${t?t.codigo:nx}" ${t?'disabled':''}>`)}${fld('Iniciales',`<input class="inp" id="t_ini" maxlength="4" value="${t?esc(t.ini):''}" style="text-transform:uppercase" oninput="this.dataset.man=1"><small class="mut3" style="display:block;margin-top:4px">${t?'':'Se sugieren solas al escribir el nombre; puedes cambiarlas.'}</small>`)}</div>${fld('Nombre',`<input class="inp" id="t_nom" value="${t?esc(t.nombre):''}" ${t?'':'oninput="tecSugIni(this.value)"'}>`)}<div class="two">${fld('Rol',selM('t_rol',ROLES_P,t?(t.rol||rolDe(t.area)):'Técnico'))}${fld('Estado',selM('t_act',[['1','Activo'],['0','Inactivo']],t&&t.activo===false?'0':'1'))}</div><div class="two">${fld('Área principal',`<input class="inp" id="t_area" list="areas" value="${t?esc(t.area):''}"><datalist id="areas">${uniq([...AREAS0,...S.tecnicos.map(x=>x.area)]).map(a=>`<option value="${esc(a)}">`).join('')}</datalist><small class="mut3" style="display:block;margin-top:4px">Elige de la lista o escribe una nueva.</small>`)}${fld('Cargo / especialidad',`<input class="inp" id="t_esp" list="cargos" value="${t?esc(t.esp):''}"><datalist id="cargos">${uniq([...CARGOS0,...S.tecnicos.map(x=>x.esp)]).map(a=>`<option value="${esc(a)}">`).join('')}</datalist>`)}</div>${fld('Turno por defecto',selM('t_tur',activeTurnos().map(u=>[u.id,u.nombre]),t?t.turno:activeTurnos()[0].id))}<label class="mut" style="display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="t_reg" ${!t||t.registra?'checked':''}> Registra horas de producción (desmarcar para Calidad, Ingeniería, Almacén…)</label>${mf('Guardar','tecSave')}`)}
 function tecSave(){const o={codigo:(val('t_cod')||'').trim().toUpperCase(),ini:(val('t_ini')||'').trim().toUpperCase(),nombre:(val('t_nom')||'').trim(),area:(val('t_area')||'').trim(),esp:(val('t_esp')||'').trim(),turno:val('t_tur'),rol:val('t_rol'),activo:val('t_act')==='1',registra:!!val('t_reg')};
  if(!o.codigo||!o.ini||!o.nombre){toast('Código, iniciales y nombre son necesarios','wa');return}
  if(M.code){const t=S.tecnicos.find(x=>x.codigo===M.code);['turno','area','esp','nombre','activo'].forEach(k=>{if(t[k]!==o[k])logH('Técnico '+k,t[k],o[k],t.codigo)});Object.assign(t,o,{codigo:t.codigo})}
  else{if(S.tecnicos.some(x=>x.codigo===o.codigo)){toast('Ese código ya existe','er');return}S.tecnicos.push({...o,alta:today()})}
- save();closeModal();renderAll(true);toast('Técnico guardado','ok')}
+ const nuevo=!M.code;save();closeModal();renderAll(true);toast('Técnico guardado','ok');if(nuevo&&o.registra&&o.activo)setTimeout(()=>tarjetasOpen([o.codigo],true),250)}
 /* --- hallazgo --- */
 function hallOpen(){const pj=S.proyectos[0];M={type:'hall'};openModal(mh('Nuevo código de hallazgo')+fld('Proyecto',`<select class="sel" id="h_p" data-hp="1">${S.proyectos.map(p=>`<option value="${p.num}">${p.num} · ${p.cap} gal</option>`).join('')}</select>`)+fld('Código',`<input class="inp" id="h_c" style="text-transform:uppercase" value="${pj?hallNext(pj.num):''}">`)+fld('Descripción breve (opcional)',`<input class="inp" id="h_d">`)+mf('Guardar','hallSave'))}
 const hallNext=n=>'LQ-'+n+'-'+String(S.hallazgos.filter(h=>h.proy===n).length+1).padStart(4,'0');
@@ -1150,6 +1236,7 @@ const A={
  faltModal:t=>faltOpen(t.dataset.tec,t.dataset.fecha),fAdd:()=>{faltRead();M.rows.push({cat:'',h:''});faltRender()},fDel:t=>{faltRead();M.rows.splice(+t.dataset.i,1);if(!M.rows.length)M.rows.push({cat:'',h:''});faltRender()},fSave:faltSave,
  editReg:t=>editRegOpen(t.dataset.id),regSave,regVoid:()=>regState('Anulado'),regRestore:()=>regState('Completo'),
  goProj:()=>go('proyectos'),moreR:()=>{U.rlim+=80;renderPage(true)},supHoy:()=>{U.supF=today();renderPage(true)},
+ expXLSX:()=>{try{dlBlob('registros_hh_latamks_'+today()+'.xlsx',xlsxRegistros());toast('Excel descargado','ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}},
  expCSV:()=>{const rs=filt(S.registros.filter(r=>r.estado!=='Anulado')).sort((a,b)=>a.fecha<b.fecha?-1:1);dl('registros_hh_latamks.csv',csvOf(HDR,rs.map(rowOf)),tsvOf(HDR,rs.map(rowOf)))},
  expJSON:()=>dl('respaldo_latamks_hh.json',JSON.stringify(S)),impJSON:()=>nbNo(),
  newProj:()=>{M={type:'proj'};openModal(mh('Nuevo proyecto')+projForm(null)+mf('Crear y definir expectativa','projNew'))},projNew:()=>projSave(false),
@@ -1324,7 +1411,7 @@ function pProyectos(){
 }
 function pTecnicos(){
  const G=can('Gerencia');
- return card('Técnicos y personal relacionado','Catálogo de personal · el código + iniciales identifica al técnico',`<div class="tw"><table class="t"><thead><tr><th>Código</th><th>Iniciales</th><th>Nombre</th><th>Área principal</th><th>Especialidad</th><th>Turno por defecto</th><th>Rol</th><th class="r">HH registradas</th><th>Estado</th><th>Consentimiento</th><th></th></tr></thead><tbody>${S.tecnicos.map(t=>`<tr style="${t.activo===false?'opacity:.6':''}"><td><b>${esc(t.codigo)}</b></td><td>${esc(t.ini)}</td><td>${esc(t.nombre)}</td><td>${esc(t.area)}</td><td>${esc(t.esp)}</td><td>${G?`<select class="sel" style="height:32px;min-width:170px" data-tur="${t.codigo}">${activeTurnos().map(u=>`<option value="${u.id}" ${u.id===t.turno?'selected':''}>${esc(u.nombre)}</option>`).join('')}${S.turnos.find(u=>u.id===t.turno&&u.activo===0)?`<option value="${t.turno}" selected>${esc(turnoName(t.turno))} (inactivo)</option>`:''}</select>`:esc(turnoName(t.turno))}</td><td>${badge(esc(t.rol||rolDe(t.area)),(t.rol||rolDe(t.area))==='Técnico'?'n':'i')}</td><td class="num">${t.registra?nf(hhReg(t.codigo),1):'—'}</td><td>${t.activo!==false?badge('Activo','ok'):badge('Inactivo','n')}</td><td>${t.cons?badge('Aceptó '+dlabel(t.cons),'ok'):t.registra?badge('Pendiente','wa'):badge('No aplica','n')}</td><td style="white-space:nowrap">${G?btn(icon('edit',14),'editTec',`data-c="${t.codigo}"`,'sm ghost')+' '+btn(t.activo!==false?'Inactivar':'Activar','tecToggle',`data-c="${t.codigo}"`,t.activo!==false?'sm dng':'sm ghost'):''}</td></tr>`).join('')}</tbody></table></div>`,{acts:G?btn(icon('plus',16)+' Crear técnico','newTec'):''});
+ return card('Técnicos y personal relacionado','Catálogo de personal · el código + iniciales identifica al técnico',`<div class="tw"><table class="t"><thead><tr><th>Código</th><th>Iniciales</th><th>Nombre</th><th>Área principal</th><th>Especialidad</th><th>Turno por defecto</th><th>Rol</th><th class="r">HH registradas</th><th>Estado</th><th>Consentimiento</th><th></th></tr></thead><tbody>${S.tecnicos.map(t=>`<tr style="${t.activo===false?'opacity:.6':''}"><td><b>${esc(t.codigo)}</b></td><td>${esc(t.ini)}</td><td>${esc(t.nombre)}</td><td>${esc(t.area)}</td><td>${esc(t.esp)}</td><td>${G?`<select class="sel" style="height:32px;min-width:170px" data-tur="${t.codigo}">${activeTurnos().map(u=>`<option value="${u.id}" ${u.id===t.turno?'selected':''}>${esc(u.nombre)}</option>`).join('')}${S.turnos.find(u=>u.id===t.turno&&u.activo===0)?`<option value="${t.turno}" selected>${esc(turnoName(t.turno))} (inactivo)</option>`:''}</select>`:esc(turnoName(t.turno))}</td><td>${badge(esc(t.rol||rolDe(t.area)),(t.rol||rolDe(t.area))==='Técnico'?'n':'i')}</td><td class="num">${t.registra?nf(hhReg(t.codigo),1):'—'}</td><td>${t.activo!==false?badge('Activo','ok'):badge('Inactivo','n')}</td><td>${t.cons?badge('Aceptó '+dlabel(t.cons),'ok'):t.registra?badge('Pendiente','wa'):badge('No aplica','n')}</td><td style="white-space:nowrap">${t.registra&&can(['Gerencia','Supervisor'])?btn(icon('print',14),'tarjUna',`data-c="${t.codigo}"`,'sm ghost')+' ':''}${G?btn(icon('edit',14),'editTec',`data-c="${t.codigo}"`,'sm ghost')+' '+btn(t.activo!==false?'Inactivar':'Activar','tecToggle',`data-c="${t.codigo}"`,t.activo!==false?'sm dng':'sm ghost'):''}</td></tr>`).join('')}</tbody></table></div>`,{acts:(can(['Gerencia','Supervisor'])?btn(icon('print',16)+' Tarjetas','tarjTodas','','ghost')+' ':'')+(G?btn(icon('plus',16)+' Crear técnico','newTec'):'')});
 }
 function pHallazgos(){
  const CQ=can(['Gerencia','Supervisor','Calidad']);const rs=live().filter(r=>r.hallazgo);
@@ -1343,16 +1430,32 @@ function pExpectativas(){
 /* ---------- Horas faltantes ---------- */
 function pFaltantes(){
  const techs=S.tecnicos.filter(t=>t.registra&&t.activo!==false);const hf=U.hf;if(!hf.tec&&U.c.tec)hf.tec=U.c.tec;if(!hf.tec&&techs[0])hf.tec=techs[0].codigo;
- const t=techs.find(x=>x.codigo===hf.tec);const j=t?jornadaInfo(t,hf.fecha):null;const rs=live().filter(r=>r.kind==='otro'||r.kind==='aus');
+ const t=techs.find(x=>x.codigo===hf.tec);const j=t?jornadaInfo(t,hf.fecha):null;
+ /* rueda: filtros de período, turno y persona */
+ const per=hf.per||'todo',fT=hf.ft||'',fU=hf.fu||'';
+ const desde=per==='todo'?'':addDays(today(),-({hoy:0,'7':6,'30':29})[per]);
+ const tecOf=c=>S.tecnicos.find(x=>x.codigo===c);
+ const rs=live().filter(r=>(r.kind==='otro'||r.kind==='aus')&&(!desde||r.fecha>=desde)&&(!fT||r.tec===fT)&&(!fU||(tecOf(r.tec)&&turnoDe(tecOf(r.tec),r.fecha)===fU)));
  const by=sumBy(rs,r=>r.cat||r.causa).map((x,i)=>({k:x.k,v:x.v,c:PAL[i%9]}));const log=rs.slice().sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:0).slice(0,25);
  const box=(l,v,c='')=>`<div class="card mini flat" style="padding:12px 14px"><div><div class="m-l">${l}</div><div class="m-v ${c}">${v}</div></div></div>`;
- const pend=alerts().filter(a=>a.tec&&a.t.startsWith('Faltan')).slice(0,6);
+ /* pendientes: hoy o últimos 7 días, por turno */
+ const pd=hf.pd||'hoy',pu=hf.pu||'';const t0=today();
+ const days=pd==='hoy'?[t0]:Array.from({length:7},(_,i)=>addDays(t0,-i));
+ const nowM=new Date().getHours()*60+new Date().getMinutes();const items=[];
+ days.forEach(d=>techs.filter(x=>!pu||turnoDe(x,d)===pu).forEach(x=>{
+  if(x.alta&&d<x.alta)return;const jj=jornadaInfo(x,d);if(!jj.p||jj.df>=-.01)return;
+  let enTurno=false;if(d===t0){const tu=S.turnos.find(z=>z.id===turnoDe(x,d)),dd=tu&&tu.dias[dow(d)];if(dd&&dd.on&&tmin(dd.fin)>tmin(dd.ini)&&nowM<tmin(dd.fin))enTurno=true}
+  items.push({x,d,jj,enTurno})}));
+ items.sort((a,b)=>(a.enTurno-b.enTurno)||(a.d<b.d?1:a.d>b.d?-1:0)||a.x.nombre.localeCompare(b.x.nombre));
+ const nEn=items.filter(i=>i.enTurno).length;
+ const pRow=({x,d,jj,enTurno})=>`<div class="alrt ${enTurno?'i':'wa'}"><div class="ai">${icon(enTurno?'info':'warn',17)}</div><div style="flex:1;min-width:0"><b>${esc(x.nombre)}</b><small>${esc(turnoDe(x,d))} · ${dfull(d)} · ${enTurno?'Turno en curso · ':''}${jj.g?('Faltan '+hh(-jj.df)+' HH ('+hh(jj.g)+' de '+hh(jj.p)+')'):('Sin registros (0 de '+hh(jj.p)+' HH)')}</small></div>${btn('Completar','faltModal',`data-tec="${x.codigo}" data-fecha="${d}"`,'sm ghost')}</div>`;
+ const turnoOpts=S.turnos.map(z=>[z.id,z.nombre]);
  return `<div class="g12"><div class="c7">${card('Justificar jornada','El sistema no bloquea: pregunta dónde estuvieron las horas y permite repartirlas',`<div class="two">${fld('Técnico',sel('hf.tec',techs.map(x=>[x.codigo,x.codigo+' · '+x.nombre]),hf.tec))}${fld('Fecha',`<input class="inp" type="date" data-f="hf.fecha" value="${hf.fecha}">`)}</div>
  ${j?`<div class="two" style="grid-template-columns:repeat(3,1fr);margin-top:6px">${box('Jornada programada',hh(j.p)+' HH')}${box('Registradas',hh(j.g)+' HH')}${box(j.df>.01?'Excedentes':'Faltan',hh(Math.abs(j.df))+' HH',Math.abs(j.df)<.01?'up':'dn')}</div><div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">${j.df<-.01?btn('¿Dónde estuvieron esas horas? Distribuir','faltModal',`data-tec="${t.codigo}" data-fecha="${hf.fecha}"`):badge(icon('check',14)+(Math.abs(j.df)<.01?' Jornada completa':' Sin horas faltantes'),'ok')}</div>`:empty('Selecciona un técnico')}
  <p class="mut3" style="font-size:12.5px;margin-top:14px">Distribuye entre apoyo, orden y aseo, capacitación, esperas, clima, falla mecánica, accidente, incapacidad, calamidad, permiso, compensación u otra.</p>`)}</div>
- <div class="c5">${card('Horas justificadas por motivo','Tiempo fuera de proyectos dentro de la jornada, y ausencias',donut(by,[nf(sum(rs),0),'HH justificadas']))}</div></div>
- <div class="g12"><div class="c5">${card('Jornadas con horas pendientes','Últimos 7 días',pend.length?pend.map(alertRow).join(''):`<div class="empty">${icon('check',26)}<p>Todo al día</p></div>`)}</div>
- <div class="c7">${card('Registro de horas justificadas','Últimos 25 movimientos',log.length?`<div class="tw"><table class="t"><thead><tr><th>Fecha</th><th>Técnico</th><th>Motivo</th><th>Clasificación</th><th class="r">HH</th></tr></thead><tbody>${log.map(r=>`<tr><td>${dlabel(r.fecha)}</td><td>${esc(r.nombre)}</td><td>${esc(r.cat||r.causa)}</td><td>${r.kind==='aus'?badge('Ausencia','n'):badge('Jornada','i')}</td><td class="num">${hh(r.horas)}</td></tr>`).join('')}</tbody></table></div>`:empty('Sin registros'))}</div></div>`;
+ <div class="c5">${card('Horas justificadas por motivo','Tiempo fuera de proyectos dentro de la jornada, y ausencias',`<div class="fbar" style="margin-bottom:10px">${sel('hf.per',[['todo','Todo el historial'],['hoy','Hoy'],['7','Últimos 7 días'],['30','Últimos 30 días']],per)}${sel('hf.fu',turnoOpts,fU,{ph:'Todos los turnos'})}${sel('hf.ft',techs.map(x=>[x.codigo,x.nombre]),fT,{ph:'Todo el personal'})}</div>`+donut(by,[nf(sum(rs),0),'HH justificadas']))}</div></div>
+ <div class="g12"><div class="c5">${card('Jornadas con horas pendientes',(pd==='hoy'?'Hoy · ':'Últimos 7 días · ')+items.length+' pendiente'+(items.length===1?'':'s')+(nEn?' ('+nEn+' con turno en curso)':''),`<div class="fbar" style="margin-bottom:10px">${sel('hf.pd',[['hoy','Hoy'],['7','Últimos 7 días']],pd)}${sel('hf.pu',turnoOpts,pu,{ph:'Todos los turnos'})}</div>`+(items.length?items.slice(0,40).map(pRow).join(''):`<div class="empty">${icon('check',26)}<p>Todo al día</p></div>`))}</div>
+ <div class="c7">${card('Registro de horas justificadas','Últimos 25 movimientos con los filtros de la rueda',log.length?`<div class="tw"><table class="t"><thead><tr><th>Fecha</th><th>Técnico</th><th>Motivo</th><th>Clasificación</th><th class="r">HH</th></tr></thead><tbody>${log.map(r=>`<tr><td>${dlabel(r.fecha)}</td><td>${esc(r.nombre)}</td><td>${esc(r.cat||r.causa)}</td><td>${r.kind==='aus'?badge('Ausencia','n'):badge('Jornada','i')}</td><td class="num">${hh(r.horas)}</td></tr>`).join('')}</tbody></table></div>`:empty('Sin registros'))}</div></div>`;
 }
 /* ---------- Dashboard: se añaden Rendimiento por área y Proyectos activos ---------- */
 function pDashboard(){
@@ -1523,8 +1626,8 @@ function progRender(){
  `<div style="text-align:center;margin-bottom:14px;overflow:auto"><img src="${url}" alt="Programación de turnos" style="max-width:100%;border-radius:12px;border:1px solid var(--bd2)"></div>
  <div class="fbar"><div class="seg" role="group" aria-label="Estilo"><button class="${M.theme==='dark'?'on':''}" data-act="progTheme" data-v="dark">Oscuro</button><button class="${M.theme==='light'?'on':''}" data-act="progTheme" data-v="light">Claro (para imprimir)</button></div></div>
  <div class="acts">${btn(icon('down',15)+' Descargar imagen','progPNG')}${btn(icon('down',15)+' Descargar PDF','progPDF','','ghost')}${btn('Compartir…','progShare','','ghost')}${btn(icon('copy',15)+' Copiar imagen','progCopy','','ghost')}${btn(icon('print',15)+' Imprimir','progPrint','','ghost')}</div>
- <div class="acts" style="margin-top:10px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">WhatsApp (mensaje)</a><a class="btn ghost" target="_blank" rel="noopener" href="mailto:?subject=${encodeURIComponent('Programación de turnos LATAMKS')}&body=${encodeURIComponent(msg)}">Correo (mensaje)</a>${btn('Copiar mensaje','progMsgCopy','','ghost')}${code?'':btn(icon('down',15)+' CSV','rotaCSV','','ghost')}</div>
- <p class="mut3" style="font-size:12.5px;margin-top:12px">Para enviarlo: descarga la imagen o el PDF y adjúntalo en WhatsApp o correo. En el celular, “Compartir…” abre directamente tus aplicaciones. Si la descarga no funciona en esta vista, haz clic derecho (o mantén presionada) sobre la imagen y elige Guardar imagen.</p><textarea id="shTxt" style="position:absolute;left:-9999px" readonly>${esc(msg)}</textarea>`,'w');
+ <div class="acts" style="margin-top:10px">${btn('Enviar por WhatsApp','progWA')}${btn('Enviar por correo','progMail','','ghost')}${btn('Copiar mensaje','progMsgCopy','','ghost')}${code?'':btn(icon('down',15)+' CSV','rotaCSV','','ghost')}</div>
+ <p class="mut3" style="font-size:12.5px;margin-top:12px">En el celular, “Enviar por WhatsApp” abre tus aplicaciones con la imagen ya adjunta: elige WhatsApp y el contacto. En el computador descarga la imagen y abre WhatsApp: toca el clip (📎) y adjúntala.</p><textarea id="shTxt" style="position:absolute;left:-9999px" readonly>${esc(msg)}</textarea>`,'w');
 }
 function progAbrir(code){M={type:'prog',code:code||'',theme:'dark'};progRender()}
 const progNombre=ext=>(M.code?'horario_'+M.code+'_':'programacion_turnos_')+U.semW+'.'+ext;
@@ -1538,6 +1641,13 @@ Object.assign(A,{
  progCopy:async()=>{try{const b=await blobDe(M.cv,'image/png');await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);toast('Imagen copiada: pégala en WhatsApp Web o en un correo','ok')}catch(e){toast('No se pudo copiar la imagen en esta vista. Usa Descargar imagen.','wa')}},
  progPrint:()=>{const ps=$('#printSheet');ps.innerHTML='';const im=new Image();im.style.width='100%';let done=false;const go=()=>{if(done)return;done=true;try{window.print()}catch(e){toast('La impresión no está disponible aquí. Descarga el PDF e imprímelo.','wa')}};im.onload=()=>{(im.decode?im.decode():Promise.resolve()).catch(()=>{}).then(()=>setTimeout(go,150))};im.onerror=()=>toast('No se pudo preparar la imagen. Usa Descargar PDF.','wa');ps.appendChild(im);im.src=M.cv.toDataURL('image/png');setTimeout(go,2500)},
  progMsgCopy:()=>A.copyTxt(),
+ progWA:async()=>{try{const b=await blobDe(M.cv,'image/png');const f=new File([b],progNombre('png'),{type:'image/png'});
+   if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Programación de turnos LATAMKS',text:progMsg(M.code)});return}
+   dlBlob(progNombre('png'),b);toast('Imagen descargada. En WhatsApp toca el clip y adjúntala.','ok');
+   setTimeout(()=>{window.open('https://wa.me/?text='+encodeURIComponent(progMsg(M.code)),'_blank','noopener')},700)}
+  catch(e){if(!e||e.name!=='AbortError')toast('No se pudo preparar el envío. Usa Descargar imagen y adjúntala.','wa')}},
+ progMail:async()=>{try{const b=await blobDe(M.cv,'image/png');dlBlob(progNombre('png'),b);toast('Imagen descargada. Adjúntala al correo.','ok');
+   setTimeout(()=>{location.href='mailto:?subject='+encodeURIComponent('Programación de turnos LATAMKS')+'&body='+encodeURIComponent(progMsg(M.code))},700)}catch(e){toast('No se pudo preparar el correo.','wa')}},
  semCopy:()=>{const prev=S.rota[addDays(U.semW,-7)];if(!prev){toast('La semana anterior no tiene programación propia: ya usa los turnos por defecto','wa');return}S.rota[U.semW]=JSON.parse(JSON.stringify(prev));logH('Programación semanal','copiada de '+dCorta(addDays(U.semW,-7)),dCorta(U.semW));save();renderPage(true);toast('Semana copiada','ok')}
 });
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset.rd){const [c,k]=t.dataset.rd.split('|');setRotaDay(c,+k,t.value);renderPage(true)}});
@@ -1545,7 +1655,7 @@ document.addEventListener('change',e=>{const t=e.target;if(t.dataset.rd){const [
 /* ================= Capa nube (v3.0): Supabase + sesión + captura del técnico + validación ================= */
 const NUBE={url:'https://cjoxjwtgopbmoiwzkwzh.supabase.co',key:'sb_publishable_ryQmfJZttUJ1Bi39ylDhpQ_Sws7mCDD'};
 const NB={kiosk:false,sess:null,perfil:null,email:'',snap:null,dirty:false,busy:false,again:false,err:'',ctxProg:{},personas:{},cred:null,saving:false,sig:'',pt:0,idle:0,poll:0,rp:null};
-const SKEY='latamks_hh_sess';
+const SKEY='latamks_hh_sess';const NB_SESS_DIAS=7;
 function nbUuid(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}
  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})}
 function sessLoad(){try{return JSON.parse(localStorage.getItem(SKEY)||'null')}catch(e){return null}}
@@ -1556,7 +1666,7 @@ function nbMsg(e){const m=String((e&&e.message)||e||'Error');
  return m}
 
 /* ---------- Comunicación con la nube ---------- */
-function nbSetSess(j){NB.sess={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:(j.user&&j.user.id)||(NB.sess&&NB.sess.uid)||'',email:(j.user&&j.user.email)||(NB.sess&&NB.sess.email)||''};NB.email=NB.sess.email;sessSave(NB.sess)}
+function nbSetSess(j){NB.sess={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:(j.user&&j.user.id)||(NB.sess&&NB.sess.uid)||'',email:(j.user&&j.user.email)||(NB.sess&&NB.sess.email)||'',t0:(NB.sess&&NB.sess.t0)||Date.now()};NB.email=NB.sess.email;sessSave(NB.sess)}
 function nbRefresh(){
  if(NB.rp)return NB.rp;
  NB.rp=(async()=>{try{const r=await fetch(NUBE.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:NUBE.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:NB.sess.refresh_token})});
@@ -1587,7 +1697,7 @@ const nbJ=o=>JSON.stringify(o);
 function nbRows(){
  nbEnsureIds();const M=nbMaps();const out={};const mk=()=>new Map();
  const st=S.settings||{};
- out.ajustes=mk();['meta','rec','ali','recSab','empresa','url'].forEach(k=>{if(st[k]!==undefined&&st[k]!==null){const ck=k==='meta'?'meta_semanal':k;out.ajustes.set(ck,nbJ({clave:ck,valor:String(st[k])}))}});
+ out.ajustes=mk();['meta','rec','ali','recSab','empresa','url','respaldo'].forEach(k=>{if(st[k]!==undefined&&st[k]!==null&&st[k]!==''){const ck=k==='meta'?'meta_semanal':k==='respaldo'?'ultimo_respaldo':k;out.ajustes.set(ck,nbJ({clave:ck,valor:String(st[k])}))}});
  if(Array.isArray(st.caps)&&st.caps.length)out.ajustes.set('capacidades',nbJ({clave:'capacidades',valor:st.caps.join(',')}));
  if(Array.isArray(st.lineas)&&st.lineas.length)out.ajustes.set('lineas',nbJ({clave:'lineas',valor:st.lineas.join('|')}));
  out.turnos=mk();out.turno_dias=mk();
@@ -1599,8 +1709,8 @@ function nbRows(){
  S.tecnicos.forEach(t=>out.tecnicos.set(t._id,nbJ({id:t._id,codigo:t.codigo,iniciales:t.ini,nombre:t.nombre,area:t.area||'Sin área',especialidad:t.esp||null,turno_defecto_id:M.turnoUuid[t.turno]||null,rol:t.rol||rolDe(t.area),activo:t.activo!==false,registra_hh:!!t.registra,es_demo:!!t.demo})));
  out.proyectos=mk();out.expectativas_etapa=mk();
  S.proyectos.forEach(p=>{const e=p.exp||{total:0,et:{},cerradas:[]};const mod=e.mod||{};
-  out.proyectos.set(p._id,nbJ({id:p._id,numero:p.num,capacidad_gal:+p.cap,cliente:p.cliente,estado:p.estado||'Activo',fecha_creacion:p.creado||today(),fecha_inicio:p.inicio||today(),fecha_entrega:p.entrega||null,linea:p.linea||'Tanques',compartimentos:p.comp?Math.round(+p.comp):null,referencia:p.ref||null,dias_plan:Math.max(1,Math.round(+p.dias||30)),expectativa_total:+e.total||0,es_demo:!!p.demo,modificado_por:mod.por||null,modificado_en:mod.ts||null}));
-  ETAPAS.forEach(x=>out.expectativas_etapa.set(p._id+'|'+x,nbJ({proyecto_id:p._id,etapa:x,horas:+(e.et||{})[x]||0,terminada:(e.cerradas||[]).includes(x),modificado_por:mod.por||null,modificado_en:mod.ts||((p.creado||'2000-01-01')+'T00:00:00Z')})))});
+  out.proyectos.set(p._id,nbJ({id:p._id,numero:p.num,capacidad_gal:+p.cap,cliente:p.cliente,estado:p.estado||'Activo',fecha_creacion:p.creado||today(),fecha_inicio:p.inicio||today(),fecha_entrega:p.entrega||null,linea:p.linea||'Tanques',compartimentos:p.comp?Math.round(+p.comp):null,referencia:p.ref||null,dias_plan:Math.max(1,Math.round(+p.dias||30)),expectativa_total:+e.total||0,pausa_desde:p.pausaDesde||null,dias_pausa:Math.max(0,Math.round(+p.diasPausa||0)),es_demo:!!p.demo,modificado_por:mod.por||null,modificado_en:mod.ts||null}));
+  ETAPAS.forEach(x=>out.expectativas_etapa.set(p._id+'|'+x,nbJ({proyecto_id:p._id,etapa:x,horas:+(e.et||{})[x]||0,dias:Math.max(0,Math.round(+(e.dias||{})[x]||0)),terminada:(e.cerradas||[]).includes(x),modificado_por:mod.por||null,modificado_en:mod.ts||((p.creado||'2000-01-01')+'T00:00:00Z')})))});
  out.hallazgos=mk();
  S.hallazgos.forEach(h=>{if(!M.projUuid[h.proy])return;out.hallazgos.set(h.codigo,nbJ({codigo:h.codigo,proyecto_id:M.projUuid[h.proy],descripcion:h.desc||null,estado:h.estado||'Abierto',fecha:h.fecha||today(),es_demo:!!h.demo}))});
  out.programacion=mk();
@@ -1624,16 +1734,33 @@ function nbFromReg(d,M){return{id:d.id,fecha:d.fecha,tec:d.codigo_tecnico,ini:d.
  pend:!!d.pendiente_validacion,valPor:d.validado_por||'',valTs:d.validado_en||''}}
 
 /* ---------- Carga desde la nube ---------- */
+const NB_DIAS=90;
+function nbSince(pr){
+ if(NB.all)return '';
+ const d=new Date();d.setDate(d.getDate()-NB_DIAS);let s=d.toLocaleDateString('sv');
+ (pr||[]).forEach(p=>{if((p.estado==='Activo'||p.estado==='En pausa')&&p.fecha_inicio&&p.fecha_inicio<s)s=p.fecha_inicio});
+ return s}
+function nbSinceNote(){
+ if(!NB.since||NB.kiosk)return '';
+ return `<p class="mut3" style="font-size:12.5px;margin-top:12px">Se cargan los últimos 90 días (o desde el inicio de los proyectos activos): hoy ves desde <b style="color:var(--tx2)">${dlabel(NB.since)}</b>. Las tablas, gráficos y el Excel incluyen solo lo cargado. ${btn('Cargar todo el historial','loadAll','','sm ghost')}</p>`}
 async function nbLoad(){
  const safe=(p,def)=>p.catch(e=>{if(e&&(e.status===401))throw e;return def});
- const [aj,tu,td,te,pr,ex,ha,pg,rg]=await Promise.all([
-  safe(nbSel('ajustes'),[]),safe(nbSel('turnos','select=*&order=creado.asc,id.asc'),[]),safe(nbSel('turno_dias'),[]),safe(nbSel('tecnicos','select=*&order=codigo.asc'),[]),
-  safe(nbSel('proyectos','select=*&order=numero.asc'),[]),safe(nbSel('expectativas_etapa'),[]),safe(nbSel('hallazgos','select=*&order=codigo.asc'),[]),
-  safe(nbSel('programacion'),[]),nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc')]);
- let his=[],per=[];
- if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}
+ let aj,tu,td,te,pr,ex,ha,pg,rg,his=[],per=[];
+ if(NB.guest){
+  const g=await nbRpc('invitado_datos',{p_codigo:NB.guest.codigo,p_todo:!!NB.all},false);
+  if(!g){nbGuestEnd();const er=new Error('Invitación vencida');er.guestEnd=true;throw er}
+  NB.guest.nombre=g.invitado.nombre;NB.guest.vence=g.invitado.vence;NB.since=g.desde||'';
+  aj=g.ajustes||[];tu=g.turnos||[];td=g.turno_dias||[];te=g.tecnicos||[];pr=g.proyectos||[];ex=g.expectativas_etapa||[];ha=g.hallazgos||[];pg=g.programacion||[];rg=g.registros_hh||[]}
+ else{
+  [aj,tu,td,te,pr,ex,ha,pg]=await Promise.all([
+   safe(nbSel('ajustes'),[]),safe(nbSel('turnos','select=*&order=creado.asc,id.asc'),[]),safe(nbSel('turno_dias'),[]),safe(nbSel('tecnicos','select=*&order=codigo.asc'),[]),
+   safe(nbSel('proyectos','select=*&order=numero.asc'),[]),safe(nbSel('expectativas_etapa'),[]),safe(nbSel('hallazgos','select=*&order=codigo.asc'),[]),
+   safe(nbSel('programacion'),[])]);
+  const since=nbSince(pr);NB.since=since;
+  rg=await nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc'+(since?'&fecha=gte.'+since:''));
+  if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}}
  const st={...NB_DEF,webapp:'',url:'',empresa:'LATAMKS S.A.S.'};
- aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor;else if(a.clave==='capacidades')st.caps=String(a.valor).split(',').map(Number).filter(n=>n>0);else if(a.clave==='lineas')st.lineas=String(a.valor).split('|').filter(Boolean)});
+ aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor;else if(a.clave==='ultimo_respaldo')st.respaldo=a.valor;else if(a.clave==='capacidades')st.caps=String(a.valor).split(',').map(Number).filter(n=>n>0);else if(a.clave==='lineas')st.lineas=String(a.valor).split('|').filter(Boolean)});
  const tmap={},turnoByName={};
  const turnos=tu.map((t,i)=>{const id='T'+(i+1);tmap[t.id]=id;turnoByName[t.nombre]=turnoByName[t.nombre]||id;const dias={};for(let k=0;k<7;k++)dias[k]=mkDia(0,'07:30','17:00',0,0);
   td.filter(d=>d.turno_id===t.id).forEach(d=>{dias[d.dia]=mkDia(d.activo?1:0,String(d.hora_inicio||'07:30').slice(0,5),String(d.hora_fin||'17:00').slice(0,5),d.receso_min||0,d.alimentacion_min||0)});
@@ -1641,9 +1768,9 @@ async function nbLoad(){
  const codeByUuid={};te.forEach(t=>{codeByUuid[t.id]=t.codigo});
  const tecnicos=te.map(t=>({codigo:t.codigo,ini:t.iniciales,nombre:t.nombre,area:t.area||'',esp:t.especialidad||'',turno:tmap[t.turno_defecto_id]||'',rol:t.rol,activo:t.activo!==false,registra:!!t.registra_hh,demo:t.es_demo?1:0,alta:t.creado?new Date(t.creado).toLocaleDateString('sv'):'',cons:t.consentimiento_en?new Date(t.consentimiento_en).toLocaleDateString('sv'):'',_id:t.id}));
  const numByUuid={};
- const proyectos=pr.map(p=>{numByUuid[p.id]=p.numero;const et={},cerradas=[];ex.filter(e=>e.proyecto_id===p.id).forEach(e=>{et[e.etapa]=+e.horas;if(e.terminada)cerradas.push(e.etapa)});
-  return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,entrega:p.fecha_entrega||'',linea:p.linea||'Tanques',comp:p.compartimentos||'',ref:p.referencia||'',dias:p.dias_plan,demo:p.es_demo?1:0,_id:p.id,
-   exp:{total:+p.expectativa_total||0,et,cerradas,mod:{ts:p.modificado_en||'',por:p.modificado_por||''}}}});
+ const proyectos=pr.map(p=>{numByUuid[p.id]=p.numero;const et={},cerradas=[];const dm={};ex.filter(e=>e.proyecto_id===p.id).forEach(e=>{et[e.etapa]=+e.horas;dm[e.etapa]=+e.dias||0;if(e.terminada)cerradas.push(e.etapa)});
+  return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,entrega:p.fecha_entrega||'',linea:p.linea||'Tanques',comp:p.compartimentos||'',ref:p.referencia||'',dias:p.dias_plan,pausaDesde:p.pausa_desde||'',diasPausa:+p.dias_pausa||0,demo:p.es_demo?1:0,_id:p.id,
+   exp:{total:+p.expectativa_total||0,et,dias:dm,cerradas,mod:{ts:p.modificado_en||'',por:p.modificado_por||''}}}});
  const hallazgos=ha.map(h=>({codigo:h.codigo,proy:numByUuid[h.proyecto_id]||'',desc:h.descripcion||'',estado:h.estado,fecha:h.fecha,demo:h.es_demo?1:0}));
  const rota={};
  pg.forEach(g=>{const code=codeByUuid[g.tecnico_id];if(!code)return;const w=g.semana;rota[w]=rota[w]||{};rota[w][code]=rota[w][code]||{};rota[w][code][g.dia]=g.libre?'LIBRE':(tmap[g.turno_id]||'')});
@@ -1692,10 +1819,11 @@ function nbBanner(msg){
  b.style.display='flex';
  b.innerHTML=`<div style="flex:1;min-width:200px"><b>No se pudo guardar en la nube</b><div class="mut" style="font-size:13px">${esc(msg)}</div></div><button class="btn sm" data-act="nbRetry">Reintentar</button><button class="btn sm ghost" data-act="nbDiscard">Descartar cambios y recargar</button>`}
 async function nbRefreshNow(){
+ if(NB.guest){try{await nbLoad();renderAll(true)}catch(e){if(!e.guestEnd)toast(nbMsg(e),'er')}return}
  if(NB.kiosk||!NB.sess){renderAll(true);return}
  try{if(NB.dirty)await nbPush();if(NB.dirty)return;await nbLoad();renderAll(true)}catch(e){toast(nbMsg(e),'er')}}
 async function nbPoll(){
- if(NB.kiosk||!NB.sess||NB.dirty||NB.busy||document.hidden)return;
+ if(NB.kiosk||(!NB.sess&&!NB.guest)||NB.dirty||NB.busy||document.hidden)return;
  const m=$('#modal');if(m&&m.classList.contains('open'))return;
  const ae=document.activeElement;if(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
  try{const keep=S;const before=NB.sig;const oldSnap=NB.snap;await nbLoad();if(NB.sig!==before)renderAll(true)}catch(e){}}
@@ -1709,7 +1837,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.4</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.5</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -1760,15 +1888,21 @@ async function nbStart(){
   NB.perfil=p;U.role=p.rol;U.name=p.nombre;U.menu=false;
   app().innerHTML='<aside class="side" id="side"></aside><div class="scrim" data-act="closeDrawer"></div><div class="main"><header class="top" id="top"></header><main class="page" id="page"></main></div>';
   await nbLoad();U.page=DEFP[U.role]||'dashboard';U.f=newF();U.c=newC();renderAll();
-  clearInterval(NB.poll);NB.poll=setInterval(nbPoll,45000);nbIdleArm()}
+  clearInterval(NB.poll);NB.poll=setInterval(nbPoll,45000);nbIdleArm();nbBakCheck();nbInvLoad().then(()=>{if(U.page==='ajustes')renderPage(true)})}
  catch(e){if(e&&e.status===401){sessSave(null);nbShowLogin('Tu sesión terminó. Ingresa de nuevo.')}else nbShowLogin(nbMsg(e))}}
 async function nbLogout(){
+ if(NB.guest){history.replaceState(null,'',location.pathname);location.reload();return}
  try{if(NB.dirty)await nbPush()}catch(e){}
  try{await nbReq('POST','/auth/v1/logout',{body:{}})}catch(e){}
  sessSave(null);clearInterval(NB.poll);NB.sess=null;NB.perfil=null;NB.snap=null;S=baseState();S.turnos=[];nbShowLogin('')}
 function nbIdleArm(){
- const reset=()=>{clearTimeout(NB.idle);NB.idle=setTimeout(()=>{if(NB.sess&&!NB.kiosk)nbLogout()},20*60*1000)};
- ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,reset,{passive:true}));reset()}
+ /* v3.5: la sesión ya no se cierra por inactividad. Dura hasta 7 días o hasta que la persona toque "Cerrar sesión". */
+ if(NB.vis)return;NB.vis=true;
+ document.addEventListener('visibilitychange',async()=>{
+  if(document.hidden||!NB.sess||NB.kiosk)return;
+  if(Date.now()-(NB.sess.t0||Date.now())>NB_SESS_DIAS*864e5){nbLogout();return}
+  if(Date.now()>NB.sess.exp-120000){await nbRefresh()}
+  nbPoll()})}
 
 /* ---------- Técnico por QR (sin contraseña) ---------- */
 function nbKioskReset(){S.tecnicos=[];S.registros=[];NB.cred=null;NB.ctxProg={}}
@@ -1873,8 +2007,9 @@ function projSem(p,A0){
  if(dr<0)return{c:'er',txt:'Vencido',left:'Pasó hace '+(-dr)+' día'+(-dr===1?'':'s'),dr};
  const left=dr===0?'Entrega hoy':'Faltan '+dr+' día'+(dr===1?'':'s');
  if(Av.sinExp)return{c:'n',txt:'Sin expectativa',left,dr,hint:'Define la expectativa por etapa para calcular el semáforo'};
- const ini=p.inicio||hoy,tt=Math.max(1,daysB(ini,p.entrega)),el=Math.min(tt,Math.max(0,daysB(ini,hoy))),tp=el/tt;
- const atraso=(tp-Av.av)*100,sub=Math.round(Av.av*100)+'% de avance · '+Math.round(tp*100)+'% del tiempo';
+ const ini=p.inicio||hoy,tt0=Math.max(1,daysB(ini,p.entrega)),el0=Math.min(tt0,Math.max(0,daysB(ini,hoy)));
+ const pz=Math.max(0,Math.min(+p.diasPausa||0,tt0-1)),tt=Math.max(1,tt0-pz),el=Math.min(tt,Math.max(0,el0-pz)),tp=el/tt;
+ const atraso=(tp-Av.av)*100,sub=Math.round(Av.av*100)+'% de avance · '+Math.round(tp*100)+'% del tiempo'+(pz?' · '+pz+' d de pausa descontados':'');
  const lim=+(S.settings&&S.settings.semAm)||10;
  if(atraso<=0)return{c:'ok',txt:'A tiempo',left,sub,dr};
  if(atraso<=lim)return{c:'wa',txt:'Atención',left,sub,dr};
@@ -1920,7 +2055,9 @@ function projSave(edit){
  if(!CAPS.includes(cap)){S.settings.caps=[...new Set([...(S.settings.caps&&S.settings.caps.length?S.settings.caps:CAPS0),cap])].sort((a,b)=>a-b);nbApplyLists()}
  if(edit){const p=old;
   [['num',num],['cap',o.cap],['cliente',o.cliente],['inicio',o.inicio],['entrega',o.entrega],['linea',o.linea],['comp',o.comp],['ref',o.ref]].forEach(([k,v])=>{if(String(p[k]??'')!==String(v))logH('Proyecto '+k,p[k]??'',v,p.num)});
-  const e=val('p_est');if(e!==p.estado)logH('Estado proyecto',p.estado,e,p.num);
+  const e=val('p_est');if(e!==p.estado){logH('Estado proyecto',p.estado,e,p.num);
+   if(e==='En pausa'){p.pausaDesde=today()}
+   else if(p.estado==='En pausa'&&p.pausaDesde){p.diasPausa=(+p.diasPausa||0)+Math.max(0,daysB(p.pausaDesde,today()));p.pausaDesde=''}}
   Object.assign(p,o,{num,estado:e});save();closeModal();renderAll(true);toast('Proyecto actualizado','ok')}
  else{S.proyectos.push({num,...o,estado:'Activo',creado:today(),exp:{total:0,et:{},cerradas:[],mod:{ts:new Date().toISOString(),por:U.name}}});save();toast('Proyecto '+num+' creado','ok');expOpen(num)}}
 function listasCard(){
@@ -1964,12 +2101,154 @@ async function nubeBoot(){
   NB.kiosk=true;U.kiosk=true;U.role='Técnico';U.name='Técnico';U.page='captura';
   app().innerHTML='<aside class="side" id="side"></aside><div class="scrim" data-act="closeDrawer"></div><div class="main"><header class="top" id="top"></header><main class="page" id="page"></main></div>';
   renderAll();return}
+ const gm=/^#invitado=([A-Za-z0-9_-]{10,80})$/.exec(location.hash||'');
+ if(gm){NB.guest={codigo:gm[1],nombre:'',vence:''};await nbStartGuest();return}
  const hp=new URLSearchParams((location.hash||'').replace(/^#/,''));
  if(hp.get('access_token')&&/^(recovery|invite)$/.test(hp.get('type')||'')){const tok=hp.get('access_token'),tp=hp.get('type');history.replaceState(null,'',location.pathname);sessSave(null);nbShowNewPass(tok,tp);return}
  if(hp.get('error_description')){const m=/expired|invalid/i.test(hp.get('error_description'))?'El enlace venció o ya fue usado. Pide uno nuevo con "¿Olvidaste tu contraseña?".':hp.get('error_description').replace(/\+/g,' ');history.replaceState(null,'',location.pathname);sessSave(null);nbShowLogin(m);return}
  NB.sess=sessLoad();
+ if(NB.sess&&NB.sess.t0&&Date.now()-NB.sess.t0>NB_SESS_DIAS*864e5){sessSave(null);NB.sess=null}
  if(NB.sess){app().innerHTML='<div class="main" style="margin-left:0"><div class="page"><p class="mut" style="text-align:center;margin-top:20vh">Cargando…</p></div></div>';await nbStart()}
  else nbShowLogin('')}
+
+/* ================= v3.5 · copia de seguridad, invitados, tarjetas, comparación ================= */
+const fmtDT=iso=>{try{return new Date(iso).toLocaleString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return String(iso||'')}};
+const isGer=()=>!!(NB.perfil&&NB.perfil.rol==='Gerencia'&&!NB.guest&&NB.sess);
+
+/* ---------- Copia de seguridad (archivo .sql que se restaura pegándolo en el Editor SQL de Supabase) ---------- */
+const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
+async function nbBackup(){
+ if(!isGer()){toast('Solo Gerencia puede descargar la copia de seguridad.','wa');return}
+ if(NB.bak)return;NB.bak=true;toast('Preparando la copia de seguridad… puede tardar unos segundos.','ok');
+ try{
+  if(NB.dirty)await nbPush();
+  const hoy=today(),partes=[],cuenta={};
+  for(const [t,ord] of BAK_TABLAS){
+   const q=ord.includes('.')||ord.includes(',')?'select=*&order='+ord:'select=*&order='+ord+'.asc';
+   const rows=await nbSel(t,q);cuenta[t]=rows.length;
+   for(let i=0;i<rows.length;i+=400){
+    let js=JSON.stringify(rows.slice(i,i+400));let tag='j';while(js.includes('$'+tag+'$'))tag+='x';
+    partes.push(`insert into public.${t}${t==='historial'?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
+  const cab=`-- LATAMKS HH · COPIA DE SEGURIDAD · ${hoy}\n-- Filas: ${BAK_TABLAS.map(([t])=>t+' '+cuenta[t]).join(' · ')}\n-- Para restaurar: Supabase > SQL Editor > pegar este archivo completo > Run. Es seguro repetirlo (no duplica nada).\n-- Las cuentas de acceso (correos y contraseñas) no van en este archivo: se vuelven a crear en Authentication.\nbegin;\n`;
+  const pie=`\nselect setval(pg_get_serial_sequence('public.historial','id'), (select coalesce(max(id),1) from public.historial));\ncommit;\n`;
+  nbDownload('latamks-hh_copia-seguridad_'+hoy+'.sql',new Blob([cab+partes.join('\n')+pie],{type:'text/plain;charset=utf-8'}));
+  S.settings.respaldo=hoy;save();nbBakCheck();if(U.page==='ajustes')renderPage(true);
+  toast('Copia lista · '+cuenta.registros_hh+' registros de horas. Guárdala fuera de esta computadora (correo o Drive).','ok')}
+ catch(e){toast('No se pudo crear la copia: '+nbMsg(e),'er')}
+ finally{NB.bak=false}}
+function nbBakCheck(){
+ let b=document.getElementById('nbBak');
+ const last=S.settings&&S.settings.respaldo;const d=last?daysB(last,today()):999;
+ if(!isGer()||d<=7||NB.bakHide){if(b)b.remove();return}
+ if(!b){b=document.createElement('div');b.id='nbBak';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:70;max-width:720px;margin:0 auto;padding:11px 14px;border-radius:12px;background:#2a1215;border:1px solid var(--er);color:var(--tx);display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
+ b.innerHTML=`<div style="flex:1;min-width:200px"><b>Falta tu copia de seguridad</b><div class="mut" style="font-size:13px">${last?'La última fue hace '+d+' días ('+dlabel(last)+').':'Aún no has descargado ninguna.'} El plan gratuito no hace copias automáticas.</div></div><button class="btn sm" data-act="backup">Descargar copia ahora</button><button class="btn sm ghost" data-act="bakLater">Más tarde</button>`}
+function backupCardExtra(){
+ const last=S.settings.respaldo;const d=last?daysB(last,today()):null;
+ return `<div class="sub-panel" style="margin-top:12px;${d===null||d>7?'border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.06)':'border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)'}"><div class="ttl">${d===null?'Aún no hay copia de seguridad':d>7?'Copia vencida · hace '+d+' días':'Copia al día · '+dlabel(last)}</div><p class="mut3" style="font-size:12.5px;margin:4px 0 10px">Descarga una copia cada semana y guárdala en tu correo o en Drive. Si algún día se pierde la base de datos, se restaura pegando ese archivo en Supabase (pasos en la guía).</p>${isGer()?btn(icon('down',16)+' Descargar copia de seguridad (.sql)','backup'):'<span class="mut3" style="font-size:12.5px">Solo Gerencia descarga la copia.</span>'}</div>`}
+
+/* ---------- Invitados (solo lectura) ---------- */
+async function nbInvLoad(){
+ if(!isGer())return;
+ try{NB.inv=await nbReq('GET','/rest/v1/invitados?select=*&order=creado_en.desc&limit=30')}catch(e){NB.inv=null}}
+const invBase=()=>((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0];
+const invLink=cod=>invBase()+'#invitado='+cod;
+function invitadosCard(){
+ if(!isGer())return '';
+ const l=NB.inv;let body;
+ if(l===undefined)body='<p class="mut">Cargando…</p>';
+ else if(l===null)body='<p class="mut">No se pudo leer la lista. ¿Ya ejecutaste el SQL del paso 40 (p16) en Supabase?</p>';
+ else{const ahora=Date.now(),act=l.filter(i=>!i.revocado&&new Date(i.vence)>ahora);
+  body=(act.length?act.map(i=>`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--bd)"><div style="flex:1;min-width:160px"><b>${esc(i.nombre)}</b><div class="mut3" style="font-size:12.5px">Válido hasta ${esc(fmtDT(i.vence))}</div></div>${btn('Ver enlace / QR','invVer',`data-id="${i.id}"`,'sm ghost')}${btn('Revocar','invRev',`data-id="${i.id}"`,'sm dng')}</div>`).join(''):'<p class="mut" style="margin-bottom:6px">No hay invitados vigentes.</p>')+
+  `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:14px"><div class="fld" style="margin:0"><label>Nombre del invitado</label><input class="inp" id="invNom" maxlength="60" placeholder="Ej. Gerente de planta"></div><div class="fld" style="margin:0"><label>Dura</label><select class="sel" id="invHoras"><option value="24">24 horas</option><option value="72" selected>3 días</option><option value="168">7 días</option></select></div>${btn('Crear invitado','invCrear','',act.length>=2?'ghost':'')}</div>
+  <p class="mut3" style="font-size:12.5px;margin-top:10px">El invitado ve todo (paneles, proyectos, registros, turnos) pero no puede modificar nada. Máximo 2 invitados a la vez. El enlace vence solo y puedes revocarlo cuando quieras. Quien tenga el enlace puede verlo hasta que venza: compártelo solo por WhatsApp o correo directo.</p>`}
+ return `<div class="g12"><div class="c12">${card('Invitados de solo lectura','Para mostrar la aplicación a alguien sin darle una cuenta',body)}</div></div>`}
+function invModal(inv){
+ M={type:'inv'};const link=invLink(inv.codigo);
+ openModal(mh('Acceso de invitado')+`<div style="text-align:center"><p class="mut" style="margin-bottom:10px"><b style="color:var(--tx)">${esc(inv.nombre||'')}</b> · solo lectura</p><div class="qrbox" id="invqr" style="margin:0 auto 10px;display:inline-block"></div><div style="font-weight:700;margin:4px 0 8px">Válido hasta ${esc(fmtDT(inv.vence))}</div><input class="inp" id="invLink" readonly value="${esc(link)}" onclick="this.select()" style="font-size:12px"></div><div class="mf">${btn('Copiar enlace','invCopy','','ghost')}${btn('Enviar por WhatsApp','invWA','','')}</div>`);
+ M.link=link;M.vence=inv.vence;M.nombre=inv.nombre;
+ setTimeout(()=>qrInto('#invqr',link,200),30)}
+function qrInto(sel,text,size){const el=$(sel);if(!el)return;el.innerHTML='';try{if(window.QRCode)new QRCode(el,{text,width:size,height:size,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else el.innerHTML='<p class="mut3" style="padding:30px">No se pudo dibujar el QR (sin internet). Usa el enlace.</p>'}catch(e){}}
+/* Modo invitado */
+async function nbStartGuest(){
+ document.body.classList.add('guest');
+ U.role='Gerencia';U.menu=false;NB.perfil={rol:'Gerencia',nombre:'Invitado'};
+ app().innerHTML='<aside class="side" id="side"></aside><div class="scrim" data-act="closeDrawer"></div><div class="main"><header class="top" id="top"></header><main class="page" id="page"></main></div>';
+ try{await nbLoad()}catch(e){if(e.guestEnd)return;nbCard(`<p class="mut" style="margin:6px 0 10px">${esc(nbMsg(e))}</p>`);return}
+ U.name='Invitado · '+(NB.guest.nombre||'');U.page=DEFP.Gerencia||'dashboard';U.f=newF();U.c=newC();
+ renderAll();nbGuestBar();nbGuestGuard();
+ clearInterval(NB.poll);NB.poll=setInterval(nbPoll,45000)}
+function nbGuestEnd(){clearInterval(NB.poll);const b=document.getElementById('nbGuestBar');if(b)b.remove();
+ nbCard(`<p class="mut" style="margin:6px 0 10px"><b style="color:var(--tx)">Este acceso de invitado venció o fue revocado.</b></p><p class="mut3" style="font-size:13px">Pide un enlace nuevo a Gerencia.</p>`)}
+function nbGuestBar(){
+ let b=document.getElementById('nbGuestBar');
+ if(!b){b=document.createElement('div');b.id='nbGuestBar';b.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:70;max-width:560px;margin:0 auto;padding:9px 14px;border-radius:12px;background:#0c2233;border:1px solid #38bdf8;color:var(--tx);font-size:13px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
+ b.innerHTML=`<b>Modo invitado · solo lectura</b> · Válido hasta ${esc(fmtDT(NB.guest.vence))}`}
+function nbGuestGuard(){
+ if(NB.guardOn)return;NB.guardOn=true;
+ const BLK=/^(edit|new|save|val|falt|tec|reg|expSave|fSave|hall|nt|rt|tDay|tDel|tSave|tActive|ren|proj(New|Edit)|cap|lin|unasg|xUse|delDemo|loadDemo|impJSON|backup|inv|addH|libre|tarjPrint)/;
+ const OKM=/^(mClose|palGo|pal|go|none|help|copy|share|sem|prog|tarjUna|tarjTodas)/;
+ window.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  const inModal=!!t.closest('#modal');
+  if((inModal&&!OKM.test(a))||(!inModal&&BLK.test(a)&&!OKM.test(a))){e.stopPropagation();e.preventDefault();toast('Modo invitado: puedes ver todo, pero no modificar nada.','wa')}},true);
+ window.addEventListener('change',e=>{const d=(e.target&&e.target.dataset)||{};if(d.tur!==undefined||d.tf!==undefined||d.rd!==undefined){e.stopPropagation();e.preventDefault();toast('Modo invitado: puedes ver todo, pero no modificar nada.','wa');renderPage(true)}},true)}
+
+/* ---------- Tarjetas personales de técnicos ---------- */
+const AREAS0=['Almacén / Recepción','Armado y soldadura','Acabados','Calidad','Corte láser','Ingeniería / Diseño','Plegado','Producción','Rolado'];
+const CARGOS0=['Soldador-Armador','Técnico en corte láser','Rolador','Plegador','Auxiliar de acabados','Inspector de Calidad','Supervisor de producción','Almacenista','Ingeniero de diseño'];
+function tecSugIni(nom){
+ const i=document.getElementById('t_ini');if(!i||i.dataset.man==='1')return;
+ const w=String(nom||'').trim().toUpperCase().split(/\s+/).filter(Boolean);
+ i.value=w.length>=2?(w[0][0]+w[w.length-1][0]):(w[0]||'').slice(0,2)}
+function tarjetaHtml(t){return `<div class="tcard"><div class="th"><b>LATAMKS</b> · REGISTRO DE HORAS</div><div class="tb"><div class="tx"><div class="tn">${esc(t.nombre)}</div><div class="tl">CÓDIGO</div><div class="tv">${esc(t.codigo)}</div><div class="tl">INICIALES</div><div class="tv">${esc(t.ini)}</div></div><div class="tq"></div></div><div class="tf">Personal e intransferible · escanea el QR y escribe tu código e iniciales</div></div>`}
+function tarjetasDraw(root){$$('.tq',root).forEach(el=>{el.innerHTML='';try{if(window.QRCode)new QRCode(el,{text:qrUrl(),width:150,height:150,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M})}catch(e){}})}
+function tarjetasList(codes){return codes==='todas'?S.tecnicos.filter(t=>t.registra&&t.activo!==false):S.tecnicos.filter(t=>codes.includes(t.codigo))}
+function tarjetasOpen(codes,nuevo){
+ const L=tarjetasList(codes);if(!L.length){toast('No hay técnicos para imprimir.','wa');return}
+ M={type:'tarj',codes};
+ openModal(mh(L.length===1?'Tarjeta de '+esc(L[0].nombre):'Tarjetas ('+L.length+')')+(nuevo?'<p class="mut" style="margin-bottom:8px">Técnico creado. Imprime su tarjeta y entrégala en mano.</p>':'')+`<div class="tcards" id="tcPrev">${L.map(tarjetaHtml).join('')}</div><p class="mut3" style="font-size:12px;margin-top:8px">Se imprimen de 10 por hoja carta. Recórtalas por la línea punteada.</p><div class="mf">${btn('Cerrar','mClose','','ghost')}${btn(icon('print',16)+' Imprimir','tarjPrint')}</div>`,'w');
+ setTimeout(()=>tarjetasDraw($('#tcPrev')),30)}
+function tarjetasPrint(){
+ const L=tarjetasList(M.codes||'todas');if(!L.length)return;
+ const ps=$('#printSheet');ps.className='cards';ps.innerHTML=`<div class="tcards">${L.map(tarjetaHtml).join('')}</div>`;tarjetasDraw(ps);
+ setTimeout(()=>{try{window.print()}catch(e){toast('La impresión no está disponible aquí.','wa')}setTimeout(()=>{ps.className='';},1500)},350)}
+
+/* ---------- Comparar con proyecto de éxito ---------- */
+function cmpPanel(){
+ if(!U.cmpOn)return '';
+ const P=S.proyectos.slice().sort((a,b)=>a.num<b.num?1:-1);
+ const opts=P.map(p=>[p.num,`${p.num} · ${nf(p.cap,0)} gal · ${p.cliente} (${p.estado})`]);
+ const head=`<div class="fbar"><span class="mut">Proyecto de éxito:</span>${sel('cmpRef',opts,U.cmpRef,{ph:'Elige la referencia…'})}<span class="mut">Proyecto a revisar:</span>${sel('cmpTgt',opts,U.cmpTgt,{ph:'Elige el proyecto…'})}</div>`;
+ const ref=P.find(p=>p.num===U.cmpRef),tg=P.find(p=>p.num===U.cmpTgt);
+ if(!ref||!tg||ref===tg)return `<div class="g12"><div class="c12">${card('Comparar con proyecto de éxito','Elige un proyecto terminado que salió bien y el proyecto que quieres revisar',head+empty(ref&&tg?'Elige dos proyectos distintos':'Elige los dos proyectos'))}</div></div>`;
+ const rn=live(),sR=stageStats([ref],rn.filter(r=>r.proy===ref.num)),sT=stageStats([tg],rn.filter(r=>r.proy===tg.num));
+ const tR=ETAPAS.reduce((a,x)=>a+sR[x].real,0),tT=ETAPAS.reduce((a,x)=>a+sT[x].real,0);
+ const mismo=+ref.cap===+tg.cap;
+ const rows=ETAPAS.map((x,i)=>{const r=sR[x].real,t=sT[x].real;if(!r&&!t)return '';
+  const shR=tR?r/tR*100:0,shT=tT?t/tT*100:0;let flag,txt,dif;
+  if(mismo){dif=t-r;const ex=r>0?dif/r*100:(t>0?100:0);flag=(dif>1&&ex>10)?'er':(dif>1&&ex>0?'wa':'ok');txt=r>0?(dif>=0?'+':'')+nf(ex,0)+'%':(t>0?'sin referencia':'—')}
+  else{dif=shT-shR;flag=dif>5?'er':dif>2?'wa':'ok';txt=(dif>=0?'+':'')+nf(dif,1)+' pts'}
+  return `<tr style="${flag==='er'?'background:rgba(239,68,68,.08)':''}"><td><span class="stat" style="--c:${PAL[i]}">${x}</span></td><td class="num">${nf(r,0)}</td><td class="num">${nf(t,0)}</td><td class="num">${nf(shR,1)}%</td><td class="num">${nf(shT,1)}%</td><td class="num">${badge(txt,flag)}</td></tr>`}).join('');
+ const avisos=[];
+ if(!mismo)avisos.push(`Las capacidades son distintas (${nf(ref.cap,0)} y ${nf(tg.cap,0)} gal): se comparan los porcentajes (cuánto pesa cada etapa dentro del total del proyecto), no las horas. Una diferencia de más de 5 puntos se marca en rojo.`);
+ else avisos.push('Misma capacidad: se comparan las horas directamente. Más de 10 % sobre la referencia se marca en rojo.');
+ if(ref.estado!=='Finalizado')avisos.push(`El proyecto de referencia ${ref.num} está “${ref.estado}”: sus horas pueden estar incompletas.`);
+ if(NB.since&&((ref.inicio&&ref.inicio<NB.since)||(tg.inicio&&tg.inicio<NB.since)))avisos.push('Alguno de los proyectos empezó antes de la fecha cargada ('+dlabel(NB.since)+'): faltan horas antiguas. Usa “Cargar todo el historial” en Registros o Ajustes.');
+ return `<div class="g12"><div class="c12">${card('Comparar con proyecto de éxito',`HH reales por etapa: ${ref.num} (referencia) frente a ${tg.num}`,head+`<div class="tw"><table class="t"><thead><tr><th>Etapa</th><th class="r">${ref.num} · HH</th><th class="r">${tg.num} · HH</th><th class="r">${ref.num} · %</th><th class="r">${tg.num} · %</th><th class="r">Diferencia</th></tr></thead><tbody>${rows}<tr><td><b>Total</b></td><td class="num"><b>${nf(tR,0)}</b></td><td class="num"><b>${nf(tT,0)}</b></td><td class="num">100%</td><td class="num">100%</td><td class="num">${mismo&&tR?badge((tT>=tR?'+':'')+nf((tT-tR)/tR*100,0)+'%',tT>tR*1.1?'er':tT>tR?'wa':'ok'):''}</td></tr></tbody></table></div>`+avisos.map(a=>`<p class="mut3" style="font-size:12.5px;margin-top:8px">${esc(a)}</p>`).join(''))}</div></div>`}
+
+/* ---------- Acciones nuevas ---------- */
+Object.assign(A,{
+ backup:()=>nbBackup(),bakLater:()=>{NB.bakHide=true;nbBakCheck()},
+ loadAll:async()=>{NB.all=true;toast('Cargando todo el historial…','ok');try{await nbLoad();renderAll(true);nbBakCheck();toast('Historial completo cargado','ok')}catch(e){NB.all=false;toast(nbMsg(e),'er')}},
+ cmpToggle:()=>{U.cmpOn=!U.cmpOn;renderPage(true)},
+ tarjUna:t=>tarjetasOpen([t.dataset.c]),tarjTodas:()=>tarjetasOpen('todas'),tarjPrint:()=>tarjetasPrint(),
+ invCrear:async()=>{const n=(val('invNom')||'').trim(),h=+val('invHoras')||72;if(!n){toast('Escribe el nombre del invitado.','wa');return}
+  try{const r=await nbRpc('invitado_crear',{p_nombre:n,p_horas:h});await nbInvLoad();renderPage(true);invModal({codigo:r.codigo,vence:r.vence,nombre:n})}catch(e){toast(nbMsg(e),'er')}},
+ invVer:t=>{const i=(NB.inv||[]).find(x=>x.id===t.dataset.id);if(i)invModal(i)},
+ invRev:t=>{const i=(NB.inv||[]).find(x=>x.id===t.dataset.id);if(!i)return;
+  confirmM('Revocar acceso',`${esc(i.nombre)} dejará de poder entrar con su enlace de inmediato.`,'Revocar',async()=>{try{await nbRpc('invitado_revocar',{p_id:i.id});await nbInvLoad();closeModal();renderPage(true);toast('Acceso revocado','ok')}catch(e){toast(nbMsg(e),'er')}},true)},
+ invCopy:()=>{const v=M.link||'';try{navigator.clipboard.writeText(v).then(()=>toast('Enlace copiado','ok'),()=>{$('#invLink').select();toast('Selecciona y copia el enlace','wa')})}catch(e){$('#invLink').select()}},
+ invWA:()=>{const m=`Acceso de solo lectura a Latamks HH (${M.nombre||'invitado'}). Válido hasta ${fmtDT(M.vence)}:\n${M.link}`;window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank','noopener')}
+});
 
 nubeBoot();
 
