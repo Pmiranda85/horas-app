@@ -785,13 +785,14 @@ function xlsxBlob(sheets){
  sheets.forEach((s,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`,text:xlsxSheet(s)}));
  return zipStore(files)}
 function xlsxRegistros(){
- const rs=filt(S.registros.filter(r=>r.estado!=='Anulado')).sort((a,b)=>a.fecha<b.fecha?-1:a.fecha>b.fecha?1:(a.nombre<b.nombre?-1:1));
+ const rs=regBusca(filt(S.registros.filter(r=>U.showAn||r.estado!=='Anulado')),(U.rq||'').toLowerCase().trim()).sort((a,b)=>a.fecha<b.fecha?-1:a.fecha>b.fecha?1:(a.nombre<b.nombre?-1:1));
+ const ra=rs.filter(r=>r.estado!=='Anulado');
  const A=rs.map(r=>[r.fecha,r.nombre,r.area,r.turno?((S.turnos.find(t=>t.id===r.turno)||{}).nombre||r.turno):'',r.proy||'',r.macro||'',r.act||'',r.horas,r.tipo,r.causa||'',r.origen||'',r.hallazgo||'',r.estado,r.por||'']);
  const sA={name:'Registros',cols:[{h:'Fecha',w:12,t:'d'},{h:'Técnico',w:26},{h:'Área',w:20},{h:'Turno',w:18},{h:'Proyecto',w:11},{h:'Etapa',w:20},{h:'Actividad',w:34},{h:'Horas',w:9,t:'n'},{h:'Tipo de trabajo',w:16},{h:'Causa',w:22},{h:'Origen',w:18},{h:'Hallazgo',w:14},{h:'Estado',w:12},{h:'Registrado por',w:22}],rows:A};
- const bt={};rs.forEach(r=>{const k=r.nombre;const o=bt[k]=bt[k]||{n:r.nombre,a:r.area||'',t:0,nor:0,ret:0,otr:0};o.t+=r.horas;if(r.clase==='normal')o.nor+=r.horas;else if(r.clase==='retrabajo')o.ret+=r.horas;else o.otr+=r.horas});
- const sB={name:'Por técnico',cols:[{h:'Técnico',w:28},{h:'Área',w:22},{h:'HH totales',w:13,t:'n'},{h:'HH normales',w:13,t:'n'},{h:'HH retrabajo',w:13,t:'n'},{h:'Otras (apoyo, ausencias…)',w:24,t:'n'}],rows:Object.values(bt).sort((a,b)=>b.t-a.t).map(o=>[o.n,o.a,r2(o.t),r2(o.nor),r2(o.ret),r2(o.otr)])};
- const bp={};rs.filter(r=>r.proy&&isProd(r)).forEach(r=>{const k=r.proy+'|'+r.macro;const o=bp[k]=bp[k]||{p:r.proy,m:r.macro||'',nor:0,ret:0};if(r.clase==='retrabajo')o.ret+=r.horas;else o.nor+=r.horas});
- const sC={name:'Por proyecto y etapa',cols:[{h:'Proyecto',w:12},{h:'Etapa',w:24},{h:'HH normales',w:14,t:'n'},{h:'HH retrabajo',w:14,t:'n'},{h:'HH totales',w:14,t:'n'}],rows:Object.values(bp).sort((a,b)=>a.p<b.p?-1:a.p>b.p?1:(ETAPAS.indexOf(a.m)-ETAPAS.indexOf(b.m))).map(o=>[o.p,o.m,r2(o.nor),r2(o.ret),r2(o.nor+o.ret)])};
+ const bt={};ra.forEach(r=>{const k=r.nombre;const o=bt[k]=bt[k]||{n:r.nombre,a:r.area||'',t:0,nor:0,ret:0,alc:0,npl:0,otr:0,aus:0};if(r.clase==='aus'){o.aus+=r.horas;return}o.t+=r.horas;if(r.clase==='normal')o.nor+=r.horas;else if(r.clase==='retrabajo')o.ret+=r.horas;else if(r.clase==='alcance')o.alc+=r.horas;else if(r.clase==='noplan')o.npl+=r.horas;else o.otr+=r.horas});
+ const sB={name:'Por técnico',cols:[{h:'Técnico',w:28},{h:'Área',w:22},{h:'HH totales (sin ausencias)',w:18,t:'n'},{h:'HH normales',w:13,t:'n'},{h:'HH retrabajo',w:13,t:'n'},{h:'Cambio de alcance',w:15,t:'n'},{h:'No planificada',w:14,t:'n'},{h:'Otras (apoyo, inspección, capacitación, esperas)',w:30,t:'n'},{h:'Ausencias',w:12,t:'n'}],rows:Object.values(bt).sort((a,b)=>b.t-a.t).map(o=>[o.n,o.a,r2(o.t),r2(o.nor),r2(o.ret),r2(o.alc),r2(o.npl),r2(o.otr),r2(o.aus)])};
+ const bp={};ra.filter(r=>r.proy&&isProd(r)).forEach(r=>{const k=r.proy+'|'+r.macro;const o=bp[k]=bp[k]||{p:r.proy,m:r.macro||'',nor:0,ret:0,alc:0,npl:0};if(r.clase==='retrabajo')o.ret+=r.horas;else if(r.clase==='alcance')o.alc+=r.horas;else if(r.clase==='noplan')o.npl+=r.horas;else o.nor+=r.horas});
+ const sC={name:'Por proyecto y etapa',cols:[{h:'Proyecto',w:12},{h:'Etapa',w:24},{h:'HH normales',w:14,t:'n'},{h:'HH retrabajo',w:14,t:'n'},{h:'Cambio de alcance',w:15,t:'n'},{h:'No planificada',w:14,t:'n'},{h:'HH de producción',w:16,t:'n'}],rows:Object.values(bp).sort((a,b)=>a.p<b.p?-1:a.p>b.p?1:(ETAPAS.indexOf(a.m)-ETAPAS.indexOf(b.m))).map(o=>[o.p,o.m,r2(o.nor),r2(o.ret),r2(o.alc),r2(o.npl),r2(o.nor+o.ret+o.alc+o.npl)])};
  return xlsxBlob([sA,sB,sC])}
 
 const csvOf=(hd,rows)=>'\ufeff'+[hd,...rows].map(a=>a.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
@@ -910,13 +911,14 @@ function pSupervisor(){
  <div class="c4">${card('Novedades','Ausencias, capacitaciones y esperas',nov.length?nov.map(r=>`<div style="padding:9px 0;border-top:1px solid var(--bd);display:flex;gap:10px;align-items:center"><span style="width:8px;height:8px;border-radius:50%;background:${CL[r.clase].c}"></span><div style="flex:1"><b>${esc(r.nombre)}</b><div class="mut3" style="font-size:12px">${esc(r.causa||r.cat||r.act)}</div></div><b>${hh(r.horas)}</b></div>`).join(''):empty('Sin novedades'))}</div></div>`;
 }
 /* ================= Registros ================= */
+const regBusca=(rs,q)=>q?rs.filter(r=>[r.nombre,r.proy,r.act,r.macro,r.causa,r.origen,r.hallazgo,r.desc,r.tipo,r.cat].join(' ').toLowerCase().includes(q)):rs;
 function pRegistros(){
  const q=(U.rq||'').toLowerCase().trim();
  let rs=filt(S.registros.filter(r=>U.showAn||r.estado!=='Anulado'));
- if(q)rs=rs.filter(r=>[r.nombre,r.proy,r.act,r.macro,r.causa,r.origen,r.hallazgo,r.desc,r.tipo,r.cat].join(' ').toLowerCase().includes(q));
+ rs=regBusca(rs,q);
  rs=rs.slice().sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.ts<b.ts?1:-1);const tot=sum(rs.filter(r=>r.estado!=='Anulado'));const shown=rs.slice(0,U.rlim);
  return filterBar()+card('Registros de horas',`${nf(rs.length,0)} registros · ${nf(tot,1)} HH`,`<div class="fbar"><input class="inp" style="max-width:320px" placeholder="Buscar por técnico, proyecto, causa, hallazgo…" data-f="rq" value="${esc(U.rq||'')}"><label class="mut" style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-f="showAn" ${U.showAn?'checked':''}> Ver anulados</label></div>
- ${shown.length?`<div class="tw"><table class="t"><thead><tr><th>Fecha</th><th>Técnico</th><th>Proyecto</th><th>Etapa / actividad</th><th class="r">HH</th><th>Tipo</th><th>Causa / origen</th><th>Hallazgo</th><th>Estado</th><th></th></tr></thead><tbody>${shown.map(r=>`<tr style="${r.estado==='Anulado'?'opacity:.45;text-decoration:line-through':''}"><td>${dlabel(r.fecha)}</td><td>${esc(r.nombre)}</td><td>${r.proy?`<b>${r.proy}</b> <span class="sub">${r.cap} gal</span>`:'—'}</td><td><div class="ttl">${esc(r.macro||r.tipo)}</div><div class="sub" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.act)}</div></td><td class="num">${hh(r.horas)}</td><td><span class="stat" style="--c:${CL[r.clase].c}">${esc(CL[r.clase].n)}</span></td><td><div>${esc(r.causa||'')}</div><div class="sub">${esc(r.origen||'')}${r.persona?' · '+esc(pName(r.persona)):''}</div></td><td>${r.hallazgo?badge(esc(r.hallazgo),'v'):''}</td><td>${r.pend?badge('Por validar','wa')+' ':''}${r.estado==='Completo'?badge('Completo','ok'):r.estado==='Anulado'?badge('Anulado','n'):badge('Incompleto','wa')}</td><td style="white-space:nowrap">${r.pend&&r.estado!=='Anulado'&&can(['Gerencia','Supervisor'])?`<button class="ib" style="width:30px;height:30px" data-act="valReg" data-id="${r.id}" data-tip="Validar" aria-label="Validar registro">${icon('check',15)}</button> `:''}<button class="ib" style="width:30px;height:30px" data-act="editReg" data-id="${r.id}" aria-label="Editar registro">${icon('edit',15)}</button></td></tr>`).join('')}</tbody></table></div>
+ ${shown.length?`<div class="tw"><table class="t"><thead><tr><th>Fecha</th><th>Técnico</th><th>Proyecto</th><th>Etapa / actividad</th><th class="r">HH</th><th>Tipo</th><th>Causa / origen</th><th>Hallazgo</th><th>Estado</th><th></th></tr></thead><tbody>${shown.map(r=>`<tr style="${r.estado==='Anulado'?'opacity:.45;text-decoration:line-through':''}"><td>${dlabel(r.fecha)}</td><td>${esc(r.nombre)}</td><td>${r.proy?`<b>${r.proy}</b> <span class="sub">${r.cap} gal</span>`:'—'}</td><td><div class="ttl">${esc(r.macro||r.tipo)}</div><div class="sub" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.act)}</div></td><td class="num">${hh(r.horas)}</td><td><span class="stat" style="--c:${CL[r.clase].c}">${esc(CL[r.clase].n)}</span></td><td><div>${esc(r.causa||'')}</div><div class="sub">${esc(r.origen||'')}${r.persona?' · '+esc(pName(r.persona)):''}</div></td><td>${r.hallazgo?badge(esc(r.hallazgo),'v'):''}</td><td>${r.pend?badge('Por validar','wa')+' ':''}${r.estado==='Completo'?badge('Completo','ok'):r.estado==='Anulado'?badge('Anulado','n'):badge('Incompleto','wa')}</td><td style="white-space:nowrap">${r.pend&&r.estado!=='Anulado'&&can(['Gerencia','Supervisor'])?`<button class="ib" style="width:30px;height:30px" data-act="valReg" data-id="${r.id}" data-tip="Validar" aria-label="Validar registro">${icon('check',15)}</button> `:''}${can(['Gerencia','Supervisor'])?`<button class="ib" style="width:30px;height:30px" data-act="editReg" data-id="${r.id}" aria-label="Editar registro">${icon('edit',15)}</button>`:''}</td></tr>`).join('')}</tbody></table></div>
  ${rs.length>shown.length?`<div style="text-align:center;margin-top:12px">${btn('Ver más registros','moreR','','ghost')}</div>`:''}`:empty('No hay registros con estos filtros')}${nbSinceNote()}`,{acts:btn(icon('down',16)+' Exportar a Excel','expXLSX','','ghost')});
 }
 /* ================= Alertas ================= */
@@ -932,7 +934,7 @@ function pAlertas(){
 }
 /* ================= Dashboard de Gerencia ================= */
 const PAL=['#38BDF8','#22D3EE','#8B5CF6','#6366F1','#0EA5E9','#A78BFA','#14B8A6','#64748B','#7DD3FC'];
-function delta(rs,fn){const t0=today();const a=sum(rs.filter(r=>fn(r)&&r.fecha>addDays(t0,-7)&&r.fecha<=t0)),b=sum(rs.filter(r=>fn(r)&&r.fecha>addDays(t0,-14)&&r.fecha<=addDays(t0,-7)));return{a,b,p:b?(a-b)/b*100:0}}
+function delta(rs,fn){const t0=today();const a=sum(rs.filter(r=>fn(r)&&r.fecha>addDays(t0,-7)&&r.fecha<=t0)),b=sum(rs.filter(r=>fn(r)&&r.fecha>addDays(t0,-14)&&r.fecha<=addDays(t0,-7)));return{a,b,p:b?(a-b)/b*100:null}}
 function trendData(rs){
  const mk=r=>r.clase==='normal'?'normal':r.clase==='retrabajo'?'retrabajo':r.clase==='improd'?'improd':r.clase==='aus'?null:'otros';
  const m={};rs.forEach(r=>{const k=mk(r);if(!k)return;const key=U.trend==='dia'?r.fecha:wk(r.fecha);(m[key]=m[key]||{})[k]=((m[key]||{})[k]||0)+r.horas});
@@ -941,9 +943,9 @@ function trendData(rs){
 }
 function pDashboardBase(){
  const K=kpis(),{rs,rn,P,st}=K;
- const dT=delta(rs,r=>r.clase!=='aus'),dR=delta(rs,r=>r.clase==='retrabajo');
+ const dT=delta(rn,r=>r.clase!=='aus'),dR=delta(rn,r=>r.clase==='retrabajo');
  const dv=K.dev,dvp=K.exp?dv/K.exp*100:0;const dvc=dv>K.exp*.1?'er':dv>0?'wa':'ok';
- const arrow=p=>p>=0?`<span class="up">${icon('up',14)} +${nf(p,1)}%</span>`:`<span class="dn">${icon('dwn',14)} ${nf(p,1)}%</span>`;
+ const arrow=p=>p==null?`<span class="mut3">sin base de comparación</span>`:p>=0?`<span class="up">${icon('up',14)} +${nf(p,1)}%</span>`:`<span class="dn">${icon('dwn',14)} ${nf(p,1)}%</span>`;
  const hero=(l,ic,v,unit,d,col,series)=>`<div class="c3"><section class="card kpi hero"><div class="k-l">${icon(ic,16)}${l}</div><div class="k-v">${v}<small>${unit}</small></div><div class="k-d">${d}</div>${spark(series,col)}</section></div>`;
  const mini=(l,v,vis,tip)=>`<div class="c3" style="grid-column:span 3"><section class="card mini flat" ${tip?`data-tip="${esc(tip)}"`:''}><div><div class="m-v">${v}</div><div class="m-l">${l}</div></div><div class="m-x">${vis}</div></section></div>`;
  const pc=(a,b)=>b?a/b*100:0;
@@ -968,7 +970,7 @@ function pDashboardBase(){
  const proj1=P.length===1?P[0]:null;
  const sn=sum(rn.filter(r=>r.clase==='normal')),sr=sum(rn.filter(r=>r.clase==='retrabajo')),si=sum(rn.filter(r=>r.clase==='improd'));
  const sx=(l,v,c='')=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--bd)"><span class="mut">${l}</span><b class="${c}">${v}</b></div>`;
- const sumCard=card(proj1?`Proyecto ${proj1.num}`:'Todos los proyectos',proj1?`${proj1.cap} gal · ${esc(proj1.cliente)}`:'Acumulado del filtro actual',
+ const sumCard=card(proj1?`Proyecto ${proj1.num}`:'Todos los proyectos',proj1?`${proj1.cap} gal · ${esc(proj1.cliente)} · acumulado`:'Acumulado (no depende del periodo)',
   `${sx('Expectativa',nf(K.exp,0)+' HH')}${sx('Real',nf(K.real,0)+' HH')}${sx('Desviación',(dv>0?'+':'')+nf(dv,0)+' HH',dvc==='ok'?'up':dv>0?'dn':'')}${sx('% desviación',nf(dvp,1)+'%')}${sx('HH normales',nf(sn,0))}${sx('HH retrabajo',nf(sr,0))}${sx('HH improductivas',nf(si,0))}`,{});
  const curveCard=card('Curva de expectativa vs. realidad','HH acumuladas de producción. La expectativa sigue el avance por etapas (horas y días de cada una); si no se han definido los días, avanza en línea recta',lineChart({labels:cv.labels,fx:dlabel,series:[{name:'Expectativa acumulada',color:'#8B95A7',vals:cv.exp,dash:1},{name:'HH reales acumuladas',color:'#38BDF8',vals:cv.real,area:1}],h:270}));
  /* gráficos */
@@ -981,15 +983,15 @@ function pDashboardBase(){
  const causas=sumBy(rt,r=>r.causa||'Sin causa').map(x=>({k:x.k,v:x.v,c:x.k==='Sin causa'?'var(--er)':'#F59E0B',fset:x.k==='Sin causa'?null:['causa',x.k]}));
  const orig=sumBy(rt,r=>r.origen||'Sin origen').map((x,i)=>({k:x.k,v:x.v,c:PAL[i%9],fset:x.k==='Sin origen'?null:['origen',x.k]}));
  const imp=sumBy(rs.filter(r=>r.clase==='improd'),r=>r.causa||'Sin causa').map(x=>({k:x.k,v:x.v,c:'#EF4444'}));
- const hp=sumBy(rs.filter(r=>r.proy),r=>r.proy).map(x=>({k:'Proyecto '+x.k,v:x.v,fset:['proy',x.k]}));
- const ha=sumBy(rs.filter(r=>r.actId&&r.kind==='proy'),r=>r.actId+' · '+actName(r.actId)).slice(0,10).map(x=>({k:x.k,v:x.v,fset:['act',x.k.split(' · ')[0]],c:'#22D3EE'}));
+ const hp=sumBy(rs.filter(r=>r.proy&&isProd(r)),r=>r.proy).map(x=>({k:'Proyecto '+x.k,v:x.v,fset:['proy',x.k]}));
+ const ha=sumBy(rs.filter(r=>r.actId&&r.kind==='proy'&&isProd(r)),r=>r.actId+' · '+actName(r.actId)).slice(0,10).map(x=>({k:x.k,v:x.v,fset:['act',x.k.split(' · ')[0]],c:'#22D3EE'}));
  const td=trendData(rs);
  const tseg=`<div class="seg"><button class="${U.trend==='dia'?'on':''}" data-act="trend" data-v="dia">Día</button><button class="${U.trend==='sem'?'on':''}" data-act="trend" data-v="sem">Semana</button></div>`;
  const AL=alerts().filter(a=>a.n!=='i').slice(0,4);
  return filterBar()+kp+
  `<div class="g12"><div class="c8">${curveCard}</div><div class="c4">${sumCard}</div></div>
  <div class="g12"><div class="c6">${card('Expectativa vs. realidad por proyecto','Acumulado del proyecto · clic para filtrar',pairRows(perProj))}</div><div class="c6">${card('Expectativa vs. realidad por macroetapa','Etapas terminadas muestran desviación; abiertas, consumo',pairRows(perEt))}</div></div>
- <div class="g12"><div class="c4">${card('Consumo de HH por etapa','HH de producción',donut(cons,[nf(K.real,0),'HH producción']))}</div><div class="c8">${card('HH normales vs. retrabajo por etapa','Dónde se generan horas adicionales',stackBars(nr,[{k:'normal',n:'Fabricación normal',c:'#38BDF8'},{k:'retrabajo',n:'Retrabajo',c:'#F59E0B'}]))}</div></div>
+ <div class="g12"><div class="c4">${card('Consumo de HH por etapa','HH de producción · acumulado del proyecto',donut(cons,[nf(K.real,0),'HH producción']))}</div><div class="c8">${card('HH normales vs. retrabajo por etapa','Dónde se generan horas adicionales',stackBars(nr,[{k:'normal',n:'Fabricación normal',c:'#38BDF8'},{k:'retrabajo',n:'Retrabajo',c:'#F59E0B'}]))}</div></div>
  <div class="g12"><div class="c4">${card('Retrabajo por causa','Fuentes de horas adicionales',hbars(causas.slice(0,8)))}</div><div class="c4">${card('Retrabajo por origen','¿Dónde se originó?',donut(orig,[nf(K.ret,0),'HH retrabajo']))}</div><div class="c4">${card('Horas improductivas por causa','Esperas y tiempo no productivo',hbars(imp.slice(0,8)))}</div></div>
  <div class="g12"><div class="c5">${card('HH por proyecto','Todas las HH de producción',hbars(hp))}</div><div class="c7">${card('HH por actividad','Las 10 actividades que más HH consumen',hbars(ha))}</div></div>
  <div class="g12"><div class="c8">${card('Tendencia de HH','Fabricación, retrabajo, improductivas y otras',stackBars(td,[{k:'normal',n:'Fabricación normal',c:'#38BDF8'},{k:'retrabajo',n:'Retrabajo',c:'#F59E0B'},{k:'improd',n:'Improductivas',c:'#EF4444'},{k:'otros',n:'Apoyo y otras',c:'#5F7A99'}]),{acts:tseg})}</div>
@@ -1095,7 +1097,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7c',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7d',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1168,17 +1170,17 @@ function faltSave(){faltRead();const rows=M.rows.filter(r=>r.cat&&num(r.h)>0);if
  rows.forEach(r=>{const aus=r.cat==='Ausencia · Otro'||AUS.includes(r.cat);S.registros.push(buildReg({tec:M.tec,fecha:M.fecha,horas:num(r.h),kind:aus?'aus':'otro',cat:r.cat==='Ausencia · Otro'?'Otro':r.cat,por:U.name+' ('+U.role+')'}))});
  save();syncSoon();const t=S.tecnicos.find(x=>x.codigo===M.tec),j=jornadaInfo(t,M.fecha);closeModal();renderAll(true);toast(Math.abs(j.df)<.01?'Jornada completa':j.df<0?'Guardado. Aún faltan '+hh(-j.df)+' HH':'Guardado. Hay '+hh(j.df)+' HH por encima de la jornada',Math.abs(j.df)<.01?'ok':'wa')}
 /* --- editar registro --- */
-function editRegOpen(id){const r=S.registros.find(x=>x.id===id);if(!r)return;M={type:'reg',id};const ret=r.clase==='retrabajo';const ps=personasPara(r.origen);
+function editRegOpen(id){if(!can(['Gerencia','Supervisor'])){toast('Tu rol solo puede consultar los registros','wa');return}const r=S.registros.find(x=>x.id===id);if(!r)return;M={type:'reg',id};const ret=r.clase==='retrabajo';const ps=personasPara(r.origen);
  openModal(mh('Registro de '+esc(r.nombre))+`<p class="mut" style="margin-bottom:14px">${dfull(r.fecha)} · ${r.proy?r.proy+' · ':''}${esc(r.macro||r.tipo)} · ${esc(r.act)}</p><div class="two">${fld('Horas',`<input class="inp" id="e_h" inputmode="decimal" value="${String(r.horas).replace('.',',')}">`)}${fld('Estado',`<div class="inp" style="display:flex;align-items:center">${badge(r.estado,r.estado==='Completo'?'ok':r.estado==='Anulado'?'n':'wa')}</div>`)}</div>
  ${ret?`<div class="two">${fld('Causa',selM('e_causa',CAUSAS,r.causa,'Sin causa'))}${fld('Origen',`<select class="sel" id="e_origen" data-mo="1"><option value="">Sin origen</option>${ORIG.map(o=>`<option ${o===r.origen?'selected':''}>${o}</option>`).join('')}</select>`)}</div><div class="two" id="e_pw">${fld('Persona relacionada',selM('e_persona',ps.map(t=>[t.codigo,t.nombre]),r.persona,'No aplica / no identificada'))}${fld('Código de hallazgo',`<input class="inp" id="e_hall" list="hl2" value="${esc(r.hallazgo)}" style="text-transform:uppercase"><datalist id="hl2">${S.hallazgos.filter(h=>h.proy===r.proy).map(h=>`<option value="${esc(h.codigo)}">`).join('')}</datalist>`)}</div>`:''}
  ${fld('Descripción',`<textarea class="inp" id="e_desc">${esc(r.desc)}</textarea>`)}<p class="mut3" style="font-size:12px;margin-top:10px">Los cambios quedan en el historial con valor anterior, nuevo, fecha y usuario.</p>${mf('Guardar cambios','regSave',r.estado!=='Anulado'?btn('Anular registro','regVoid','','dng'):btn('Restaurar','regRestore','','ghost'))}`)}
-function regSave(){const r=S.registros.find(x=>x.id===M.id);if(!r)return;const ch=(k,l,n)=>{if(String(r[k]??'')!==String(n??'')){logH(l,r[k],n,r.id.slice(-6)+' '+r.nombre);r[k]=n}};
+function regSave(){if(!can(['Gerencia','Supervisor'])){toast('Tu rol solo puede consultar los registros','wa');return}const r=S.registros.find(x=>x.id===M.id);if(!r)return;const ch=(k,l,n)=>{if(String(r[k]??'')!==String(n??'')){logH(l,r[k],n,r.id.slice(-6)+' '+r.nombre);r[k]=n}};
  ch('horas','Horas',r2(num(val('e_h'))||r.horas));ch('desc','Descripción',(val('e_desc')||'').trim());
  if(r.clase==='retrabajo'){ch('causa','Causa',val('e_causa'));ch('origen','Origen',val('e_origen'));ch('persona','Persona relacionada',val('e_persona'));ch('hallazgo','Hallazgo',(val('e_hall')||'').trim().toUpperCase());
   if(r.hallazgo&&!S.hallazgos.find(h=>h.codigo===r.hallazgo))S.hallazgos.push({codigo:r.hallazgo,proy:r.proy,desc:'',estado:'Abierto',fecha:r.fecha});
   if(r.estado!=='Anulado')r.estado=(r.causa&&r.origen&&(!personasPara(r.origen).length||r.persona))?'Completo':'Incompleto'}
  r.sync=0;save();closeModal();renderAll(true);toast('Registro actualizado','ok')}
-function regState(e){const r=S.registros.find(x=>x.id===M.id);if(!r)return;logH('Estado',r.estado,e,r.id.slice(-6)+' '+r.nombre);r.estado=e;if(e==='Completo'&&r.clase==='retrabajo'&&(!r.causa||!r.origen))r.estado='Incompleto';r.sync=0;save();closeModal();renderAll(true);toast(e==='Anulado'?'Registro anulado (queda en el historial)':'Registro restaurado','ok')}
+function regState(e){if(!can(['Gerencia','Supervisor'])){toast('Tu rol solo puede consultar los registros','wa');return}const r=S.registros.find(x=>x.id===M.id);if(!r)return;logH('Estado',r.estado,e,r.id.slice(-6)+' '+r.nombre);r.estado=e;if(e==='Completo'&&r.clase==='retrabajo'&&(!r.causa||!r.origen))r.estado='Incompleto';r.sync=0;save();closeModal();renderAll(true);toast(e==='Anulado'?'Registro anulado (queda en el historial)':'Registro restaurado','ok')}
 /* --- proyectos --- */
 function projForm(p){return `<div class="two">${fld('Número',`<div class="inp" style="display:flex;align-items:center"><b>${p?p.num:nextProj()}</b></div>`)}${fld('Capacidad',selM('p_cap',CAPS.map(c=>[String(c),c+' gal']),p?String(p.cap):'5000'))}</div>${fld('Cliente',`<input class="inp" id="p_cli" value="${esc(p?p.cliente:'')}" placeholder="Nombre del cliente">`)}<div class="two">${fld('Fecha de inicio',`<input class="inp" type="date" id="p_ini" value="${p?p.inicio:today()}">`)}${fld('Duración estimada (días hábiles)',`<input class="inp" type="number" min="1" id="p_dias" value="${p?p.dias||30:30}">`)}</div>${p?fld('Estado',selM('p_est',['Activo','En pausa','Finalizado'],p.estado)):''}<p class="mut3" style="font-size:12px;margin-top:8px">La duración solo se usa para dibujar la curva de expectativa acumulada.</p>`}
 function projSave(edit){const cli=(val('p_cli')||'').trim()||'Sin cliente';const o={cap:+val('p_cap'),cliente:cli,inicio:val('p_ini')||today(),dias:Math.max(1,+val('p_dias')||30)};
@@ -2086,7 +2088,7 @@ Object.assign(A,{
  olvide:()=>nbShowForgot(),volverLogin:()=>nbShowLogin(''),enviarRec:()=>nbSendRec(),guardarPass:()=>nbSaveNewPass(),
  nbRetry:()=>{nbPush()},
  nbDiscard:async()=>{NB.dirty=false;NB.err='';nbBanner('');try{await nbLoad();renderAll(true);toast('Datos recargados desde la nube','ok')}catch(e){toast(nbMsg(e),'er')}},
- valReg:t=>{const r=S.registros.find(x=>x.id===t.dataset.id);if(!r)return;nbValidar([r]);renderPage(true);toast('Registro validado','ok')},
+ valReg:t=>{if(!can(['Gerencia','Supervisor']))return;const r=S.registros.find(x=>x.id===t.dataset.id);if(!r)return;nbValidar([r]);renderPage(true);toast('Registro validado','ok')},
  valDia:t=>{const rs=live().filter(r=>r.pend&&r.tec===t.dataset.tec&&r.fecha===t.dataset.fecha);if(!rs.length)return;nbValidar(rs);renderPage(true);toast(rs.length+' registro'+(rs.length>1?'s':'')+' validado'+(rs.length>1?'s':''),'ok')}
 });
 function nbDownload(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Archivo listo: '+name,'ok')}
@@ -2160,7 +2162,7 @@ function invitadosCard(){
  else{const ahora=Date.now(),act=l.filter(i=>!i.revocado&&new Date(i.vence)>ahora);
   body=(act.length?act.map(i=>`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--bd)"><div style="flex:1;min-width:160px"><b>${esc(i.nombre)}</b><div class="mut3" style="font-size:12.5px">Válido hasta ${esc(fmtDT(i.vence))}</div></div>${btn('Ver enlace / QR','invVer',`data-id="${i.id}"`,'sm ghost')}${btn('Revocar','invRev',`data-id="${i.id}"`,'sm dng')}</div>`).join(''):'<p class="mut" style="margin-bottom:6px">No hay invitados vigentes.</p>')+
   `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:14px"><div class="fld" style="margin:0"><label>Nombre del invitado</label><input class="inp" id="invNom" maxlength="60" placeholder="Ej. Gerente de planta"></div><div class="fld" style="margin:0"><label>Dura</label><select class="sel" id="invHoras"><option value="24">24 horas</option><option value="72" selected>3 días</option><option value="168">7 días</option></select></div>${btn('Crear invitado','invCrear','',act.length>=2?'ghost':'')}</div>
-  <p class="mut3" style="font-size:12.5px;margin-top:10px">El invitado ve todo (paneles, proyectos, registros, turnos) pero no puede modificar nada. Máximo 2 invitados a la vez. El enlace vence solo y puedes revocarlo cuando quieras. Quien tenga el enlace puede verlo hasta que venza: compártelo solo por WhatsApp o correo directo.</p>`}
+  <p class="mut3" style="font-size:12.5px;margin-top:10px">El invitado ve todo (paneles, proyectos, registros, turnos) pero no puede modificar nada. Máximo 10 invitados a la vez. El enlace vence solo y puedes revocarlo cuando quieras. Quien tenga el enlace puede verlo hasta que venza: compártelo solo por WhatsApp o correo directo.</p>`}
  return `<div class="g12"><div class="c12">${card('Invitados de solo lectura','Para mostrar la aplicación a alguien sin darle una cuenta',body)}</div></div>`}
 function invModal(inv){
  M={type:'inv'};const link=invLink(inv.codigo);
@@ -2297,10 +2299,10 @@ function hallAlerts(A){
 /* ---------- Página ---------- */
 const hMini=(l,v,c='',act='',tip='')=>`<div class="c3" style="grid-column:span 2"><div class="card mini flat ${act?'clk':''}" ${act?`data-act="hFiltro" data-v="${act}"`:''}><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div></div></div></div>`;
 function hScope(){const q=U.hq=U.hq||{est:'activos',proy:'',prio:'',tec:'',txt:''};return q}
-function hFiltrar(){
- const q=hScope(),t=(q.txt||'').toLowerCase().trim();
+function hFiltrar(q0){
+ const q=q0||hScope(),t=(q.txt||'').toLowerCase().trim();
  return S.hallazgos.filter(h=>{
-  if(q.proy&&h.proy!==q.proy)return 0;if(q.prio&&h.prio!==q.prio)return 0;if(q.tec&&h.asigCod!==q.tec)return 0;
+  if(q.proy&&h.proy!==q.proy)return 0;if(q.prio&&h.prio!==q.prio)return 0;if(q.per&&(h.fecha||'')<addDays(today(),-(+q.per)))return 0;if(q.tec&&h.asigCod!==q.tec)return 0;
   const e=q.est||'activos';
   if(e==='activos'&&!hAb(h))return 0;
   if(e==='vencidos'&&!hVenc(h))return 0;
@@ -2324,7 +2326,7 @@ function hLista(){
  const ests=[['activos','Abiertos (todos los pasos)'],...['Abierto','Asignado','En corrección','Pendiente de verificación','Verificado'].map(e=>[e,e]),['vencidos','Vencidos'],['escalados','Escalados a Gerencia'],['Cerrado','Cerrados'],['Anulado','Anulados'],['todos','Todos (sin anulados)']];
  const tecs=uniq(S.hallazgos.filter(h=>h.asigCod).map(h=>h.asigCod)).map(c=>{const h=S.hallazgos.find(x=>x.asigCod===c);return [c,(h.asigIni||c)+' · '+h.asigNom]});
  return `<div class="g12 minis">${minis}</div>
- <div class="fbar" style="margin-top:6px">${sel('hq.est',ests,q.est||'activos')}${sel('hq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}${sel('hq.prio',['Alta','Media','Baja'],q.prio,{ph:'Toda prioridad'})}${sel('hq.tec',tecs,q.tec,{ph:'Todo técnico'})}<input class="inp" style="max-width:240px" placeholder="Buscar…" data-f="hq.txt" value="${esc(q.txt||'')}"><span class="mut" style="margin-left:6px">${L.length} hallazgo${L.length===1?'':'s'}</span></div>
+ <div class="fbar" style="margin-top:6px">${sel('hq.est',ests,q.est||'activos')}${sel('hq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}${sel('hq.prio',['Alta','Media','Baja'],q.prio,{ph:'Toda prioridad'})}${sel('hq.per',[['30','Últimos 30 días'],['90','Últimos 90 días']],q.per,{ph:'Todo el tiempo'})}${sel('hq.tec',tecs,q.tec,{ph:'Todo técnico'})}<input class="inp" style="max-width:240px" placeholder="Buscar…" data-f="hq.txt" value="${esc(q.txt||'')}"><span class="mut" style="margin-left:6px">${L.length} hallazgo${L.length===1?'':'s'}</span></div>
  ${L.length?`<div class="pgrid">${L.slice(0,120).map(hCard).join('')}</div>${L.length>120?'<p class="mut3" style="text-align:center">Se muestran los 120 más recientes. Usa los filtros.</p>':''}`:card('Sin hallazgos','',empty(S.hallazgos.length?'No hay hallazgos con estos filtros':'Aún no hay hallazgos. Calidad crea el primero con “Nuevo hallazgo”.'))}`}
 
 function pHallazgos(){
@@ -2473,8 +2475,9 @@ function hKpi(){
 
 /* ---------- Excel (formato del Excel de hallazgos) ---------- */
 function hXlsx(){
- const q=hScope();
- const L=S.hallazgos.filter(h=>h.estado!=='Anulado'&&(!q.proy||h.proy===q.proy)).sort((a,b)=>a.codigo<b.codigo?-1:1);
+ const q0=hScope(),q=Object.assign({},q0,{est:(q0.est||'activos')==='activos'?'todos':q0.est});
+ const L=hFiltrar(q).sort((a,b)=>a.codigo<b.codigo?-1:1);
+ const alc=[q0.proy&&'proyecto '+q0.proy,q0.prio&&'prioridad '+q0.prio,q0.per&&'últimos '+q0.per+' días',q0.tec&&'técnico '+q0.tec,(q0.est&&q0.est!=='activos')&&'estado '+q0.est,q0.txt&&'texto «'+q0.txt+'»'].filter(Boolean).join(', ');
  const cap=h=>((S.proyectos.find(p=>p.num===h.proy)||{}).cap)||'';
  const d1=ts=>ts?hDate(ts):'';
  const A=L.map(h=>[h.codigo,cap(h),h.fecha,h.insp||'',h.proy,h.desc,h.esp,h.etapa,h.cierEn?d1(h.cierEn):(h.verEn&&h.verRes==='Cumple'?d1(h.verEn):''),h.cierPor||(h.verRes==='Cumple'?h.verPor:''),h.estado,hDias(h),h.reinc?'SI':'NO',
@@ -2486,7 +2489,7 @@ function hXlsx(){
  const cods=new Set(L.map(h=>h.codigo));
  const H=S.hhist.filter(x=>cods.has(x.codigo)).map(x=>[x.codigo,hDate(x.fecha),new Date(x.fecha).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),x.accion,x.ant,x.nue,x.res,x.usuario,x.rol,x.tec,x.ciclo,x.com]);
  const sC={name:'Historial',cols:[{h:'ID HALLAZGO',w:16},{h:'FECHA',w:12,t:'d'},{h:'HORA',w:9},{h:'ACCIÓN',w:24},{h:'ESTADO ANTERIOR',w:22},{h:'ESTADO NUEVO',w:22},{h:'RESULTADO',w:18},{h:'USUARIO',w:22},{h:'ROL',w:12},{h:'TÉCNICO',w:26},{h:'CICLO',w:8,t:'n'},{h:'COMENTARIO',w:60}],rows:H};
- try{dlBlob('hallazgos_latamks_'+today()+'.xlsx',xlsxBlob([sA,sB,sC]));toast('Excel de hallazgos descargado ('+L.length+')','ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}}
+ try{dlBlob('hallazgos_latamks_'+today()+'.xlsx',xlsxBlob([sA,sB,sC]));toast('Excel de hallazgos descargado ('+L.length+') · '+(alc?'filtros: '+alc:'todos los hallazgos'),'ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}}
 
 Object.assign(A,{
  hdet:t=>hDet(t.dataset.c),hTab:t=>{U.hTab=t.dataset.v;renderPage(true)},hPer:t=>{U.hkp=t.dataset.v;renderPage(true)},
@@ -2546,8 +2549,10 @@ async function hfComprimir(file){
  const k=Math.min(1,HF_LADO/Math.max(bmp.width,bmp.height));
  const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bmp,0,0,c.width,c.height);
- let q=.72,blob;
- for(let i=0;i<4;i++){blob=await new Promise(r=>c.toBlob(r,'image/jpeg',q));if(blob&&blob.size<=700*1024)break;q-=.12}
+ let q=.72,blob,w=c.width,h2=c.height;
+ for(let s=0;s<4;s++){if(s){w=Math.round(w*.8);h2=Math.round(h2*.8);c.width=w;c.height=h2;x.fillStyle='#fff';x.fillRect(0,0,w,h2);x.drawImage(bmp,0,0,w,h2);q=.62}
+  for(let i=0;i<3;i++){blob=await new Promise(r=>c.toBlob(r,'image/jpeg',q));if(blob&&blob.size<=700*1024)break;q=Math.max(.4,q-.1)}
+  if(blob&&blob.size<=700*1024)break}
  if(!blob||blob.size>2000*1024)throw new Error('La foto es demasiado pesada. Intenta con otra.');
  return blob}
 async function hfSubir(path,blob){
