@@ -251,7 +251,12 @@ table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 .tcard .tq{width:30mm;height:30mm;flex:none}.tcard .tq img,.tcard .tq canvas{width:30mm!important;height:30mm!important}
 .tcard .tf{font-size:6.5px;color:#666;padding:0 4mm 2mm}
 #printSheet.cards{padding:6mm 0!important;text-align:left!important}
-@media print{@page{size:letter;margin:6mm}#printSheet.cards .tcards{gap:0}}
+#printSheet.cons{text-align:left!important;padding:6mm 0!important;font-family:Arial,Helvetica,sans-serif}
+#printSheet.cons h1{font-size:20px!important;margin:8px 0 4px!important}#printSheet.cons h2{font-size:15px;margin:16px 0 6px}#printSheet.cons h3{font-size:13px;margin:10px 0 4px}
+#printSheet.cons p{font-size:11.5px!important;margin:3px 0!important;line-height:1.4;color:#222}
+#printSheet.cons .ct{border-collapse:collapse;width:100%;margin:8px 0}#printSheet.cons .ct td,#printSheet.cons .ct th{border:1px solid #999;padding:4px 6px;font-size:11px;text-align:left;color:#000}#printSheet.cons .ct th{background:#eee}
+#printSheet.cons .cv{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #bbb;margin-top:8px}#printSheet.cons .cn{margin-top:14px!important;color:#555!important;font-size:10.5px!important}
+@media print{@page{size:letter;margin:12mm}#printSheet.cards .tcards{gap:0}}
 @media(max-width:700px){.tcards{grid-template-columns:1fr;justify-items:center}}
 body.guest [data-act^="hall"],body.guest [data-act^="hf"],body.guest [data-act^="edit"],body.guest [data-act^="new"],body.guest [data-act^="val"],body.guest [data-act="faltModal"],body.guest [data-act="regFor"],body.guest [data-act="regVoid"],body.guest [data-act="regRestore"],body.guest [data-act="tecToggle"],body.guest [data-act="tDay"],body.guest [data-act="projEdit"],body.guest [data-act="projNew"],body.guest [data-act="unasg"],body.guest [data-act="capAdd"],body.guest [data-act="capDel"],body.guest [data-act="linAdd"],body.guest [data-act="linDel"],body.guest [data-act="saveMeta"],body.guest [data-act="saveUrl"]{display:none!important}
 body.guest select[data-tur],body.guest input[data-tf]{pointer-events:none;opacity:.75}
@@ -1102,9 +1107,9 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7f',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7g',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
-  <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
+  <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
 }
 /* ================= Navegación ================= */
@@ -1243,6 +1248,7 @@ const A={
  faltModal:t=>faltOpen(t.dataset.tec,t.dataset.fecha),fAdd:()=>{faltRead();M.rows.push({cat:'',h:''});faltRender()},fDel:t=>{faltRead();M.rows.splice(+t.dataset.i,1);if(!M.rows.length)M.rows.push({cat:'',h:''});faltRender()},fSave:faltSave,
  editReg:t=>editRegOpen(t.dataset.id),regSave,regVoid:()=>regState('Anulado'),regRestore:()=>regState('Completo'),
  goProj:()=>go('proyectos'),moreR:()=>{U.rlim+=80;renderPage(true)},supHoy:()=>{U.supF=today();renderPage(true)},
+ consPdf:()=>consPdf(),
  expXLSX:()=>{try{dlBlob('registros_hh_latamks_'+today()+'.xlsx',xlsxRegistros());toast('Excel descargado','ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}},
  expCSV:()=>{const rs=filt(S.registros.filter(r=>r.estado!=='Anulado')).sort((a,b)=>a.fecha<b.fecha?-1:1);dl('registros_hh_latamks.csv',csvOf(HDR,rs.map(rowOf)),tsvOf(HDR,rs.map(rowOf)))},
  expJSON:()=>dl('respaldo_latamks_hh.json',JSON.stringify(S)),impJSON:()=>nbNo(),
@@ -1771,7 +1777,7 @@ async function nbLoad(){
   td.filter(d=>d.turno_id===t.id).forEach(d=>{dias[d.dia]=mkDia(d.activo?1:0,String(d.hora_inicio||'07:30').slice(0,5),String(d.hora_fin||'17:00').slice(0,5),d.receso_min||0,d.alimentacion_min||0)});
   return{id,nombre:t.nombre,activo:t.activo===false?0:1,dias,mod:{ts:t.modificado_en||'',por:t.modificado_por||'Configuración inicial'},_id:t.id}});
  const codeByUuid={};te.forEach(t=>{codeByUuid[t.id]=t.codigo});
- const tecnicos=te.map(t=>({codigo:t.codigo,ini:t.iniciales,nombre:t.nombre,area:t.area||'',esp:t.especialidad||'',turno:tmap[t.turno_defecto_id]||'',rol:t.rol,activo:t.activo!==false,registra:!!t.registra_hh,demo:t.es_demo?1:0,alta:t.creado?new Date(t.creado).toLocaleDateString('sv'):'',cons:t.consentimiento_en?new Date(t.consentimiento_en).toLocaleDateString('sv'):'',_id:t.id}));
+ const tecnicos=te.map(t=>({codigo:t.codigo,ini:t.iniciales,nombre:t.nombre,area:t.area||'',esp:t.especialidad||'',turno:tmap[t.turno_defecto_id]||'',rol:t.rol,activo:t.activo!==false,registra:!!t.registra_hh,demo:t.es_demo?1:0,alta:t.creado?new Date(t.creado).toLocaleDateString('sv'):'',cons:t.consentimiento_en?new Date(t.consentimiento_en).toLocaleDateString('sv'):'',consTs:t.consentimiento_en||'',consV:t.consentimiento_version||'',_id:t.id}));
  const numByUuid={};
  const proyectos=pr.map(p=>{numByUuid[p.id]=p.numero;const et={},cerradas=[];const dm={};ex.filter(e=>e.proyecto_id===p.id).forEach(e=>{et[e.etapa]=+e.horas;dm[e.etapa]=+e.dias||0;if(e.terminada)cerradas.push(e.etapa)});
   return{num:p.numero,cap:p.capacidad_gal,cliente:p.cliente,estado:p.estado,creado:p.fecha_creacion,inicio:p.fecha_inicio,entrega:p.fecha_entrega||'',linea:p.linea||'Tanques',comp:p.compartimentos||'',ref:p.referencia||'',dias:p.dias_plan,pausaDesde:p.pausa_desde||'',diasPausa:+p.dias_pausa||0,demo:p.es_demo?1:0,_id:p.id,
@@ -1843,7 +1849,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.7f</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.7g</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -1939,17 +1945,33 @@ async function nbCapEnter(r){
   renderAll();toast('Hola, '+r.nombre.split(' ')[0]+'. Ya puedes registrar tus horas.','ok')}
  catch(e){toast(nbMsg(e),'er')}}
 /* ---------- Consentimiento de datos (una sola vez, desde el QR) ---------- */
-const NB_CONSENT_V='v1-2026-10';
+const NB_CONSENT_V='v2-2026-10';
+const NB_CONSENT_TXT={
+'v1-2026-10':[['Qué datos.','Latamks S.A.S. guarda en esta aplicación tu nombre, tu código, tu turno y las horas que reportes: proyecto, etapa, actividad, retrabajo, ausencias y tiempos sin producir.'],['Para qué.','Controlar las horas de producción, programar turnos, medir el avance de los proyectos y mejorar los procesos de la planta. No se usan para otros fines.'],['Quién los ve.','Gerencia, supervisores y Calidad de Latamks. Se guardan en servicios en la nube contratados por la empresa.'],['Tus derechos.','Puedes conocer, corregir o pedir que se eliminen tus datos escribiendo a <b>sistemas@latamks.com</b> o hablando con tu supervisor. Aceptar es voluntario.']],
+'v2-2026-10':[['Qué datos.','Latamks S.A.S. guarda en esta aplicación tu nombre, tu código, tu turno y las horas que reportes: proyecto, etapa, actividad, retrabajo, ausencias y tiempos sin producir.'],['Para qué.','Controlar las horas de producción, programar turnos, medir el avance de los proyectos y mejorar los procesos de la planta. No se usan para otros fines.'],['Quién los ve.','Gerencia, supervisores y Calidad de Latamks. Se guardan en servicios en la nube contratados por la empresa.'],['Tus derechos.','Puedes conocer, corregir o pedir que se eliminen tus datos escribiendo a <b>app.hh@latamks.com</b> o hablando con tu supervisor. Aceptar es voluntario.']]};
+const nbConsentHtml=v=>(NB_CONSENT_TXT[v]||[]).map(p=>`<p><b>${p[0]}</b> ${p[1]}</p>`).join('');
 function nbConsentCard(){
  const c=NB.consent||{};
  return `<div class="cap"><div class="card flat" style="padding:26px 22px;text-align:left"><h2 style="font-size:21px;margin-bottom:4px">Autorización de uso de tus datos</h2><p class="mut" style="margin:0 0 14px">Hola, ${esc((c.nombre||'').split(' ')[0])}. Antes de registrar tus horas, lee y acepta esto (solo se pide una vez).</p>
- <div style="font-size:14px;line-height:1.55;display:grid;gap:10px">
- <p><b>Qué datos.</b> Latamks S.A.S. guarda en esta aplicación tu nombre, tu código, tu turno y las horas que reportes: proyecto, etapa, actividad, retrabajo, ausencias y tiempos sin producir.</p>
- <p><b>Para qué.</b> Controlar las horas de producción, programar turnos, medir el avance de los proyectos y mejorar los procesos de la planta. No se usan para otros fines.</p>
- <p><b>Quién los ve.</b> Gerencia, supervisores y Calidad de Latamks. Se guardan en servicios en la nube contratados por la empresa.</p>
- <p><b>Tus derechos.</b> Puedes conocer, corregir o pedir que se eliminen tus datos escribiendo a <b>sistemas@latamks.com</b> o hablando con tu supervisor. Aceptar es voluntario.</p></div>
+ <div style="font-size:14px;line-height:1.55;display:grid;gap:10px">${nbConsentHtml(NB_CONSENT_V)}</div>
  <label style="display:flex;gap:10px;align-items:flex-start;margin:18px 0 14px;font-size:14.5px"><input type="checkbox" id="cons_ok" style="margin-top:3px;width:18px;height:18px"> <span>He leído y autorizo el uso de mis datos como se explica arriba.</span></label>
  <div style="display:grid;gap:8px">${btn('Acepto y continuar','capAcepta','','big')}${btn('No acepto','capNoAcepta','','big ghost')}</div></div></div>`}
+
+/* ===== v3.7g · Constancia de consentimientos (PDF por impresión) ===== */
+function consPdf(){
+ if(!can(['Gerencia','Calidad']))return;
+ const T=(S.tecnicos||[]).filter(t=>t.registra&&!t.demo).sort((a,b)=>(a.codigo||'').localeCompare(b.codigo||''));
+ if(!T.length){toast('No hay técnicos que registren horas.','wa');return}
+ const ok=T.filter(t=>t.consTs),pend=T.length-ok.length;
+ const fh=iso=>{try{const d=new Date(iso);return d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}catch(e){return iso}};
+ const vers=[...new Set(ok.map(t=>t.consV).filter(Boolean).concat([NB_CONSENT_V]))].sort();
+ const ps=$('#printSheet');ps.className='cons';
+ ps.innerHTML=`<img src="${LOGO}" alt="" style="height:70px;width:auto"><h1>Constancia de consentimiento de datos</h1><p>Latamks S.A.S. · Latamks HH · generada el ${fh(new Date().toISOString())} por ${esc(U.name||U.role||'')}</p>
+ <p><b>${ok.length}</b> de ${T.length} técnicos que registran horas han aceptado · <b>${pend}</b> pendientes</p>
+ <table class="ct"><tr><th>Código</th><th>Nombre</th><th>Aceptó el</th><th>Versión del texto</th></tr>${T.map(t=>`<tr><td>${esc(t.codigo)}</td><td>${esc(t.nombre)}${t.activo===false?' (inactivo)':''}</td><td>${t.consTs?fh(t.consTs):'<i>Pendiente</i>'}</td><td>${esc(t.consV||(t.consTs?'—':''))}</td></tr>`).join('')}</table>
+ <h2>Texto de cada versión</h2>${vers.map(v=>`<div class="cv"><h3>Versión ${esc(v)}${v===NB_CONSENT_V?' (vigente)':''}</h3><p><b>Autorización de uso de tus datos.</b> Antes de registrar tus horas, lee y acepta esto (solo se pide una vez).</p>${nbConsentHtml(v)}<p>Casilla de aceptación: «He leído y autorizo el uso de mis datos como se explica arriba.»</p></div>`).join('')}
+ <p class="cn">Cada aceptación queda guardada en la base de datos con su fecha, hora y versión del texto. Esta constancia es una copia de ese registro.</p>`;
+ setTimeout(()=>{try{window.print()}catch(e){toast('La impresión no está disponible aquí.','wa')}setTimeout(()=>{ps.className='';},1500)},300)}
 async function nbConsentAccept(){
  const c=NB.consent;if(!c)return;
  if(!(($('#cons_ok')||{}).checked)){toast('Marca la casilla para aceptar y continuar.','wa');return}
