@@ -934,7 +934,7 @@ function pRegistros(){
 /* ================= Alertas ================= */
 function alertRow(a){
  const ic=a.n==='er'?'warn':a.n==='wa'?'warn':'info';
- const b=a.hall?btn('Abrir','hdet',`data-c="${esc(a.hall)}"`,'sm ghost'):a.val?btn('Validar','valDia',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.tec?btn('Completar','faltModal',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.reg?btn('Revisar','editReg',`data-id="${a.reg}"`,'sm ghost'):a.proy?btn('Ver','goProj',`data-p="${a.proy}"`,'sm ghost'):'';
+ const b=a.lib?btn('Abrir','ldet',`data-c="${esc(a.lib)}"`,'sm ghost'):a.hall?btn('Abrir','hdet',`data-c="${esc(a.hall)}"`,'sm ghost'):a.val?btn('Validar','valDia',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.tec?btn('Completar','faltModal',`data-tec="${a.tec}" data-fecha="${a.fecha}"`,'sm ghost'):a.reg?btn('Revisar','editReg',`data-id="${a.reg}"`,'sm ghost'):a.proy?btn('Ver','goProj',`data-p="${a.proy}"`,'sm ghost'):'';
  return `<div class="alrt ${a.n}"><div class="ai">${icon(ic,17)}</div><div style="flex:1;min-width:0"><b>${esc(a.t)}</b><small>${esc(a.s||'')}</small></div>${b}</div>`;
 }
 function pAlertas(){
@@ -1107,7 +1107,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.7g',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.8',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1117,7 +1117,7 @@ const G_=['Gerencia'],GS=['Gerencia','Supervisor'],GSC=['Gerencia','Supervisor',
 const NAV=[
 {g:'Operación',items:[['captura','Captura rápida','clock',['Gerencia','Supervisor','Técnico']],['faltantes','Horas faltantes','warn',['Gerencia','Supervisor','Técnico']],['supervisor','Panel de supervisor','users',GS],['registros','Registros','db',GSC],['alertas','Alertas','bell',GS]]},
 {g:'Análisis',items:[['dashboard','Panel de Gerencia','dash',GS],['etapas','Comparar etapas','layers',GS],['retrabajo','Retrabajo','redo',GSC]]},
-{g:'Gestión',items:[['proyectos','Proyectos','folder',GSC],['expectativas','Expectativas','sliders',GS],['tecnicos','Técnicos','user',G_],['turnos','Turnos','cal',GS],['hallazgos','Hallazgos','flag',GSC]]},
+{g:'Gestión',items:[['proyectos','Proyectos','folder',GSC],['expectativas','Expectativas','sliders',GS],['tecnicos','Técnicos','user',G_],['turnos','Turnos','cal',GS],['hallazgos','Hallazgos','flag',GSC],['liberaciones','Liberaciones','check',GSC]]},
 {g:'Sistema',items:[['ajustes','Ajustes y QR','qr',G_]]}];
 const ALLN=NAV.flatMap(g=>g.items.map(i=>({id:i[0],t:i[1],ic:i[2],r:i[3],g:g.g})));
 const PAGES={faltantes:pFaltantes,expectativas:pExpectativas,captura:pCaptura,supervisor:pSupervisor,registros:pRegistros,alertas:pAlertas,dashboard:pDashboard,etapas:pEtapas,retrabajo:pRetrabajo,proyectos:pProyectos,tecnicos:pTecnicos,turnos:pTurnos,hallazgos:pHallazgos,ajustes:pAjustes};
@@ -1127,7 +1127,7 @@ const isMob=()=>innerWidth<=820;
 function toast(m,k=''){const e=document.createElement('div');e.className='toast '+k;e.textContent=m;$('#toasts').appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transition='opacity .3s';setTimeout(()=>e.remove(),320)},4800)}
 function renderSide(){
  const ac=alertCount();const nav=NAV.map(g=>{const its=g.items.filter(i=>i[3].includes(U.role));if(!its.length)return '';
-  return `<div class="grp"><span>${g.g}</span></div>`+its.map(i=>`<button class="ni ${U.page===i[0]?'on':''}" data-act="go" data-p="${i[0]}" data-nav data-tip="${i[1]}">${icon(i[2],20)}<span class="lbl">${i[1]}</span>${i[0]==='alertas'&&ac?`<span class="nb">${ac}</span>`:''}</button>`).join('')}).join('');
+  return `<div class="grp"><span>${g.g}</span></div>`+its.map(i=>`<button class="ni ${U.page===i[0]?'on':''}" data-act="go" data-p="${i[0]}" data-nav data-tip="${i[1]}">${icon(i[2],20)}<span class="lbl">${i[1]}</span>${i[0]==='alertas'&&ac?`<span class="nb">${ac}</span>`:''}${i[0]==='liberaciones'&&typeof lBadge==='function'&&lBadge()?`<span class="nb">${lBadge()}</span>`:''}</button>`).join('')}).join('');
  $('#side').innerHTML=`<div class="brand"><img class="logoimg" src="${LOGO}" alt="Latamks HH"><div class="brand-t"><b>Latamks HH</b><small>Control de horas hombre</small></div></div>
  <div class="pw" style="position:relative;margin:4px 12px 10px"><button class="prof" style="margin:0;width:100%" data-act="menu" data-nav data-tip="${esc(U.name+' · '+U.role)}" aria-haspopup="menu"><div class="av lg">${esc(ini2(U.name))}</div><div class="prof-t"><b>${esc(U.name)}</b><small>${U.role}</small></div></button>
  ${U.menu?`<div class="menu" role="menu"><div class="mut3" style="font-size:11.5px;padding:6px 11px;word-break:break-all">${esc(NB.email||'')}</div><button data-act="logout" role="menuitem">${icon('x',15)}Cerrar sesión</button></div>`:''}</div>
@@ -1365,7 +1365,7 @@ function capForm(tec){
  const bar=`<div class="savebar"><div class="sv-t"><span class="stat" style="--c:${miss.length?'#F59E0B':'#22C55E'}"></span><div><b>${miss.length?'Completa los campos obligatorios':'Listo para guardar'}</b><small>${miss.length?'Falta: '+miss.join(', '):esc(tec.nombre.split(' ')[0])+' · '+esc(c.modo==='proy'?c.tipo:c.modo==='aus'?'Ausencia':'Otro tiempo')+' · '+hh(h)+' HH'+(soft.length?' · retrabajo incompleto: '+soft.join(', '):'')}</small></div></div><button class="btn" data-act="capSave">${icon('check',18)} Guardar</button></div>`;
  const rec=live().filter(r=>r.tec===tec.codigo).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.ts<b.ts?1:-1).slice(0,8);
  const list=rec.length?sec('•','Últimos registros','Tus 8 movimientos más recientes',rec.map(r=>`<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--bd)"><span style="width:8px;height:8px;border-radius:50%;background:${CL[r.clase].c};flex:none"></span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13.5px">${r.proy?r.proy+' · ':''}${esc(r.macro||r.tipo)}${r.fecha===c.fecha?' <span class="bd i">este día</span>':''}</div><div class="sub mut3" style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.act)} · ${dlabel(r.fecha)} · ${esc(CL[r.clase].n)}${r.estado==='Incompleto'?' · incompleto':''}</div></div>${badge(hh(r.horas)+' HH',r.clase==='retrabajo'?'wa':r.clase==='improd'?'er':'ok')}${can(['Gerencia','Supervisor'])?`<button class="ib" style="width:30px;height:30px" data-act="editReg" data-id="${r.id}" aria-label="Editar">${icon('edit',15)}</button>`:''}</div>`).join('')):'';
- return `<div class="cap">${head}${sec(1,'Tipo de registro','Elige de las listas, sin escribir',modes)}${sec(2,'Trabajo ejecutado','',s2)}${s3}${desc}${list}${bar}</div>`;
+ return `<div class="cap">${head}${sec(1,'Tipo de registro','Elige de las listas, sin escribir',modes)}${sec(2,'Trabajo ejecutado','',s2)}${s3}${desc}${typeof libTecCard==='function'?libTecCard():''}${list}${bar}</div>`;
 }
 
 /* ---------- Turnos: editar, desactivar, eliminar, asignar personal, programación semanal ---------- */
@@ -1756,7 +1756,7 @@ function nbSinceNote(){
  return `<p class="mut3" style="font-size:12.5px;margin-top:12px">Se cargan los últimos 90 días (o desde el inicio de los proyectos activos): hoy ves desde <b style="color:var(--tx2)">${dlabel(NB.since)}</b>. Las tablas, gráficos y el Excel incluyen solo lo cargado. ${btn('Cargar todo el historial','loadAll','','sm ghost')}</p>`}
 async function nbLoad(){
  const safe=(p,def)=>p.catch(e=>{if(e&&(e.status===401))throw e;return def});
- let aj,tu,td,te,pr,ex,ha,hs=[],hf=[],pg,rg,his=[],per=[];
+ let aj,tu,td,te,pr,ex,ha,hs=[],hf=[],pg,rg,his=[],per=[],lb=[],lbh=[];
  if(NB.guest){
   const g=await nbRpc('invitado_datos',{p_codigo:NB.guest.codigo,p_todo:!!NB.all},false);
   if(!g){nbGuestEnd();const er=new Error('Invitación vencida');er.guestEnd=true;throw er}
@@ -1767,6 +1767,7 @@ async function nbLoad(){
    safe(nbSel('ajustes'),[]),safe(nbSel('turnos','select=*&order=creado.asc,id.asc'),[]),safe(nbSel('turno_dias'),[]),safe(nbSel('tecnicos','select=*&order=codigo.asc'),[]),
    safe(nbSel('proyectos','select=*&order=numero.asc'),[]),safe(nbSel('expectativas_etapa'),[]),safe(nbSel('hallazgos','select=*&order=codigo.asc'),[]),
    safe(nbSel('programacion'),[]),safe(nbSel('hallazgo_historial','select=*&order=id.asc'),[]),safe(nbSel('hallazgo_fotos','select=*&order=subido_en.asc'),[])]);
+  [lb,lbh]=await Promise.all([safe(nbSel('liberaciones','select=*&order=creado_en.asc'),[]),safe(nbSel('liberacion_historial','select=*&order=id.asc'),[])]);
   const since=nbSince(pr);NB.since=since;
   rg=await nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc'+(since?'&fecha=gte.'+since:''));
   if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}}
@@ -1788,14 +1789,14 @@ async function nbLoad(){
  const registros=rg.map(d=>nbFromReg(d,M));
  const names={};per.forEach(p=>{names[p.id]=p.nombre});
  const historial=his.slice().reverse().map(h=>({ts:h.fecha,por:names[h.usuario]||(h.usuario==='sistema'?'Sistema':'Usuario'),campo:h.tabla+'.'+h.campo,antes:String(h.valor_anterior??''),despues:String(h.valor_nuevo??''),ref:String(h.ref||'').slice(0,8)}));
- S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos:[],hhist:[],historial,demo:false};nbSetHall(ha,hs,numByUuid,hf);nbApplyLists();
+ S={v:2,settings:st,turnos,rota,tecnicos,proyectos,registros,hallazgos:[],hhist:[],lib:[],libh:[],historial,demo:false};nbSetHall(ha,hs,numByUuid,hf);nbSetLib(lb,lbh,numByUuid);nbApplyLists();
  NB.snap=nbSnapNow();
  let seeded=false;
  if(!S.turnos.length){S.turnos=turnosBase();S.turnos.forEach(t=>{t.nombre=t.nombre.replace(' (demo)','')});seeded=true}
  if(seeded){if(NB.perfil&&NB.perfil.rol==='Gerencia'){nbSave()}else NB.snap=nbSnapNow()}
  NB.sig=nbSig()}
 function nbSnapNow(){const r=nbRows();const o={};NB_ORDER.forEach(([c])=>{o[c]=r[c]});return o}
-function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado+(x.ciclos||0)+(x.esc?1:0)+(x.autEn?1:0)+(x.asigIni||'')).join(',')+(S.hhist||[]).length+'f'+(S.hfotos||[]).length+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
+function nbSig(){let h=0;const s=S.registros.map(r=>r.id+r.estado+r.horas+(r.pend?1:0)+(r.hallazgo||'')+(r.causa||'')+(r.origen||'')+(r.persona||'')).join('|')+S.proyectos.map(p=>p.num+p.estado+((p.exp||{}).total||0)).join(',')+S.tecnicos.map(t=>t.codigo+t.activo+t.turno).join(',')+S.hallazgos.map(x=>x.codigo+x.estado+(x.ciclos||0)+(x.esc?1:0)+(x.autEn?1:0)+(x.asigIni||'')).join(',')+(S.hhist||[]).length+'L'+(S.lib||[]).map(x=>x.codigo+x.estado+(x.asigIni||'')).join(',')+'f'+(S.hfotos||[]).length+JSON.stringify(S.rota)+S.turnos.map(t=>t.nombre+nbJ(t.dias)).join('');
  for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return s.length+':'+h}
 
 /* ---------- Guardado en la nube (solo cambios) ---------- */
@@ -1941,7 +1942,7 @@ async function nbCapEnter(r){
  try{NB.consent=null;NB.cred={code:r.codigo,ini:r.iniciales};
   S.tecnicos=[{codigo:r.codigo,ini:r.iniciales,nombre:r.nombre,area:r.area||'',esp:r.especialidad||'',turno:'K',rol:'Técnico',activo:true,registra:true}];
   U.c={...newC(),tec:r.codigo,fecha:today()};
-  await nbCtx(U.c.fecha);await nbPersonas();
+  await nbCtx(U.c.fecha);await nbPersonas();await libMisLoad();
   renderAll();toast('Hola, '+r.nombre.split(' ')[0]+'. Ya puedes registrar tus horas.','ok')}
  catch(e){toast(nbMsg(e),'er')}}
 /* ---------- Consentimiento de datos (una sola vez, desde el QR) ---------- */
@@ -2052,6 +2053,7 @@ function projTrack(p){
  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">${badge(esc(sm.txt),sm.c)}<span class="mut" style="font-size:12.5px">${p.entrega?'Entrega '+dlabel(p.entrega)+(sm.left?' · '+sm.left:''):''}</span></div>
  ${sm.sub?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.sub}</div>`:sm.hint?`<div class="mut3" style="font-size:12px;margin-top:4px">${sm.hint}</div>`:''}</div>`}
 function entregaAlerts(arr){
+ if(typeof libAlerts==='function')libAlerts(arr);
  if(typeof hallAlerts==='function')hallAlerts(arr);
  S.proyectos.filter(p=>p.estado==='Activo').forEach(p=>{
   if(!p.entrega){arr.push({n:'wa',k:'Sin fecha de entrega',t:`Proyecto ${p.num} sin fecha de entrega`,s:'Gerencia define la fecha para activar el semáforo de entrega',proy:p.num});return}
@@ -2145,7 +2147,7 @@ const fmtDT=iso=>{try{return new Date(iso).toLocaleString('es-CO',{day:'2-digit'
 const isGer=()=>!!(NB.perfil&&NB.perfil.rol==='Gerencia'&&!NB.guest&&NB.sess);
 
 /* ---------- Copia de seguridad (archivo .sql que se restaura pegándolo en el Editor SQL de Supabase) ---------- */
-const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['hallazgo_fotos','subido_en.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['historial','id.asc']];
+const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['hallazgo_fotos','subido_en.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['liberaciones','creado_en.asc,codigo.asc'],['liberacion_historial','id.asc'],['historial','id.asc']];
 async function nbBackup(){
  if(!isGer()){toast('Solo Gerencia puede descargar la copia de seguridad.','wa');return}
  if(NB.bak)return;NB.bak=true;toast('Preparando la copia de seguridad… puede tardar unos segundos.','ok');
@@ -2157,9 +2159,9 @@ async function nbBackup(){
    const rows=await nbSel(t,q);cuenta[t]=rows.length;
    for(let i=0;i<rows.length;i+=400){
     let js=JSON.stringify(rows.slice(i,i+400));let tag='j';while(js.includes('$'+tag+'$'))tag+='x';
-    partes.push(`insert into public.${t}${(t==='historial'||t==='hallazgo_historial')?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
+    partes.push(`insert into public.${t}${(t==='historial'||t==='hallazgo_historial'||t==='liberacion_historial')?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
   const cab=`-- LATAMKS HH · COPIA DE SEGURIDAD · ${hoy}\n-- Filas: ${BAK_TABLAS.map(([t])=>t+' '+cuenta[t]).join(' · ')}\n-- Para restaurar: Supabase > SQL Editor > pegar este archivo completo > Run. Es seguro repetirlo (no duplica nada).\n-- Las cuentas de acceso (correos y contraseñas) no van en este archivo: se vuelven a crear en Authentication.\nbegin;\n`;
-  const pie=`\nselect setval(pg_get_serial_sequence('public.historial','id'), (select coalesce(max(id),1) from public.historial));\nselect setval(pg_get_serial_sequence('public.hallazgo_historial','id'), (select coalesce(max(id),1) from public.hallazgo_historial));\ncommit;\n`;
+  const pie=`\nselect setval(pg_get_serial_sequence('public.historial','id'), (select coalesce(max(id),1) from public.historial));\nselect setval(pg_get_serial_sequence('public.hallazgo_historial','id'), (select coalesce(max(id),1) from public.hallazgo_historial));\nselect setval(pg_get_serial_sequence('public.liberacion_historial','id'), (select coalesce(max(id),1) from public.liberacion_historial));\ncommit;\n`;
   nbDownload('latamks-hh_copia-seguridad_'+hoy+'.sql',new Blob([cab+partes.join('\n')+pie],{type:'text/plain;charset=utf-8'}));
   S.settings.respaldo=hoy;save();nbBakCheck();if(U.page==='ajustes')renderPage(true);
   toast('Copia lista · '+cuenta.registros_hh+' registros de horas. Guárdala fuera de esta computadora (correo o Drive).','ok')}
@@ -2627,6 +2629,227 @@ Object.assign(A,{
  hfAdd:t=>{NB.hfCtx={code:t.dataset.c,m:t.dataset.m};hfInput(t.dataset.cam==='1').click()},
  hfVer:t=>hfVer(t.dataset.id),
  hfQuitar:t=>{const id=t.dataset.id;confirmM('Quitar foto','¿Quitar esta foto? La acción queda en el historial.','Quitar',()=>hfQuitar(id),true)}});
+
+/* ================= v3.8 · LIBERACIONES (Quality Gate) ================= */
+/* Una etapa de un proyecto no avanza hasta que Calidad la libera.
+   Solicita: técnico (QR) o Supervisión/Calidad/Gerencia · Asigna: Supervisión/Calidad/Gerencia · Decide: Calidad (o Gerencia) */
+const L_BADGE={'Solicitada':'wa','Asignada':'i','Liberada':'ok','Rechazada':'er','Anulada':'n'};
+const L_NOM={'Solicitada':'Solicitada','Asignada':'Asignada a Calidad','Liberada':'Liberada','Rechazada':'No liberada','Anulada':'Anulada'};
+const lPend=l=>l.estado==='Solicitada'||l.estado==='Asignada';
+function lMap(d,numByUuid){return{codigo:d.codigo,proy:numByUuid[d.proyecto_id]||'',etapa:d.etapa||'',desc:d.descripcion||'',prio:d.prioridad||'Normal',estado:d.estado||'Solicitada',fecha:d.fecha||'',creado:d.creado_en||'',
+ solPor:d.solicitado_por||'',solRol:d.solicitado_rol||'',solCod:d.solicitado_codigo||'',intento:+d.intento||1,reDe:d.reintento_de||'',
+ asigCod:d.asignado_codigo||'',asigIni:d.asignado_ini||'',asigNom:d.asignado_nombre||'',asigPor:d.asignado_por||'',asigEn:d.asignado_en||'',
+ decEn:d.decidido_en||'',decPor:d.decidido_por||'',obs:d.observacion||'',hall:d.hallazgo_codigo||'',anuEn:d.anulado_en||'',anuPor:d.anulado_por||'',anuMot:d.motivo_anulacion||''}}
+function nbSetLib(lb,lbh,numByUuid){
+ S.lib=(lb||[]).map(d=>lMap(d,numByUuid));
+ S.libh=(lbh||[]).map(x=>({id:x.id,codigo:x.codigo,fecha:x.fecha,accion:x.accion,ant:x.estado_anterior||'',nue:x.estado_nuevo||'',usuario:x.usuario||'',rol:x.rol||'',com:x.comentario||''}))}
+async function nbReloadLib(){
+ const pr=await nbSel('proyectos','select=id,numero&order=numero.asc');const nb={};pr.forEach(p=>{nb[p.id]=p.numero});
+ const [a,b]=await Promise.all([nbSel('liberaciones','select=*&order=creado_en.asc'),nbSel('liberacion_historial','select=*&order=id.asc')]);
+ nbSetLib(a,b,nb);NB.sig=nbSig()}
+const lAge=ts=>{if(!ts)return '';const h=(Date.now()-new Date(ts))/36e5;return h<1?'hace menos de 1 h':h<48?'hace '+nf(h,0)+' h':'hace '+nf(h/24,0)+' días'};
+const lHrs=l=>l.creado?(Date.now()-new Date(l.creado))/36e5:0;
+const lCal=()=>can(['Calidad','Gerencia']);
+const lSup=()=>can(['Gerencia','Supervisor','Calidad']);
+const lInsp=()=>S.tecnicos.filter(t=>t.rol==='Calidad'&&t.activo!==false);
+/* última solicitud (no anulada) de una etapa de un proyecto */
+function lUlt(p,e){const L=S.lib.filter(l=>l.proy===p&&l.etapa===e&&l.estado!=='Anulada').sort((a,b)=>a.creado<b.creado?1:-1);return L[0]||null}
+
+/* ---------- Alertas ---------- */
+function libAlerts(A){
+ if(NB.kiosk||NB.guest)return;S.lib=S.lib||[];S.libh=S.libh||[];
+ const sup=can(['Gerencia','Supervisor','Calidad']),cal=can(['Calidad','Gerencia']);
+ S.lib.forEach(l=>{
+  const base=`${l.codigo} · Proyecto ${l.proy} · ${l.etapa}`,h=lHrs(l);
+  if(l.estado==='Solicitada'&&sup)A.push({n:l.prio==='Urgente'||h>4?'er':'wa',k:'Liberación sin asignar',t:`Liberación ${l.codigo} sin inspector asignado`,s:`${l.prio==='Urgente'?'URGENTE · ':''}Pidió ${l.solPor||'—'} ${lAge(l.creado)} · ${base}`,lib:l.codigo});
+  if(l.estado==='Asignada'&&cal){const hh2=l.asigEn?(Date.now()-new Date(l.asigEn))/36e5:h;A.push({n:l.prio==='Urgente'||hh2>8?'er':'wa',k:'Liberación por decidir',t:`${l.codigo}: Calidad debe decidir si libera la etapa`,s:`${l.asigIni||'Calidad'} · asignada ${lAge(l.asigEn||l.creado)} · ${base}`,lib:l.codigo})}
+  if(l.estado==='Rechazada'&&sup&&!S.lib.some(z=>z.reDe===l.codigo&&z.estado!=='Anulada')&&l.decEn&&(Date.now()-new Date(l.decEn))/864e5<3)A.push({n:'i',k:'Etapa no liberada',t:`${l.codigo} no fue liberada: corregir y solicitar de nuevo`,s:`${l.obs||''} · ${base}`.slice(0,150),lib:l.codigo})})}
+
+/* ---------- Página ---------- */
+function lBadge(){if(NB.kiosk||NB.guest)return 0;const L=S.lib||[];return U.role==='Calidad'?L.filter(l=>l.estado==='Asignada').length:U.role==='Supervisor'?L.filter(l=>l.estado==='Solicitada').length:L.filter(lPend).length}
+function lScope(){return U.lq=U.lq||{est:'pend',proy:'',etapa:'',prio:'',insp:'',txt:''}}
+function lFiltrar(q0){
+ const q=q0||lScope(),t=(q.txt||'').toLowerCase().trim();
+ return S.lib.filter(l=>{
+  if(q.proy&&l.proy!==q.proy)return 0;if(q.etapa&&l.etapa!==q.etapa)return 0;if(q.prio&&l.prio!==q.prio)return 0;if(q.insp&&l.asigCod!==q.insp)return 0;
+  const e=q.est||'pend';
+  if(e==='pend'&&!lPend(l))return 0;
+  if(e==='nuevas'&&l.estado!=='Solicitada')return 0;
+  if(e==='todas'&&l.estado==='Anulada')return 0;
+  if(['Solicitada','Asignada','Liberada','Rechazada','Anulada'].includes(e)&&l.estado!==e)return 0;
+  if(t&&![l.codigo,l.desc,l.etapa,l.solPor,l.asigNom,l.asigIni,l.proy].join(' ').toLowerCase().includes(t))return 0;
+  return 1}).sort((a,b)=>(a.prio==='Urgente')!==(b.prio==='Urgente')&&lPend(a)&&lPend(b)?(a.prio==='Urgente'?-1:1):(a.creado<b.creado?1:-1))}
+function lCard(l){
+ return `<section class="card hcard" data-act="ldet" data-c="${esc(l.codigo)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b style="font-size:15px">${esc(l.codigo)}</b><span style="display:flex;gap:5px;flex-wrap:wrap">${l.prio==='Urgente'&&lPend(l)?badge('Urgente','er'):''}${l.intento>1?badge('Intento '+l.intento,'wa'):''}${badge(esc(L_NOM[l.estado]||l.estado),L_BADGE[l.estado]||'n')}</span></div>
+ <div class="mut3" style="font-size:12px;margin:3px 0 8px">Proyecto ${esc(l.proy)} · <b style="color:var(--tx2)">${esc(l.etapa)}</b></div>
+ <div style="min-height:40px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(l.desc||'Sin descripción')}</div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px;font-size:12.5px" class="mut"><span>Pidió: <b style="color:var(--tx)">${esc((l.solPor||'—').split(' · ')[0])}</b>${l.asigIni?` · Calidad: <b style="color:var(--tx)">${esc(l.asigIni)}</b>`:l.estado==='Solicitada'?' · <span class="dn">sin asignar</span>':''}</span><span>${lPend(l)?lAge(l.creado):esc(dlabel(l.fecha))}</span></div></section>`}
+function lMini(l,v,c='',act=''){return `<div class="c3" style="grid-column:span 2"><div class="card mini flat ${act?'clk':''}" ${act?`data-act="lFiltro" data-v="${act}"`:''}><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div></div></div></div>`}
+function lLista(){
+ const q=lScope(),L=lFiltrar(),all=S.lib.filter(l=>l.estado!=='Anulada');
+ const cnt=f=>all.filter(f).length,d7=addDays(today(),-6);
+ const minis=[lMini('Pendientes',cnt(lPend),'','pend'),lMini('Sin asignar',cnt(l=>l.estado==='Solicitada'),cnt(l=>l.estado==='Solicitada')?'dn':'','Solicitada'),lMini('Por decidir',cnt(l=>l.estado==='Asignada'),cnt(l=>l.estado==='Asignada')?'dn':'','Asignada'),
+  lMini('Urgentes',cnt(l=>lPend(l)&&l.prio==='Urgente'),cnt(l=>lPend(l)&&l.prio==='Urgente')?'dn':'','pend'),lMini('Liberadas (7 días)',cnt(l=>l.estado==='Liberada'&&(l.decEn||'').slice(0,10)>=d7),'up','Liberada'),lMini('No liberadas',cnt(l=>l.estado==='Rechazada'),'','Rechazada')].join('');
+ const ests=[['pend','Pendientes (sin decidir)'],['Solicitada','Sin asignar'],['Asignada','Asignadas a Calidad'],['Liberada','Liberadas'],['Rechazada','No liberadas'],['Anulada','Anuladas'],['todas','Todas (sin anuladas)']];
+ return `<div class="g12 minis">${minis}</div>
+ <div class="fbar" style="margin-top:6px">${sel('lq.est',ests,q.est||'pend')}${sel('lq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}${sel('lq.etapa',ETAPAS,q.etapa,{ph:'Todas las etapas'})}${sel('lq.prio',['Urgente','Normal'],q.prio,{ph:'Toda prioridad'})}${sel('lq.insp',lInsp().map(t=>[t.codigo,t.ini+' · '+t.nombre]),q.insp,{ph:'Todo inspector'})}<input class="inp" style="max-width:220px" placeholder="Buscar…" data-f="lq.txt" data-nr value="${esc(q.txt||'')}" aria-label="Buscar"><span class="mut" style="margin-left:6px">${L.length} liberacion${L.length===1?'':'es'}</span></div>
+ ${L.length?`<div class="pgrid">${L.slice(0,120).map(lCard).join('')}</div>`:card('Sin liberaciones','',empty(S.lib.length?'No hay liberaciones con estos filtros':'Aún no hay solicitudes. Producción las pide desde el QR; Supervisión y Calidad también con “Solicitar liberación”.'))}`}
+
+/* Tablero: proyectos × etapas */
+function lTablero(){
+ const ps=S.proyectos.filter(p=>p.estado==='Activo'||p.estado==='En pausa');
+ if(!ps.length)return card('Tablero de liberaciones','',empty('Aún no hay proyectos activos'));
+ const cell=(p,e)=>{const u=lUlt(p.num,e);
+  if(!u)return `<td class="c" style="text-align:center"><button class="btn ghost sm" data-act="lNewFor" data-p="${esc(p.num)}" data-e="${esc(e)}" ${lSup()?'':'disabled'} aria-label="Solicitar liberación de ${esc(e)}" style="opacity:.4;border-style:dashed;background:transparent">—</button></td>`;
+  const [ic,c,tx]=u.estado==='Liberada'?[icon('check',14),'ok','Liberada']:u.estado==='Rechazada'?[icon('x',14),'er','No liberada']:u.estado==='Asignada'?[icon('search',14),'i','Con Calidad']:[icon('clock',14),'wa','Solicitada'];
+  return `<td class="c" style="text-align:center"><button class="bd ${c}" data-act="ldet" data-c="${esc(u.codigo)}" style="cursor:pointer;border:0;min-width:34px;padding:5px 9px" data-tip="${esc(u.codigo+' · '+tx)}">${ic}</button></td>`};
+ return card('Tablero de liberaciones por proyecto y etapa','Estado de la última solicitud de cada etapa: check verde = liberada · lupa = con Calidad · reloj = solicitada · X roja = no liberada · raya = sin solicitud (tócala para pedirla)',
+  `<div class="tw"><table class="t"><thead><tr><th>Proyecto</th>${ETAPAS.map(e=>`<th style="text-align:center;font-size:11.5px">${esc(e)}</th>`).join('')}</tr></thead><tbody>${ps.map(p=>`<tr><td><b>${esc(p.num)}</b><div class="sub">${esc(p.cliente||'')} · ${nf(p.cap,0)} gal</div></td>${ETAPAS.map(e=>cell(p,e)).join('')}</tr>`).join('')}</tbody></table></div>`)}
+
+/* Indicadores */
+function lKpi(){
+ const per=U.lkp||'0',d0=+per?addDays(today(),-(+per)+1):'',q=lScope();
+ const L=S.lib.filter(l=>l.estado!=='Anulada'&&(!q.proy||l.proy===q.proy)&&(!d0||(l.fecha||'')>=d0));
+ const dec=L.filter(l=>l.estado==='Liberada'||l.estado==='Rechazada'),lib=L.filter(l=>l.estado==='Liberada');
+ const t_asig=hAvg(L.map(l=>hMs(l.creado,l.asigEn))),t_dec=hAvg(dec.map(l=>hMs(l.asigEn,l.decEn))),t_tot=hAvg(dec.map(l=>hMs(l.creado,l.decEn)));
+ const prim=lib.filter(l=>l.intento===1).length;
+ const m=(l,v,c='',sub='')=>`<div class="c3" style="grid-column:span 2"><div class="card mini flat"><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div>${sub?`<div class="mut3" style="font-size:11.5px">${sub}</div>`:''}</div></div></div>`;
+ const porEtapa=ETAPAS.map(e=>{const x=L.filter(l=>l.etapa===e);return{e,n:x.length,lib:x.filter(l=>l.estado==='Liberada').length,rech:x.filter(l=>l.estado==='Rechazada').length}}).filter(o=>o.n);
+ const tabInsp=(()=>{const g={};L.filter(l=>l.asigCod).forEach(l=>{const o=g[l.asigCod]=g[l.asigCod]||{ini:l.asigIni,nom:l.asigNom,n:0,lib:0,rech:0,t:[]};o.n++;if(l.estado==='Liberada')o.lib++;if(l.estado==='Rechazada')o.rech++;if(l.decEn)o.t.push(hMs(l.asigEn,l.decEn))});
+  return Object.values(g).sort((a,b)=>b.n-a.n).map(o=>`<tr><td><b>${esc(o.ini)}</b> <span class="sub">${esc(o.nom)}</span></td><td class="num">${o.n}</td><td class="num">${o.lib}</td><td class="num">${o.rech}</td><td class="num">${hFmtDur(hAvg(o.t))}</td></tr>`).join('')})();
+ const tabSol=(()=>{const g={};L.forEach(l=>{const k=(l.solPor||'—');const o=g[k]=g[k]||{n:0,rol:l.solRol};o.n++});
+  return Object.entries(g).sort((a,b)=>b[1].n-a[1].n).slice(0,12).map(([k,o])=>`<tr><td><b>${esc(k)}</b> <span class="sub">${esc(o.rol||'')}</span></td><td class="num">${o.n}</td></tr>`).join('')})();
+ const tabSupA=(()=>{const g={};L.filter(l=>l.asigPor).forEach(l=>{const o=g[l.asigPor]=g[l.asigPor]||{n:0,t:[]};o.n++;o.t.push(hMs(l.creado,l.asigEn))});
+  return Object.entries(g).sort((a,b)=>b[1].n-a[1].n).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td class="num">${o.n}</td><td class="num">${hFmtDur(hAvg(o.t))}</td></tr>`).join('')})();
+ return `<div class="fbar"><div class="seg" role="group" aria-label="Periodo">${[['30','30 días'],['90','90 días'],['0','Todo']].map(([v,l])=>`<button class="${per===v?'on':''}" data-act="lPer" data-v="${v}">${l}</button>`).join('')}</div>${sel('lq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}</div>
+ <div class="g12">${m('Solicitadas',L.length)}${m('Pendientes',L.filter(lPend).length,L.filter(lPend).length?'dn':'')}${m('Liberadas',lib.length,'up')}${m('No liberadas',L.filter(l=>l.estado==='Rechazada').length)}${m('Liberadas al primer intento',lib.length?nf(prim/lib.length*100,0)+'%':'—','',lib.length?prim+' de '+lib.length:'')}${m('Respuesta total',hFmtDur(t_tot),'','solicitud → decisión')}</div>
+ <div class="g12"><div class="c6">${card('Tiempos del ciclo','Promedios con la fecha y hora de cada paso',`<div class="tw"><table class="t"><tbody>
+  <tr><td>Solicitud → asignación<div class="sub">Reacción de Supervisión</div></td><td class="num"><b>${hFmtDur(t_asig)}</b></td></tr>
+  <tr><td>Asignación → decisión<div class="sub">Reacción de Calidad</div></td><td class="num"><b>${hFmtDur(t_dec)}</b></td></tr>
+  <tr><td>Solicitud → decisión<div class="sub">Tiempo que Producción espera para avanzar</div></td><td class="num"><b>${hFmtDur(t_tot)}</b></td></tr></tbody></table></div>`)}</div>
+ <div class="c6">${card('Resultado por etapa','Dónde se rechaza más',porEtapa.length?`<div class="tw"><table class="t"><thead><tr><th>Etapa</th><th class="r">Solicitadas</th><th class="r">Liberadas</th><th class="r">No liberadas</th></tr></thead><tbody>${porEtapa.map(o=>`<tr><td>${esc(o.e)}</td><td class="num">${o.n}</td><td class="num">${o.lib}</td><td class="num ${o.rech?'dn':''}">${o.rech}</td></tr>`).join('')}</tbody></table></div>`:empty())}</div></div>
+ <div class="g12"><div class="c6">${card('Por inspector de Calidad','Decisiones y rapidez',tabInsp?`<div class="tw"><table class="t"><thead><tr><th>Inspector</th><th class="r">Asignadas</th><th class="r">Liberó</th><th class="r">Rechazó</th><th class="r">Tiempo medio</th></tr></thead><tbody>${tabInsp}</tbody></table></div>`:empty())}</div>
+ <div class="c3">${card('Por quién asigna','Rapidez para asignar',tabSupA?`<div class="tw"><table class="t"><thead><tr><th>Persona</th><th class="r">Asignó</th><th class="r">Tiempo</th></tr></thead><tbody>${tabSupA}</tbody></table></div>`:empty())}</div>
+ <div class="c3">${card('Quién solicita','Más solicitudes',tabSol?`<div class="tw"><table class="t"><tbody>${tabSol}</tbody></table></div>`:empty())}</div></div>`}
+
+function pLiberaciones(){
+ S.lib=S.lib||[];S.libh=S.libh||[];
+ const tab=U.lTab||'lista';
+ const acts=`<div class="seg" role="group" aria-label="Vista">${[['lista','Solicitudes'],['tablero','Tablero'],['kpi','Indicadores']].map(([v,l])=>`<button class="${tab===v?'on':''}" data-act="lTab" data-v="${v}">${l}</button>`).join('')}</div>
+  <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${lSup()?btn(icon('plus',16)+' Solicitar liberación','lNew'):''}${lSup()?btn(icon('down',16)+' Exportar a Excel','lExp','','ghost'):''}</div>`;
+ return `<div class="fbar">${acts}</div>`+(tab==='kpi'?lKpi():tab==='tablero'?lTablero():lLista())}
+
+/* ---------- Detalle ---------- */
+function lDet(code){
+ const l=S.lib.find(x=>x.codigo===code);if(!l)return;M={type:'ldet',code};
+ const hist=S.libh.filter(x=>x.codigo===code),dt=ts=>ts?fmtDT(ts):'';
+ const nueva=S.lib.find(z=>z.reDe===code&&z.estado!=='Anulada');
+ const ac=[];
+ if(lPend(l)&&lSup())ac.push(btn(l.asigCod?'Reasignar inspector':'Asignar inspector de Calidad','lAct','data-k="asignar" data-c="'+esc(code)+'"',l.estado==='Solicitada'?'':'ghost'));
+ if(l.estado==='Asignada'&&lCal()){ac.push(btn('Liberar etapa','lAct','data-k="liberar" data-c="'+esc(code)+'"'));ac.push(btn('No liberar','lAct','data-k="rechazar" data-c="'+esc(code)+'"','dng'))}
+ if(l.estado==='Rechazada'&&!nueva&&lSup())ac.push(btn('Solicitar de nuevo','lAct','data-k="reintentar" data-c="'+esc(code)+'"'));
+ if(lPend(l)&&lSup())ac.push(btn('Anular','lAct','data-k="anular" data-c="'+esc(code)+'"','ghost sm'));
+ const tl=hist.length?hist.map(x=>`<div style="display:flex;gap:10px;padding:8px 0"><div style="width:10px;height:10px;border-radius:50%;background:var(--pri);margin-top:5px;flex:none"></div><div style="flex:1;min-width:0"><div style="font-size:13.5px"><b>${esc(x.accion)}</b>${x.ant&&x.nue&&x.ant!==x.nue?` <span class="mut">${esc(L_NOM[x.ant]||x.ant)} → ${esc(L_NOM[x.nue]||x.nue)}</span>`:''}</div><div class="mut3" style="font-size:12px">${esc(dt(x.fecha))} · ${esc(x.usuario)}${x.rol?' ('+esc(x.rol)+')':''}</div>${x.com?`<div class="mut" style="font-size:13px;margin-top:2px">${esc(x.com)}</div>`:''}</div></div>`).join(''):'<p class="mut3">Sin movimientos.</p>';
+ const hl=l.hall?`<a href="#" data-act="hdet" data-c="${esc(l.hall)}" style="color:var(--pri)">${esc(l.hall)}</a>`:'';
+ openModal(mh(esc(l.codigo))+`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${badge(esc(L_NOM[l.estado]||l.estado),L_BADGE[l.estado]||'n')}${l.prio==='Urgente'?badge('Urgente','er'):''}${l.intento>1?badge('Intento '+l.intento,'wa'):''}</div>
+ <p style="font-size:15px;margin:6px 0 10px">${esc(l.desc)}</p>
+ ${hRow('Proyecto',esc(l.proy)+' · '+esc(((S.proyectos.find(p=>p.num===l.proy)||{}).cap)||'')+' gal')}${hRow('Etapa a liberar','<b>'+esc(l.etapa)+'</b>')}
+ ${hRow('Solicitó',esc(l.solPor||'—')+(l.solRol?' <span class="mut">('+esc(l.solRol)+')</span>':'')+' · '+esc(dt(l.creado)))}
+ ${hRow('Inspector de Calidad',l.asigIni?`<b>${esc(l.asigIni)}</b> · ${esc(l.asigNom)} <span class="mut">(asignó ${esc(l.asigPor)}, ${esc(dt(l.asigEn))})</span>`:'Sin asignar')}
+ ${hRow('Decisión',l.decEn?`<b>${esc(l.estado==='Liberada'?'Liberada':'No liberada')}</b> · ${esc(l.decPor)} · ${esc(dt(l.decEn))}`:'')}${hRow('Observación de Calidad',esc(l.obs))}${hRow('Hallazgo relacionado',hl)}
+ ${hRow('Anulación',l.anuEn?esc(l.anuMot)+' · '+esc(l.anuPor):'')}${hRow('Solicitud anterior',l.reDe?`<a href="#" data-act="ldet" data-c="${esc(l.reDe)}" style="color:var(--pri)">${esc(l.reDe)}</a>`:'')}${hRow('Nueva solicitud',nueva?`<a href="#" data-act="ldet" data-c="${esc(nueva.codigo)}" style="color:var(--pri)">${esc(nueva.codigo)}</a>`:'')}
+ <div class="lb" style="margin:14px 0 4px">Historial</div>${tl}
+ <div class="mf" style="flex-wrap:wrap">${ac.join('')}${btn('Avisar por WhatsApp','lWA',`data-c="${esc(code)}"`,'ghost')}${btn('Cerrar','mClose','','ghost')}</div>`,'w')}
+
+/* ---------- Acciones ---------- */
+function lAct(k,code){
+ const l=S.lib.find(x=>x.codigo===code);if(!l)return;M={type:'lact',kind:k,code};
+ const ins=lInsp();
+ const T={
+  asignar:['Asignar inspector de Calidad',(ins.length?fld('Inspector que liberará',selM('la_tec',ins.map(t=>[t.codigo,t.ini+' · '+t.nombre]),l.asigCod||'')):`<p class="mut">No hay personas con rol Calidad activas en Técnicos.</p>`)+fld('Indicación (opcional)',hTxt('la_txt','Ej.: revisar cordones internos antes de liberar')),'Asignar'],
+  liberar:['Liberar la etapa',`<p class="mut" style="margin-bottom:8px">Al liberar, declaras que <b style="color:var(--tx)">${esc(l.etapa)}</b> del proyecto <b style="color:var(--tx)">${esc(l.proy)}</b> cumple los criterios y Producción puede avanzar a la siguiente etapa. Quedan registrados tu nombre, la fecha y la hora.</p>`+fld('Observación (opcional)',hTxt('la_txt','Ej.: cordones conformes, ensayo visual OK')),'Liberar'],
+  rechazar:['No liberar la etapa',`<p class="mut" style="margin-bottom:8px">Producción no debe avanzar hasta corregir. Explica qué falta; después podrá solicitar la liberación de nuevo.</p>`+fld('Motivo *',hTxt('la_txt','Qué no cumple y dónde',4))+fld('Hallazgo relacionado (opcional)',selM('la_h',S.hallazgos.filter(h=>h.proy===l.proy&&!['Cerrado','Anulado'].includes(h.estado)).map(h=>[h.codigo,h.codigo+' · '+(h.desc||'').slice(0,40)]),'','Sin hallazgo')),'No liberar'],
+  reintentar:['Solicitar de nuevo',`<p class="mut">Se crea una nueva solicitud con la misma etapa y descripción, enlazada a ${esc(code)} (intento ${l.intento+1}).</p>`,'Solicitar'],
+  anular:['Anular solicitud',fld('Motivo *',hTxt('la_txt','Ej.: duplicada / se pidió por error')),'Anular']}[k];
+ if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+`<div class="mf">${btn('Volver','ldet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'lDo',`data-k="${k}" data-c="${esc(code)}"`,['anular','rechazar'].includes(k)?'dng':'')}</div>`,'s')}
+async function lRpc(fn,args,ok,code){
+ if(NB.lbusy)return;NB.lbusy=true;
+ try{const r=await nbRpc(fn,args);await nbReloadLib();renderPage(true);toast(ok,'ok');const c=(r&&r.codigo)||code;if(S.lib.find(x=>x.codigo===c))lDet(c);else closeModal()}
+ catch(e){toast(nbMsg(e),'er')}finally{NB.lbusy=false}}
+function lDo(k,code){
+ const tx=(val('la_txt')||'').trim(),l=S.lib.find(x=>x.codigo===code);
+ const R={
+  asignar:()=>{const t=val('la_tec');if(!t){toast('Elige el inspector.','wa');return}lRpc('liberacion_asignar',{p_codigo:code,p_tecnico:t,p_comentario:tx},'Inspector asignado',code)},
+  liberar:()=>lRpc('liberacion_decidir',{p_codigo:code,p_libera:true,p_obs:tx,p_hallazgo:null},'Etapa liberada',code),
+  rechazar:()=>{if(!tx){toast('Explica por qué no se libera.','wa');return}lRpc('liberacion_decidir',{p_codigo:code,p_libera:false,p_obs:tx,p_hallazgo:val('la_h')||null},'Etapa no liberada: Producción debe corregir',code)},
+  reintentar:()=>lRpc('liberacion_crear',{p_proyecto:l.proy,p_etapa:l.etapa,p_descripcion:l.desc,p_prioridad:l.prio,p_reintento_de:code},'Nueva solicitud creada'),
+  anular:()=>{if(!tx){toast('Escribe el motivo.','wa');return}lRpc('liberacion_anular',{p_codigo:code,p_motivo:tx},'Solicitud anulada',code)}}[k];
+ if(R)R()}
+function lForm(pre){
+ pre=pre||{};const act=S.proyectos.filter(p=>p.estado==='Activo');
+ const pj=pre.p||(U.lq&&U.lq.proy)||(act[0]||{}).num||'';
+ return `${fld('Proyecto *',selM('lf_p',act.map(p=>[p.num,p.num+' · '+nf(p.cap,0)+' gal · '+p.cliente]),pj))}
+ ${fld('Etapa que se pide liberar *',selM('lf_e',ETAPAS,pre.e||'','Elegir etapa…'))}
+ ${fld('¿Qué se pide liberar? *',`<textarea class="inp" id="lf_d" rows="3" style="height:auto;padding:10px" placeholder="Ej.: cuerpo principal con cordones longitudinales y circunferenciales terminados"></textarea>`)}
+ ${fld('Prioridad',selM('lf_pr',['Normal','Urgente'],'Normal'))}
+ <p class="mut3" style="font-size:12px">El código lo genera el sistema (QG-proyecto-consecutivo). Queda registrado quién pide, quién asigna y quién decide.</p>`}
+function lNew(pre){M={type:'lnew'};openModal(mh('Solicitar liberación (Quality Gate)')+lForm(pre)+mf('Enviar solicitud','lSave'),'w')}
+async function lSave(){
+ if(NB.lbusy)return;const p=val('lf_p'),e=val('lf_e'),d=(val('lf_d')||'').trim();
+ if(!p||!e||!d){toast('Completa proyecto, etapa y qué se pide liberar.','wa');return}
+ await lRpc('liberacion_crear',{p_proyecto:p,p_etapa:e,p_descripcion:d,p_prioridad:val('lf_pr')||'Normal',p_reintento_de:null},'Solicitud enviada')}
+function lWA(code){const l=S.lib.find(x=>x.codigo===code);if(!l)return;
+ const m=`Liberación ${l.codigo} · Proyecto ${l.proy}\nEtapa: ${l.etapa}\nEstado: ${L_NOM[l.estado]||l.estado}${l.prio==='Urgente'?' · URGENTE':''}\n${l.desc}${l.asigIni?'\nInspector: '+l.asigIni+' · '+l.asigNom:''}${l.obs?'\nObservación: '+l.obs:''}\nAbrir la app: ${invBase()}`;
+ window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank','noopener')}
+
+/* ---------- Excel ---------- */
+function lXlsx(){
+ const q0=lScope(),q=Object.assign({},q0,{est:(q0.est||'pend')==='pend'?'todas':q0.est});
+ const L=lFiltrar(q).sort((a,b)=>a.codigo<b.codigo?-1:1),d1=ts=>ts?hDate(ts):'';
+ const t=(a,b)=>{const v=hMs(a,b);return v==null?'':r2(v*24)};
+ const A=L.map(l=>[l.codigo,l.proy,l.etapa,l.desc,l.prio,L_NOM[l.estado]||l.estado,l.intento,l.reDe,l.solPor,l.solRol,d1(l.creado),l.asigNom?l.asigIni+' · '+l.asigNom:'',l.asigPor,d1(l.asigEn),l.decPor,d1(l.decEn),l.obs,l.hall,t(l.creado,l.asigEn),t(l.asigEn,l.decEn),t(l.creado,l.decEn)]);
+ const sA={name:'Liberaciones',cols:[{h:'CÓDIGO',w:16},{h:'PROYECTO',w:11},{h:'ETAPA',w:24},{h:'QUÉ SE PIDIÓ LIBERAR',w:50},{h:'PRIORIDAD',w:11},{h:'ESTADO',w:18},{h:'INTENTO',w:9,t:'n'},{h:'REINTENTO DE',w:16},{h:'SOLICITÓ',w:26},{h:'ROL',w:12},{h:'FECHA SOLICITUD',w:14,t:'d'},{h:'INSPECTOR ASIGNADO',w:26},{h:'ASIGNÓ',w:22},{h:'FECHA ASIGNACIÓN',w:14,t:'d'},{h:'DECIDIÓ',w:22},{h:'FECHA DECISIÓN',w:14,t:'d'},{h:'OBSERVACIÓN',w:50},{h:'HALLAZGO',w:16},{h:'HORAS SOLICITUD→ASIGNACIÓN',w:16,t:'n'},{h:'HORAS ASIGNACIÓN→DECISIÓN',w:16,t:'n'},{h:'HORAS SOLICITUD→DECISIÓN',w:16,t:'n'}],rows:A};
+ const cods=new Set(L.map(l=>l.codigo));
+ const H=S.libh.filter(x=>cods.has(x.codigo)).map(x=>[x.codigo,hDate(x.fecha),new Date(x.fecha).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),x.accion,L_NOM[x.ant]||x.ant,L_NOM[x.nue]||x.nue,x.usuario,x.rol,x.com]);
+ const sB={name:'Historial',cols:[{h:'CÓDIGO',w:16},{h:'FECHA',w:12,t:'d'},{h:'HORA',w:9},{h:'ACCIÓN',w:26},{h:'ESTADO ANTERIOR',w:20},{h:'ESTADO NUEVO',w:20},{h:'USUARIO',w:26},{h:'ROL',w:12},{h:'COMENTARIO',w:60}],rows:H};
+ try{dlBlob('liberaciones_latamks_'+today()+'.xlsx',xlsxBlob([sA,sB]));toast('Excel de liberaciones descargado ('+L.length+')','ok')}catch(e){toast('No se pudo crear el Excel: '+e.message,'er')}}
+
+Object.assign(A,{
+ ldet:t=>lDet(t.dataset.c),lTab:t=>{U.lTab=t.dataset.v;renderPage(true)},lPer:t=>{U.lkp=t.dataset.v;renderPage(true)},
+ lFiltro:t=>{lScope().est=t.dataset.v;U.lTab='lista';renderPage(true)},lNew:()=>lNew(),lNewFor:t=>lNew({p:t.dataset.p,e:t.dataset.e}),
+ lAct:t=>lAct(t.dataset.k,t.dataset.c),lDo:t=>lDo(t.dataset.k,t.dataset.c),lSave:()=>lSave(),lExp:()=>lXlsx(),lWA:t=>lWA(t.dataset.c)});
+PAGES.liberaciones=pLiberaciones;
+
+/* ---------- Técnico por QR: pedir liberación y ver el estado ---------- */
+NB.libMis=NB.libMis||[];NB.libOk=false;
+async function libMisLoad(){
+ if(!NB.kiosk||!NB.cred)return;
+ try{NB.libMis=(await nbRpc('liberacion_mis',{p_codigo:NB.cred.code,p_iniciales:NB.cred.ini},false))||[];NB.libOk=true}catch(e){NB.libOk=false;NB.libMis=[]}}
+function libTecCard(){
+ if(!NB.kiosk||!NB.libOk)return '';
+ const L=NB.libMis.slice(0,6);
+ const row=x=>`<div style="padding:9px 0;border-top:1px solid var(--bd)"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="font-size:13.5px">${esc(x.codigo)}</b>${badge(esc(L_NOM[x.estado]||x.estado),L_BADGE[x.estado]||'n')}${x.prioridad==='Urgente'&&['Solicitada','Asignada'].includes(x.estado)?badge('Urgente','er'):''}<span class="mut3" style="font-size:12px;margin-left:auto">${esc(x.etapa)}</span></div>
+  <div class="mut" style="font-size:12.5px;margin-top:3px">${esc(x.proyecto)} · ${esc((x.descripcion||'').slice(0,70))}</div>
+  ${x.estado==='Rechazada'?`<div style="font-size:12.5px;margin-top:4px" class="dn">No liberada${x.observacion?': '+esc(x.observacion):''}</div>${x.reintentada?'<div class="mut3" style="font-size:12px">Ya pediste la liberación de nuevo.</div>':`<div style="margin-top:6px">${btn('Solicitar de nuevo','tlRe',`data-c="${esc(x.codigo)}"`,'sm')}</div>`}`:''}
+  ${x.estado==='Liberada'?`<div style="font-size:12.5px;margin-top:4px" class="up">Liberada: puedes avanzar a la siguiente etapa.${x.observacion?' '+esc(x.observacion):''}</div>`:''}</div>`;
+ return `<div class="card flat" style="margin-top:16px"><div class="ch"><div><h3>Liberación de etapa (Quality Gate)</h3><p>Pide a Calidad que libere una etapa terminada</p></div><div class="acts">${btn(icon('plus',16)+' Solicitar','tlNew','','sm')}</div></div>${L.length?L.map(row).join(''):'<p class="mut3" style="font-size:13px">Aún no tienes solicitudes.</p>'}</div>`}
+function tlNew(re){
+ M={type:'tlnew',re:re||null};const act=S.proyectos.filter(p=>p.estado==='Activo');
+ openModal(mh('Solicitar liberación')+`<p class="mut" style="margin-bottom:10px">Úsalo cuando terminaste una etapa y Calidad debe liberarla para que siga la producción.</p>`+
+  fld('Proyecto *',selM('lf_p',act.map(p=>[p.num,p.num+' · '+nf(p.cap,0)+' gal · '+p.cliente]),(U.c&&U.c.proy)||(act[0]||{}).num||''))+
+  fld('Etapa terminada *',selM('lf_e',ETAPAS,(U.c&&U.c.macro&&ETAPAS.includes(U.c.macro))?U.c.macro:'','Elegir etapa…'))+
+  fld('¿Qué pides liberar? *',`<textarea class="inp" id="lf_d" rows="3" style="height:auto;padding:10px" placeholder="Ej.: cuerpo principal con cordones terminados"></textarea>`)+
+  fld('Prioridad',selM('lf_pr',['Normal','Urgente'],'Normal'))+mf('Enviar a Calidad','tlSave'),'s')}
+async function tlSave(args){
+ if(NB.lbusy)return;
+ const a=args||{p_codigo:NB.cred.code,p_iniciales:NB.cred.ini,p_proyecto:val('lf_p'),p_etapa:val('lf_e'),p_descripcion:(val('lf_d')||'').trim(),p_prioridad:val('lf_pr')||'Normal',p_reintento_de:(M&&M.re)||null};
+ if(!a.p_proyecto||!a.p_etapa||!a.p_descripcion){toast('Completa proyecto, etapa y qué pides liberar.','wa');return}
+ NB.lbusy=true;
+ try{const r=await nbRpc('liberacion_solicitar_tec',a,false);await libMisLoad();closeModal();renderPage(true);toast('Solicitud '+r.codigo+' enviada a Calidad','ok')}
+ catch(e){toast(nbMsg(e),'er')}finally{NB.lbusy=false}}
+Object.assign(A,{tlNew:()=>tlNew(),tlSave:()=>tlSave(),
+ tlRe:t=>{const x=NB.libMis.find(z=>z.codigo===t.dataset.c);if(!x)return;
+  confirmM('Solicitar de nuevo','¿Ya corregiste lo que Calidad indicó? Se enviará una nueva solicitud de '+esc(x.etapa)+' del proyecto '+esc(x.proyecto)+'.','Solicitar',()=>tlSave({p_codigo:NB.cred.code,p_iniciales:NB.cred.ini,p_proyecto:x.proyecto,p_etapa:x.etapa,p_descripcion:x.descripcion,p_prioridad:x.prioridad||'Normal',p_reintento_de:x.codigo}))}});
 
 nubeBoot();
 
