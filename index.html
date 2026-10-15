@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var _t=localStorage.getItem("hh_tema");if(_t==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Latamks HH · Control de horas hombre</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png">
@@ -8,6 +8,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root[data-theme=light]{color-scheme:light;--bg:#EDF1FA;--side:#14205A;--card:#FFFFFF;--card2:#F6F8FD;--hov:#EAF0FB;--bd:rgba(30,42,107,.10);--bd2:rgba(30,42,107,.20);--tx:#141B3D;--tx2:#4A5578;--tx3:#7580A0;--pri:#0A7EC2;--cy:#0E9BB8;--vi:#6D4AE0;--ok:#15803D;--wa:#B45309;--er:#DC2626}
+[data-theme=light] body:before{background:radial-gradient(900px 500px at 92% -8%,rgba(56,189,248,.18),transparent 60%),radial-gradient(700px 500px at -5% 105%,rgba(139,92,246,.12),transparent 60%)}
+[data-theme=light] .side{background:linear-gradient(180deg,#1B2A78 0%,#121B52 100%);border-right:0;--tx:#F2F5FF;--tx2:#B7C3EC;--tx3:#8E9CCF;--bd:rgba(255,255,255,.12);--bd2:rgba(255,255,255,.22);--hov:rgba(255,255,255,.08);--pri:#7DD3FC;color:#E8EEFF}
+[data-theme=light] .side .prof,[data-theme=light] .side .sbox{background:rgba(255,255,255,.07)}
+[data-theme=light]{--bak:#FEE9E9}
+[data-theme=light] #tip{background:#14205A;color:#F2F5FF;border-color:#14205A;box-shadow:0 10px 30px -10px rgba(20,27,61,.5)}
+[data-theme=light] .sub-panel .ttl{color:#92400E}
+[data-theme=light] [style*="color:#86efac"],[data-theme=light] [style*="color:#4ade80"]{color:#15803D!important}
+[data-theme=light] [style*="color:#fbbf24"]{color:#92400E!important}
+[data-theme=light] [style*="color:#f87171"],[data-theme=light] [style*="color:#fca5a5"]{color:#B91C1C!important}
+[data-theme=light] [style*="color:#7dd3fc"]{color:#0369A1!important}
+[data-theme=light] [style*="color:#c4b5fd"]{color:#5B3FC4!important}
+[data-theme=light] .mbox,[data-theme=light] .toast,[data-theme=light] .menu,[data-theme=light] .fpanel{background:#fff;color:var(--tx);box-shadow:0 30px 80px -20px rgba(20,27,61,.35)}
+[data-theme=light] .card{border-color:var(--bd)}
+[data-theme=light] .sel option{background:#fff;color:var(--tx)}
+[data-theme=light] .code{background:#F1F4FB;color:var(--tx)}
+[data-theme=light] .scrim{background:rgba(20,27,61,.45)}
+[data-theme=light] .savebar{background:#fff}
+[data-theme=light] #nbGuestBar{background:#fff!important;color:var(--tx)!important}
+[data-theme=light] .card{box-shadow:0 1px 2px rgba(20,27,61,.06),0 8px 24px -12px rgba(30,42,107,.18)}
+[data-theme=light] .top{background:rgba(237,241,250,.88)}
+[data-theme=light] .seg button.on,[data-theme=light] .tabs button.on{background:#14205A;color:#fff;box-shadow:none;border-color:#14205A}
 :root{color-scheme:dark;--bg:#070A0F;--side:#0B111A;--card:#101722;--card2:#111927;--hov:#141d2c;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--tx:#F5F7FA;--tx2:#8B95A7;--tx3:#5F6B7A;--pri:#38BDF8;--cy:#22D3EE;--vi:#8B5CF6;--ok:#22C55E;--wa:#F59E0B;--er:#EF4444;--sw:264px;--ease:cubic-bezier(.4,0,.2,1);--grad:linear-gradient(135deg,#38BDF8,#22D3EE 55%,#8B5CF6)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -458,7 +480,7 @@ filter:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
 inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
 info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
 bag:'<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
-moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
 tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
 };
 const icon=(n,s=20)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||''}</svg>`;
@@ -663,9 +685,10 @@ function curve(P,rn){
  }
  return{labels,exp,real};
 }
+const ALERTAS_DESDE='2026-10-19';
 function alerts(){
  const A=[],t0=today(),rs=live(),by={};rs.forEach(r=>{const k=r.tec+'|'+r.fecha;by[k]=(by[k]||0)+r.horas});
- for(let i=0;i<=7;i++){const d=addDays(t0,-i);
+ for(let i=0;i<=7;i++){const d=addDays(t0,-i);if(d<ALERTAS_DESDE)continue;
   S.tecnicos.filter(t=>t.registra&&t.activo!==false).forEach(t=>{const p=prog(t,d),g=by[t.codigo+'|'+d]||0;if(i===0&&!g)return;if(!p&&!g)return;const df=r2(g-p);
    if(df<-.01)A.push({n:'wa',k:'Horas faltantes',t:`Faltan ${hh(-df)} HH`,s:`${t.nombre} · ${dfull(d)} · ${hh(g)} de ${hh(p)} HH`,tec:t.codigo,fecha:d});
    else if(df>.01)A.push({n:'wa',k:'Horas excedentes',t:`Se registraron ${hh(df)} HH por encima de la jornada`,s:`${t.nombre} · ${dfull(d)}`,tec:t.codigo,fecha:d})})}
@@ -1107,7 +1130,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.8',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.9',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1118,9 +1141,9 @@ const NAV=[
 {g:'Operación',items:[['captura','Captura rápida','clock',['Gerencia','Supervisor','Técnico']],['faltantes','Horas faltantes','warn',['Gerencia','Supervisor','Técnico']],['supervisor','Panel de supervisor','users',GS],['registros','Registros','db',GSC],['alertas','Alertas','bell',GS]]},
 {g:'Análisis',items:[['dashboard','Panel de Gerencia','dash',GS],['etapas','Comparar etapas','layers',GS],['retrabajo','Retrabajo','redo',GSC]]},
 {g:'Gestión',items:[['proyectos','Proyectos','folder',GSC],['expectativas','Expectativas','sliders',GS],['tecnicos','Técnicos','user',G_],['turnos','Turnos','cal',GS],['hallazgos','Hallazgos','flag',GSC],['liberaciones','Liberaciones','check',GSC]]},
-{g:'Sistema',items:[['ajustes','Ajustes y QR','qr',G_]]}];
+{g:'Sistema',items:[['respaldo','Copia de seguridad','down',GSC],['ajustes','Ajustes y QR','qr',G_]]}];
 const ALLN=NAV.flatMap(g=>g.items.map(i=>({id:i[0],t:i[1],ic:i[2],r:i[3],g:g.g})));
-const PAGES={faltantes:pFaltantes,expectativas:pExpectativas,captura:pCaptura,supervisor:pSupervisor,registros:pRegistros,alertas:pAlertas,dashboard:pDashboard,etapas:pEtapas,retrabajo:pRetrabajo,proyectos:pProyectos,tecnicos:pTecnicos,turnos:pTurnos,hallazgos:pHallazgos,ajustes:pAjustes};
+const PAGES={faltantes:pFaltantes,expectativas:pExpectativas,captura:pCaptura,supervisor:pSupervisor,registros:pRegistros,alertas:pAlertas,respaldo:pRespaldo,dashboard:pDashboard,etapas:pEtapas,retrabajo:pRetrabajo,proyectos:pProyectos,tecnicos:pTecnicos,turnos:pTurnos,hallazgos:pHallazgos,ajustes:pAjustes};
 const DEFP={Gerencia:'dashboard',Supervisor:'supervisor','Técnico':'captura',Calidad:'hallazgos'};
 const app=()=>$('#app');
 const isMob=()=>innerWidth<=820;
@@ -1141,6 +1164,7 @@ function renderTop(){
  const it=ALLN.find(x=>x.id===U.page)||{t:'',g:''};const ac=alertCount();const an=['dashboard','etapas','retrabajo','registros'].includes(U.page);
  $('#top').innerHTML=`<button class="ib hamb" data-act="drawer" aria-label="Abrir menú">${icon('menu',20)}</button><div><div class="crumb">${it.g} / ${it.t}</div><h1>${U.kiosk?'Registro de horas':it.t}</h1></div><div class="sp"></div>
  ${an?`<div class="noK pers">${sel('f.per',[['7','Últimos 7 días'],['30','Últimos 30 días'],['0','Todo el histórico']],U.f.desde?'':(U.f.per||'0'),{cls:'',id:'perSel'})}</div>`:''}
+ <button class="ib" data-act="tema" id="tm" data-tip="Modo claro / oscuro" aria-label="Cambiar entre modo claro y oscuro">${icon(document.documentElement.getAttribute('data-theme')==='light'?'moon':'sun',18)}</button>
  <button class="ib noK" data-act="refresh" id="rf" data-tip="Actualizar" aria-label="Actualizar">${icon('refresh',18)}</button>
  <button class="ib noK" data-act="goAlert" data-tip="Alertas" aria-label="Alertas">${icon('bell',18)}${ac?`<span class="dot">${ac>99?'99+':ac}</span>`:''}</button>
  <div class="av" data-tip="${esc(U.name+' · '+U.role)}">${esc(ini2(U.name))}</div>`;
@@ -1235,6 +1259,7 @@ const A={
  menu:()=>{U.menu=!U.menu;renderSide()},
  role:t=>{U.role=t.dataset.v;U.name=U.role+' demo';U.menu=false;U.page=DEFP[U.role];saveUI();U.c=newC();renderAll()},
  pal:()=>palOpen(),palGo:t=>{closeModal();go(t.dataset.p)},help:()=>helpOpen(),
+ tema:()=>{const L=document.documentElement.getAttribute('data-theme')==='light';if(L)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','light');try{localStorage.setItem('hh_tema',L?'dark':'light')}catch(_){}const m=document.querySelector('meta[name=theme-color]');if(m)m.content=L?'#0b1220':'#14205A';renderTop()},
  refresh:t=>{t.classList.add('spin');nbRefreshNow();setTimeout(()=>{const b=$('#rf');if(b)b.classList.remove('spin')},650)},
  goAlert:()=>{if(can(GS))go('alertas')},
  per:t=>{U.f.per=t.dataset.v;U.f.desde='';renderAll(true)},toggleF:()=>{U.showF=!U.showF;renderPage(true)},clearF:()=>{U.f=newF();renderAll(true)},
@@ -1441,6 +1466,9 @@ function pExpectativas(){
   return `<tr><td><b>${p.num}</b> <span class="sub">${nf(p.cap,0)} gal</span></td><td class="num">${nf(e.total||0,0)}</td>${ETAPAS.map(x=>`<td class="num">${nf(+e.et[x]||0,0)}${((e.cerradas||[]).includes(x))?'<span class="up" style="font-size:10px"> ✓</span>':''}</td>`).join('')}<td class="num">${nf(s,0)}</td><td>${!e.total&&!s?badge('Sin expectativa','wa'):ok?badge('Coincide','ok'):badge('No coincide '+(s-e.total>0?'+':'')+nf(s-e.total,0),'wa')}</td><td class="sub">${e.mod&&e.mod.ts?dlabel(e.mod.ts.slice(0,10))+' · '+esc(e.mod.por||''):'—'}</td><td>${G?btn('Editar','editExp',`data-p="${p.num}"`,'sm ghost'):''}</td></tr>`}).join('')}</tbody></table></div><p class="mut3" style="font-size:12px;margin-top:10px">✓ = etapa marcada como terminada.</p>`);
 }
 /* ---------- Horas faltantes ---------- */
+function pRespaldo(){
+ const last=S.settings.respaldo;
+ return `<div class="g12"><div class="c8">${card('Copia de seguridad','La puede descargar Gerencia, Calidad o Supervisor · una vez al día',`<p class="mut" style="font-size:13.5px;line-height:1.7">Descarga el archivo y guárdalo fuera de esta computadora (carpeta «Copia de seguridad APP HH»). Cuando alguien la descarga, la app lo registra y quita el aviso rojo para todos.</p>${backupCardExtra()}`)}</div></div>`}
 function pFaltantes(){
  const techs=S.tecnicos.filter(t=>t.registra&&t.activo!==false);const hf=U.hf;if(!hf.tec&&U.c.tec)hf.tec=U.c.tec;if(!hf.tec&&techs[0])hf.tec=techs[0].codigo;
  const t=techs.find(x=>x.codigo===hf.tec);const j=t?jornadaInfo(t,hf.fecha):null;
@@ -1828,7 +1856,7 @@ async function nbPushInner(){
 function nbBanner(msg){
  let b=$('#nbBan');
  if(!msg){if(b)b.style.display='none';return}
- if(!b){b=document.createElement('div');b.id='nbBan';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:200;max-width:720px;margin:0 auto;padding:12px 14px;border-radius:12px;background:#2a1215;border:1px solid var(--er);color:var(--tx);display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
+ if(!b){b=document.createElement('div');b.id='nbBan';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:200;max-width:720px;margin:0 auto;padding:12px 14px;border-radius:12px;background:var(--bak,#2a1215);border:1px solid var(--er);color:var(--tx);display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
  b.style.display='flex';
  b.innerHTML=`<div style="flex:1;min-width:200px"><b>No se pudo guardar en la nube</b><div class="mut" style="font-size:13px">${esc(msg)}</div></div><button class="btn sm" data-act="nbRetry">Reintentar</button><button class="btn sm ghost" data-act="nbDiscard">Descartar cambios y recargar</button>`}
 async function nbRefreshNow(){
@@ -2145,11 +2173,12 @@ async function nubeBoot(){
 /* ================= v3.5 · copia de seguridad, invitados, tarjetas, comparación ================= */
 const fmtDT=iso=>{try{return new Date(iso).toLocaleString('es-CO',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return String(iso||'')}};
 const isGer=()=>!!(NB.perfil&&NB.perfil.rol==='Gerencia'&&!NB.guest&&NB.sess);
+const isBak=()=>!!(NB.perfil&&['Gerencia','Calidad','Supervisor'].includes(NB.perfil.rol)&&!NB.guest&&NB.sess);
 
 /* ---------- Copia de seguridad (archivo .sql que se restaura pegándolo en el Editor SQL de Supabase) ---------- */
 const BAK_TABLAS=[['ajustes','clave'],['turnos','creado.asc,id.asc'],['turno_dias','turno_id.asc,dia.asc'],['tecnicos','codigo.asc'],['proyectos','numero.asc'],['expectativas_etapa','proyecto_id.asc,etapa.asc'],['hallazgos','codigo.asc'],['hallazgo_historial','id.asc'],['hallazgo_fotos','subido_en.asc'],['programacion','semana.asc,tecnico_id.asc,dia.asc'],['registros_hh','registrado_en.asc,id.asc'],['liberaciones','creado_en.asc,codigo.asc'],['liberacion_historial','id.asc'],['historial','id.asc']];
 async function nbBackup(){
- if(!isGer()){toast('Solo Gerencia puede descargar la copia de seguridad.','wa');return}
+ if(!isBak()){toast('Tu rol no puede descargar la copia de seguridad.','wa');return}
  if(NB.bak)return;NB.bak=true;toast('Preparando la copia de seguridad… puede tardar unos segundos.','ok');
  try{
   if(NB.dirty)await nbPush();
@@ -2170,12 +2199,12 @@ async function nbBackup(){
 function nbBakCheck(){
  let b=document.getElementById('nbBak');
  const last=S.settings&&S.settings.respaldo;const d=last?daysB(last,today()):999;
- if(!isGer()||d<=1||NB.bakHide){if(b)b.remove();return}
- if(!b){b=document.createElement('div');b.id='nbBak';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:70;max-width:720px;margin:0 auto;padding:11px 14px;border-radius:12px;background:#2a1215;border:1px solid var(--er);color:var(--tx);display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
+ if(!isBak()||d<=1||NB.bakHide){if(b)b.remove();return}
+ if(!b){b=document.createElement('div');b.id='nbBak';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:70;max-width:720px;margin:0 auto;padding:11px 14px;border-radius:12px;background:var(--bak,#2a1215);border:1px solid var(--er);color:var(--tx);display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.45)';document.body.appendChild(b)}
  b.innerHTML=`<div style="flex:1;min-width:200px"><b>Falta tu copia de seguridad</b><div class="mut" style="font-size:13px">${last?'La última fue hace '+d+' días ('+dlabel(last)+').':'Aún no has descargado ninguna.'} El plan gratuito no hace copias automáticas.</div></div><button class="btn sm" data-act="backup">Descargar copia ahora</button><button class="btn sm ghost" data-act="bakLater">Más tarde</button>`}
 function backupCardExtra(){
  const last=S.settings.respaldo;const d=last?daysB(last,today()):null;
- return `<div class="sub-panel" style="margin-top:12px;${d===null||d>1?'border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.06)':'border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)'}"><div class="ttl">${d===null?'Aún no hay copia de seguridad':d>1?'Copia vencida · hace '+d+' días':'Copia al día · '+dlabel(last)}</div><p class="mut3" style="font-size:12.5px;margin:4px 0 10px">Descarga una copia cada día y guárdala fuera de Supabase (carpeta «Copia de seguridad APP HH» en la nube de la empresa). La copia trae TODA la información desde el inicio (no solo los últimos 90 días). Si algún día se pierde la base de datos, se restaura pegando ese archivo en Supabase (pasos en la guía).</p>${isGer()?btn(icon('down',16)+' Descargar copia de seguridad (.sql)','backup'):'<span class="mut3" style="font-size:12.5px">Solo Gerencia descarga la copia.</span>'}</div>`}
+ return `<div class="sub-panel" style="margin-top:12px;${d===null||d>1?'border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.06)':'border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)'}"><div class="ttl">${d===null?'Aún no hay copia de seguridad':d>1?'Copia vencida · hace '+d+' días':'Copia al día · '+dlabel(last)}</div><p class="mut3" style="font-size:12.5px;margin:4px 0 10px">Descarga una copia cada día y guárdala fuera de Supabase (carpeta «Copia de seguridad APP HH» en la nube de la empresa). La copia trae TODA la información desde el inicio (no solo los últimos 90 días). Si algún día se pierde la base de datos, se restaura pegando ese archivo en Supabase (pasos en la guía).</p>${isBak()?btn(icon('down',16)+' Descargar copia de seguridad (.sql)','backup'):'<span class="mut3" style="font-size:12.5px">Tu rol no descarga la copia.</span>'}</div>`}
 
 /* ---------- Invitados (solo lectura) ---------- */
 async function nbInvLoad(){
