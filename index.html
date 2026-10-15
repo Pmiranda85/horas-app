@@ -1130,7 +1130,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.9',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.9.1',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1588,10 +1588,17 @@ function drawHeader(c,P,W,H0,title,sub,right1,right2){
  txt(c,sub,116,106,'500 15px '+FONT,'#A9B4C6');
  if(right1){c.font='700 13px '+FONT;const w=Math.max(c.measureText(right1).width,c.measureText(right2||'').width)+32;rrect(c,W-36-w,34,w,52,12);c.fillStyle='rgba(255,255,255,.07)';c.fill();txt(c,right1,W-36-w/2,57,'700 14px '+FONT,'#F5F7FA','center');txt(c,right2||'',W-36-w/2,76,'500 12px '+FONT,'#8B95A7','center')}
 }
-function drawPoster(D,theme){
- const P=PAL_P[theme]||PAL_P.dark,n=D.days.length,PAD=36,LW=200,CW=216,W=PAD*2+LW+n*CW,GAP=14,HEAD=140,DAYH=78,FOOT=104;
+const FRASES_BASE=['Cada día es una nueva oportunidad para mejorar, aprender y sorprenderte de lo que puedes lograr.','La calidad no es un acto, es un hábito: hazlo bien a la primera.','Trabajar seguro es trabajar bien. Cuídate y cuida a tu equipo.','Un equipo unido convierte los retos en resultados.'];
+const frasesLista=()=>{const f=S.settings.frases;return f&&f.length?f:FRASES_BASE};
+const msgSemana=w=>{const m=(S.settings.msgsem||{})[w]||{};return{mot:(m.mot||'').trim(),tec:(m.tec||'').trim()}};
+function wrapT(c,t,maxW,font){c.font=font;const out=[];String(t||'').split('\n').forEach(par=>{let ln='';par.split(/\s+/).filter(Boolean).forEach(w=>{const tt=ln?ln+' '+w:w;if(c.measureText(tt).width>maxW&&ln){out.push(ln);ln=w}else ln=tt});out.push(ln)});return out}
+function drawPoster(D,theme,msg){
+ msg=msg||{};const P=PAL_P[theme]||PAL_P.dark,n=D.days.length,PAD=36,LW=200,CW=216,W=PAD*2+LW+n*CW,GAP=14,HEAD=140,DAYH=78,FOOT=104;
+ const mW=Math.round((W-PAD*2)*.34),tW=W-PAD*2-mW-GAP,LH=22;let mLines=[],tLines=[],MSGH=0;
+ if(msg.mot||msg.tec){const tc=document.createElement('canvas').getContext('2d');mLines=msg.mot?wrapT(tc,msg.mot,mW-44,'italic 600 16px '+FONT):[];tLines=msg.tec?wrapT(tc,msg.tec,(msg.mot?tW:W-PAD*2)-44,'500 14px '+FONT):[];
+  MSGH=Math.max(mLines.length?mLines.length*LH+46:0,tLines.length?tLines.length*20+50:0)}
  const rh=D.rows.map(r=>24+58+Math.max(1,...D.days.map(d=>(r.cells[d.k]||[]).length))*26+16);
- const H=HEAD+DAYH+rh.reduce((a,b)=>a+b+GAP,0)+FOOT+PAD/2+22;const {cv,c}=newCanvas(W,H);
+ const H=HEAD+DAYH+rh.reduce((a,b)=>a+b+GAP,0)+FOOT+PAD/2+22+(MSGH?MSGH+GAP:0);const {cv,c}=newCanvas(W,H);
  c.fillStyle=P.bg;c.fillRect(0,0,W,H);
  const last=D.days[D.days.length-1];
  drawHeader(c,P,W,HEAD,'PROGRAMADOR DE TURNOS','Semana de operación: '+dLarga(D.w)+' al '+dLargaA(last.date),'Semana '+wk(D.w).split('-S')[1],'Generado el '+D.gen.toLocaleDateString('es-CO'));
@@ -1616,6 +1623,11 @@ function drawPoster(D,theme){
  txt(c,'Personal programado',PAD+24,y+30,'800 15px '+FONT,P.tx);txt(c,'Horas efectivas del día',PAD+24,y+52,'500 12.5px '+FONT,P.sub);
  D.days.forEach((d,i)=>{const x=PAD+LW+i*CW;let np=0,hs=0;D.rows.forEach(r=>{const l=r.cells[d.k];if(l&&l.length){np+=l.length;hs+=l.length*horasDia(r.tu.dias[d.k])}});
   txt(c,String(np),x+CW/2,y+36,'800 20px '+FONT,P.tx,'center');txt(c,hh(hs)+' HH',x+CW/2,y+54,'500 12px '+FONT,P.sub,'center')});
+  if(MSGH){y+=FOOT-16+GAP;let x0=PAD;
+  if(mLines.length){rrect(c,x0,y,mW,MSGH,16);c.fillStyle=hexA('#38BDF8',.10);c.fill();c.strokeStyle=hexA('#38BDF8',.5);c.stroke();rrect(c,x0,y+10,6,MSGH-20,3);c.fillStyle='#8B5CF6';c.fill();
+   txt(c,'MENSAJE DE LA SEMANA',x0+24,y+28,'800 11.5px '+FONT,'#38BDF8');mLines.forEach((l,i)=>txt(c,l,x0+24,y+54+i*LH,'italic 600 16px '+FONT,P.tx));x0+=mW+GAP}
+  if(tLines.length){const w2=mLines.length?tW:W-PAD*2;rrect(c,x0,y,w2,MSGH,16);c.fillStyle=P.panel2;c.fill();c.strokeStyle=P.line;c.stroke();rrect(c,x0,y+10,6,MSGH-20,3);c.fillStyle='#F59E0B';c.fill();
+   txt(c,'NOTAS TÉCNICAS',x0+24,y+28,'800 11.5px '+FONT,'#F59E0B');tLines.forEach((l,i)=>txt(c,l,x0+24,y+52+i*20,'500 14px '+FONT,P.tx))}}
  txt(c,'Horas efectivas = salida − entrada − receso − alimentación · Cualquier cambio será comunicado por el supervisor · Documento generado con Latamks HH',W/2,H-18,'500 12px '+FONT,P.sub,'center');
  return cv;
 }
@@ -1656,15 +1668,29 @@ async function dlBlob(name,blob){if(!(window.claude&&window.claude.use)){nbDownl
 }
 function progMsg(code){
  const w=U.semW,hasSun=false;const fin=addDays(w,6);
- if(!code)return `Programación de turnos LATAMKS\nSemana de operación: ${dLarga(w)} al ${dLargaA(fin)}.\n\nAdjunto el horario por turno y por persona. Cualquier cambio será comunicado por el supervisor.`;
+ if(!code)return `Programación de turnos LATAMKS\nSemana de operación: ${dLarga(w)} al ${dLargaA(fin)}.\n\nAdjunto el horario por turno y por persona. Cualquier cambio será comunicado por el supervisor.`+(()=>{const m=msgSemana(w);return (m.mot?'\n\n«'+m.mot+'»':'')+(m.tec?'\n\nNotas técnicas: '+m.tec:'')})();
  const D=personWeek(code,w);
  return `Hola ${D.t.nombre.split(' ')[0]}, este es tu horario de la semana (${dLarga(w)} al ${dLargaA(fin)}):\n\n`+D.days.map(d=>`• ${DN[d.k]} ${dCorta(d.date)}: ${d.tu?tCorto(d.tu)+', '+rango(d.d)+' ('+hh(d.h)+' h)':'libre'}`).join('\n')+`\n\nTotal de la semana: ${hh(D.tot)} horas efectivas.\nCualquier cambio te lo comunicará tu supervisor.`;
 }
-function progBuild(){const code=M.code;return code?drawPerson(personWeek(code,U.semW),M.theme):drawPoster(rotaData(U.semW),M.theme)}
+function progBuild(){const code=M.code;return code?drawPerson(personWeek(code,U.semW),M.theme):drawPoster(rotaData(U.semW),M.theme,msgSemana(U.semW))}
+function msgPanel(){
+ const G=can('Gerencia'),m=msgSemana(U.semW),fr=frasesLista();
+ if(!G)return (m.mot||m.tec)?`<p class="mut3" style="font-size:12.5px">Esta programación incluye mensajes de Gerencia.</p>`:'';
+ return `<details ${M.msgOpen?'open':''} style="margin-bottom:14px;border:1px solid var(--bd2);border-radius:14px;padding:12px 14px"><summary style="cursor:pointer;font-weight:650">Mensajes en la imagen (motivacional y notas técnicas)${(m.mot||m.tec)?' '+badge('incluidos','ok'):''}</summary>
+ <div style="margin-top:12px" class="fld"><label>Mensaje motivacional · se muestra abajo a la izquierda</label>
+ <select class="sel" id="pm_pick" data-pm="pick"><option value="">Elegir una frase guardada…</option>${fr.map((f,i)=>`<option value="${i}">${esc(f.length>90?f.slice(0,90)+'…':f)}</option>`).join('')}</select>
+ <textarea class="inp" id="pm_mot" rows="3" style="margin-top:8px" placeholder="Escribe una frase o elige una de la lista">${esc(m.mot)}</textarea>
+ <div class="acts" style="margin-top:8px">${btn('Guardar esta frase en la lista','frSave','','sm ghost')}${btn('Quitar la frase elegida de la lista','frDel','','sm ghost')}</div></div>
+ <div class="fld" style="margin-top:12px"><label>Notas técnicas · se muestran abajo, a todo lo ancho</label><textarea class="inp" id="pm_tec" rows="3" placeholder="Ej.: Lunes 12: pruebas hidrostáticas en bahía 2. Uso obligatorio de EPP en zona de pintura.">${esc(m.tec)}</textarea></div>
+ <div class="acts" style="margin-top:10px">${btn('Aplicar a la imagen','msgApply')}${btn('Quitar mensajes','msgClear','','ghost')}</div>
+ <p class="mut3" style="font-size:12.5px;margin-top:8px">Los mensajes se guardan para esta semana. Cada semana empieza sin mensajes; las frases guardadas quedan en la lista para reutilizarlas.</p></details>`}
+function msgGuardar(mot,tec){const w=U.semW,all={...(S.settings.msgsem||{})};if(!mot&&!tec)delete all[w];else all[w]={mot,tec};
+ const keys=Object.keys(all).sort().slice(-12);const o={};keys.forEach(k=>o[k]=all[k]);S.settings.msgsem=o;logH('Programación semanal · mensajes',(mot||tec)?'actualizados':'quitados',dCorta(w));save()}
 function progRender(){
  const cv=progBuild();M.cv=cv;const url=cv.toDataURL('image/png');const code=M.code,t=code?S.tecnicos.find(x=>x.codigo===code):null,msg=progMsg(code);
  openModal(mh(code?'Horario de '+esc(t.nombre):'Programación semanal para compartir')+
  `<div style="text-align:center;margin-bottom:14px;overflow:auto"><img src="${url}" alt="Programación de turnos" style="max-width:100%;border-radius:12px;border:1px solid var(--bd2)"></div>
+ ${code?'':msgPanel()}
  <div class="fbar"><div class="seg" role="group" aria-label="Estilo"><button class="${M.theme==='dark'?'on':''}" data-act="progTheme" data-v="dark">Oscuro</button><button class="${M.theme==='light'?'on':''}" data-act="progTheme" data-v="light">Claro (para imprimir)</button></div></div>
  <div class="acts">${btn(icon('down',15)+' Descargar imagen','progPNG')}${btn(icon('down',15)+' Descargar PDF','progPDF','','ghost')}${btn('Compartir…','progShare','','ghost')}${btn(icon('copy',15)+' Copiar imagen','progCopy','','ghost')}${btn(icon('print',15)+' Imprimir','progPrint','','ghost')}</div>
  <div class="acts" style="margin-top:10px">${btn('Enviar por WhatsApp','progWA')}${btn('Enviar por correo','progMail','','ghost')}${btn('Copiar mensaje','progMsgCopy','','ghost')}${code?'':btn(icon('down',15)+' CSV','rotaCSV','','ghost')}</div>
@@ -1676,6 +1702,10 @@ Object.assign(A,{
  rotaCSV:()=>{const w=U.semW,cols=[1,2,3,4,5,6,0];const rows=S.tecnicos.filter(t=>t.registra&&t.activo!==false).map(t=>{let tot=0;const cs=cols.map(k=>{const tu=S.turnos.find(x=>x.id===turnoDe(t,dateOfK(w,k))),d=tu&&tu.dias[k];const h=d&&d.on?horasDia(d):0;tot+=h;return h?tCorto(tu)+' '+rango(d)+' ('+hh(h)+' h)':''});return [t.codigo,t.nombre,...cs,hh(tot)]});const hd=['Código','Nombre',...cols.map(k=>DN[k]+' '+dCorta(dateOfK(w,k))),'Total HH'];dl('programacion_'+w+'.csv',csvOf(hd,rows),tsvOf(hd,rows))},
  progTodos:()=>progAbrir(''),progUno:t=>progAbrir(t.dataset.c),semShare:()=>progAbrir(''),shareOne:t=>progAbrir(t.dataset.c),
  progTheme:t=>{M.theme=t.dataset.v;progRender()},
+ msgApply:()=>{if(!can('Gerencia'))return;msgGuardar(($('#pm_mot').value||'').trim(),($('#pm_tec').value||'').trim());M.msgOpen=true;progRender();toast('Mensajes aplicados a la imagen','ok')},
+ msgClear:()=>{if(!can('Gerencia'))return;msgGuardar('','');M.msgOpen=true;progRender();toast('Mensajes quitados','ok')},
+ frSave:()=>{if(!can('Gerencia'))return;const v=($('#pm_mot').value||'').trim();if(!v){toast('Escribe primero la frase.','wa');return}const cur=frasesLista();if(cur.includes(v)){toast('Esa frase ya está en la lista.','wa');return}S.settings.frases=[...cur,v];logH('Frases motivacionales','',v.slice(0,60),'Programación');const t=($('#pm_tec').value||'').trim();M.msgOpen=true;msgGuardar(v,t);progRender();toast('Frase guardada en la lista','ok')},
+ frDel:()=>{if(!can('Gerencia'))return;const i=$('#pm_pick').value;if(i===''){toast('Elige primero la frase de la lista.','wa');return}const cur=frasesLista();const v=cur[+i];if(cur.length<=1){toast('Debe quedar al menos una frase.','wa');return}S.settings.frases=cur.filter((_,k)=>k!==+i);logH('Frases motivacionales',v.slice(0,60),'','Programación');save();M.msgOpen=true;progRender();toast('Frase quitada','ok')},
  progPNG:async()=>{const b=await blobDe(M.cv,'image/png');dlBlob(progNombre('png'),b)},
  progPDF:async()=>{const j=M.cv.toDataURL('image/jpeg',.92).split(',')[1];const bin=atob(j),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);dlBlob(progNombre('pdf'),pdfDesdeJpeg(u,M.cv.width,M.cv.height))},
  progShare:async()=>{try{const b=await blobDe(M.cv,'image/png');const f=new File([b],progNombre('png'),{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Programación de turnos LATAMKS',text:progMsg(M.code)})}else toast('Compartir directo no está disponible aquí. Descarga la imagen y adjúntala.','wa')}catch(e){if(!e||e.name!=='AbortError')toast('No se pudo abrir “Compartir”. Descarga la imagen y adjúntala.','wa')}},
@@ -1691,7 +1721,7 @@ Object.assign(A,{
    setTimeout(()=>{location.href='mailto:?subject='+encodeURIComponent('Programación de turnos LATAMKS')+'&body='+encodeURIComponent(progMsg(M.code))},700)}catch(e){toast('No se pudo preparar el correo.','wa')}},
  semCopy:()=>{const prev=S.rota[addDays(U.semW,-7)];if(!prev){toast('La semana anterior no tiene programación propia: ya usa los turnos por defecto','wa');return}S.rota[U.semW]=JSON.parse(JSON.stringify(prev));logH('Programación semanal','copiada de '+dCorta(addDays(U.semW,-7)),dCorta(U.semW));save();renderPage(true);toast('Semana copiada','ok')}
 });
-document.addEventListener('change',e=>{const t=e.target;if(t.dataset.rd){const [c,k]=t.dataset.rd.split('|');setRotaDay(c,+k,t.value);renderPage(true)}});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.pm==='pick'){const f=frasesLista()[+t.value];if(f!==undefined){$('#pm_mot').value=f}return}if(t.dataset.rd){const [c,k]=t.dataset.rd.split('|');setRotaDay(c,+k,t.value);renderPage(true)}});
 
 /* ================= Capa nube (v3.0): Supabase + sesión + captura del técnico + validación ================= */
 const NUBE={url:'https://cjoxjwtgopbmoiwzkwzh.supabase.co',key:'sb_publishable_ryQmfJZttUJ1Bi39ylDhpQ_Sws7mCDD'};
@@ -1741,6 +1771,8 @@ function nbRows(){
  out.ajustes=mk();['meta','rec','ali','recSab','empresa','url','respaldo'].forEach(k=>{if(st[k]!==undefined&&st[k]!==null&&st[k]!==''){const ck=k==='meta'?'meta_semanal':k==='respaldo'?'ultimo_respaldo':k;out.ajustes.set(ck,nbJ({clave:ck,valor:String(st[k])}))}});
  if(Array.isArray(st.caps)&&st.caps.length)out.ajustes.set('capacidades',nbJ({clave:'capacidades',valor:st.caps.join(',')}));
  if(Array.isArray(st.lineas)&&st.lineas.length)out.ajustes.set('lineas',nbJ({clave:'lineas',valor:st.lineas.join('|')}));
+ if(Array.isArray(st.frases)&&st.frases.length)out.ajustes.set('frases',nbJ({clave:'frases',valor:st.frases.join('|')}));
+ if(st.msgsem&&Object.keys(st.msgsem).length)out.ajustes.set('msgsem',nbJ({clave:'msgsem',valor:JSON.stringify(st.msgsem)}));
  out.turnos=mk();out.turno_dias=mk();
  S.turnos.forEach(t=>{
   out.turnos.set(t._id,nbJ({id:t._id,nombre:t.nombre,activo:t.activo!==0,modificado_por:(t.mod&&t.mod.por)||null,modificado_en:(t.mod&&t.mod.ts)||null}));
@@ -1800,7 +1832,7 @@ async function nbLoad(){
   rg=await nbSel('registros_hh','select=*&order=registrado_en.asc,id.asc'+(since?'&fecha=gte.'+since:''));
   if(NB.perfil&&NB.perfil.rol==='Gerencia'){[his,per]=await Promise.all([safe(nbSel('historial','select=*&order=id.desc'),[]).then(x=>x.slice(0,400)),safe(nbSel('perfiles'),[])])}}
  const st={...NB_DEF,webapp:'',url:'',empresa:'LATAMKS S.A.S.'};
- aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor;else if(a.clave==='ultimo_respaldo')st.respaldo=a.valor;else if(a.clave==='capacidades')st.caps=String(a.valor).split(',').map(Number).filter(n=>n>0);else if(a.clave==='lineas')st.lineas=String(a.valor).split('|').filter(Boolean)});
+ aj.forEach(a=>{if(a.clave==='meta_semanal')st.meta=+a.valor;else if(['rec','ali','recSab'].includes(a.clave))st[a.clave]=+a.valor;else if(['empresa','url'].includes(a.clave))st[a.clave]=a.valor;else if(a.clave==='ultimo_respaldo')st.respaldo=a.valor;else if(a.clave==='capacidades')st.caps=String(a.valor).split(',').map(Number).filter(n=>n>0);else if(a.clave==='frases')st.frases=String(a.valor).split('|').filter(Boolean);else if(a.clave==='msgsem'){try{st.msgsem=JSON.parse(a.valor)||{}}catch(_){st.msgsem={}}}else if(a.clave==='lineas')st.lineas=String(a.valor).split('|').filter(Boolean)});
  const tmap={},turnoByName={};
  const turnos=tu.map((t,i)=>{const id='T'+(i+1);tmap[t.id]=id;turnoByName[t.nombre]=turnoByName[t.nombre]||id;const dias={};for(let k=0;k<7;k++)dias[k]=mkDia(0,'07:30','17:00',0,0);
   td.filter(d=>d.turno_id===t.id).forEach(d=>{dias[d.dia]=mkDia(d.activo?1:0,String(d.hora_inicio||'07:30').slice(0,5),String(d.hora_fin||'17:00').slice(0,5),d.receso_min||0,d.alimentacion_min||0)});
