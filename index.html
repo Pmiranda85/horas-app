@@ -1130,7 +1130,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v4.0',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v4.1',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1140,7 +1140,7 @@ const G_=['Gerencia'],GS=['Gerencia','Supervisor'],GSC=['Gerencia','Supervisor',
 const NAV=[
 {g:'Operación',items:[['captura','Captura rápida','clock',['Gerencia','Supervisor','Técnico']],['faltantes','Horas faltantes','warn',['Gerencia','Supervisor','Técnico']],['supervisor','Panel de supervisor','users',GS],['registros','Registros','db',GSC],['alertas','Alertas','bell',GS]]},
 {g:'Análisis',items:[['dashboard','Panel de Gerencia','dash',GS],['etapas','Comparar etapas','layers',GS],['retrabajo','Retrabajo','redo',GSC]]},
-{g:'Gestión',items:[['proyectos','Proyectos','folder',GSC],['expectativas','Expectativas','sliders',GS],['tecnicos','Técnicos','user',G_],['turnos','Turnos','cal',GS],['hallazgos','Hallazgos','flag',GSC],['liberaciones','Liberaciones','check',GSC]]},
+{g:'Gestión',items:[['proyectos','Proyectos','folder',GSC],['expectativas','Expectativas','sliders',GS],['tecnicos','Técnicos','user',G_],['turnos','Turnos','cal',GS],['hallazgos','Hallazgos','flag',GSC],['liberaciones','Liberaciones','check',GSC],['calidad','Gestión de Calidad','trend',GSC]]},
 {g:'Sistema',items:[['respaldo','Copia de seguridad','down',GSC],['ajustes','Ajustes y QR','qr',G_]]}];
 const ALLN=NAV.flatMap(g=>g.items.map(i=>({id:i[0],t:i[1],ic:i[2],r:i[3],g:g.g})));
 const PAGES={faltantes:pFaltantes,expectativas:pExpectativas,captura:pCaptura,supervisor:pSupervisor,registros:pRegistros,alertas:pAlertas,respaldo:pRespaldo,dashboard:pDashboard,etapas:pEtapas,retrabajo:pRetrabajo,proyectos:pProyectos,tecnicos:pTecnicos,turnos:pTurnos,hallazgos:pHallazgos,ajustes:pAjustes};
@@ -1910,7 +1910,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 4.0</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 4.1</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -2238,7 +2238,8 @@ async function nbBackup(){
   const hoy=today(),partes=[],cuenta={};
   for(const [t,ord] of BAK_TABLAS){
    const q=ord.includes('.')||ord.includes(',')?'select=*&order='+ord:'select=*&order='+ord+'.asc';
-   const rows=await nbSel(t,q);cuenta[t]=rows.length;
+   let rows;try{rows=await nbSel(t,q)}catch(e0){e0.tabla=t;throw e0}
+   cuenta[t]=rows.length;
    for(let i=0;i<rows.length;i+=400){
     let js=JSON.stringify(rows.slice(i,i+400));let tag='j';while(js.includes('$'+tag+'$'))tag+='x';
     partes.push(`insert into public.${t}${(t==='historial'||t==='hallazgo_historial'||t==='liberacion_historial')?' overriding system value':''} select * from jsonb_populate_recordset(null::public.${t}, $${tag}$${js}$${tag}$::jsonb) on conflict do nothing;`)}}
@@ -2247,7 +2248,7 @@ async function nbBackup(){
   nbDownload('latamks-hh_copia-seguridad_'+hoy+'.sql',new Blob([cab+partes.join('\n')+pie],{type:'text/plain;charset=utf-8'}));
   S.settings.respaldo=hoy;save();nbBakCheck();if(U.page==='ajustes')renderPage(true);
   toast('Copia lista · '+cuenta.registros_hh+' registros de horas. Guárdala fuera de esta computadora (correo o Drive).','ok')}
- catch(e){toast('No se pudo crear la copia: '+nbMsg(e),'er')}
+ catch(e){toast('No se pudo crear la copia: '+nbMsg(e)+(e&&e.tabla?' (tabla: '+e.tabla+')':''),'er')}
  finally{NB.bak=false}}
 function nbBakCheck(){
  let b=document.getElementById('nbBak');
@@ -2923,6 +2924,135 @@ Object.assign(A,{
  lFiltro:t=>{lScope().est=t.dataset.v;U.lTab='lista';renderPage(true)},lNew:()=>lNew(),lNewFor:t=>lNew({p:t.dataset.p,e:t.dataset.e}),
  lAct:t=>lAct(t.dataset.k,t.dataset.c),lDo:t=>lDo(t.dataset.k,t.dataset.c),lSave:()=>lSave(),lExp:()=>lXlsx(),lWA:t=>lWA(t.dataset.c)});
 PAGES.liberaciones=pLiberaciones;
+
+/* ============================================================
+   v4.1 · GESTIÓN DE CALIDAD — tablero para medir y auditar el área
+   ============================================================ */
+const CQ_META={cierre:85,reinc:20,verH:24,asigH:4,decH:8};
+const ACT_RE=/(?:Realizado por: |\(Inspector: |\(Solicitó: )([^)·]+)/;
+const actorDe=t=>{const m=String(t||'').match(ACT_RE);return m?m[1].trim().toUpperCase():''};
+const iNom=s=>String(s||'').trim().toUpperCase();
+const hInsp=h=>actorDe(h.desc)||iNom(h.insp)||'SIN DATO';
+const hVerBy=h=>actorDe(h.obsVer)||iNom(h.verPor);
+const lDecBy=l=>actorDe(l.obs)||iNom(l.asigNom)||iNom(l.decPor);
+const cqQ=()=>{U.cq=U.cq||{per:'30',proy:'',insp:''};return U.cq};
+const cqHrs=(a,b)=>{const d=hMs(a,b);return d==null?null:d*24};
+const fHrs=h=>h==null||isNaN(h)?'—':h<1?nf(h*60,0)+' min':h<48?nf(h,1)+' h':nf(h/24,1)+' d';
+function cqMet(d0,d1,proy){
+ const inR=f=>(!d0||(f||'')>=d0)&&(!d1||(f||'')<d1);
+ const L=S.hallazgos.filter(h=>h.estado!=='Anulado'&&inR(h.fecha)&&(!proy||h.proy===proy));
+ const cer=L.filter(h=>h.estado==='Cerrado');
+ const LB=(S.lib||[]).filter(l=>l.estado!=='Anulada'&&inR(l.fecha)&&(!proy||l.proy===proy));
+ const dec=LB.filter(l=>l.estado==='Liberada'||l.estado==='Rechazada'),lib=LB.filter(l=>l.estado==='Liberada');
+ const rs=live().filter(r=>inR(r.fecha)&&(!proy||r.proy===proy)&&isProd(r)),rt=rs.filter(r=>r.clase==='retrabajo');
+ const P=(a,b)=>b?a/b*100:null;
+ return{L,cer,LB,dec,lib,rt,
+  n:L.length,tasa:P(cer.length,L.length),
+  tCierre:hAvg(cer.map(h=>cqHrs(h.creado||h.fecha,h.cierEn))),
+  tVer:hAvg(L.map(h=>cqHrs(h.corEn,h.verEn))),
+  tAsig:hAvg(L.map(h=>cqHrs(h.creado||h.fecha,h.asigEn))),
+  rein:P(L.filter(h=>h.reinc).length,L.length),
+  prim:P(cer.filter(h=>h.ciclos<=1).length,cer.length),
+  venc:L.filter(hVenc).length,
+  lN:LB.length,lAsig:hAvg(LB.map(l=>cqHrs(l.creado,l.asigEn))),lDec:hAvg(dec.map(l=>cqHrs(l.creado,l.decEn))),
+  lPrim:P(lib.filter(l=>l.intento===1).length,lib.length),lRech:P(LB.filter(l=>l.estado==='Rechazada').length,dec.length),
+  hhRt:sum(rt),hhTot:sum(rs),pctRt:P(sum(rt),sum(rs))}}
+function cqTile(l,v,o={}){
+ const {c='',sub='',cur=null,prev=null,low=0,neu=0,fmt=x=>nf(x,1)}=o;
+ let d='';
+ if(prev!=null&&cur!=null&&isFinite(prev)&&isFinite(cur)){const df=cur-prev;if(Math.abs(df)>=.05){const bien=low?df<0:df>0;d=`<div style="font-size:11.5px;margin-top:2px" class="${neu?'mut3':bien?'up':'dn'}">${df>0?'▲':'▼'} ${fmt(Math.abs(df))} vs periodo anterior</div>`}}
+ return `<div class="c3" style="grid-column:span 2"><div class="card mini flat"><div><div class="m-v ${c}">${v}</div><div class="m-l">${l}</div>${sub?`<div class="mut3" style="font-size:11.5px">${sub}</div>`:''}${d}</div></div></div>`}
+const cqPct=x=>x==null?'—':nf(x,0)+'%';
+function cqInspectores(){
+ const m={};const g=n=>{n=n||'SIN DATO';return m[n]=m[n]||{n,ab:0,venc:0,ver:0,tv:[],lp:0,ld:0,lr:0,td:[],aper:0}};
+ lInsp().forEach(t=>g(iNom(t.nombre)));
+ S.hallazgos.filter(h=>h.estado!=='Anulado').forEach(h=>{const o=g(hInsp(h));o.aper++;if(hAb(h)){o.ab++;if(hVenc(h))o.venc++}
+  if(h.verEn){const v=g(hVerBy(h)||hInsp(h));v.ver++;const t=cqHrs(h.corEn,h.verEn);if(t!=null)v.tv.push(t)}});
+ (S.lib||[]).filter(l=>l.estado!=='Anulada').forEach(l=>{
+  if(lPend(l)&&l.asigNom)g(iNom(l.asigNom)).lp++;
+  if(l.estado==='Liberada'||l.estado==='Rechazada'){const o=g(lDecBy(l));o.ld++;if(l.estado==='Rechazada')o.lr++;const t=cqHrs(l.asigEn||l.creado,l.decEn);if(t!=null)o.td.push(t)}});
+ return Object.values(m).filter(o=>o.n!=='SIN DATO'||o.aper||o.ld||o.ver).sort((a,b)=>(b.ab+b.lp)-(a.ab+a.lp))}
+function cqAnalisis(M,P){
+ const B=[],add=(n,t)=>B.push({n,t}),hoy=today();
+ const esc0=S.hallazgos.filter(h=>hAb(h)&&h.esc&&!h.autEn);
+ if(esc0.length){const o=esc0.slice().sort((a,b)=>(a.escEn||'')<(b.escEn||'')?-1:1)[0];add('er',`<b>${esc0.length} hallazgo${esc0.length>1?'s':''} escalado${esc0.length>1?'s':''} a Gerencia sin decisión.</b> El más antiguo: ${esc(o.codigo)} (${hDias(o)} d). Calidad ya dejó constancia: falta decidir si se continúa.`)}
+ const ve=S.hallazgos.filter(hVenc);
+ if(ve.length){const o=ve.slice().sort((a,b)=>hDias(b)-hDias(a))[0];const g={};ve.forEach(h=>{const k=h.etapa||'Sin etapa';g[k]=(g[k]||0)+1});const top=Object.entries(g).sort((a,b)=>b[1]-a[1])[0];
+  add('er',`<b>${ve.length} hallazgo${ve.length>1?'s':''} vencido${ve.length>1?'s':''}</b> (pasaron su plazo). El más viejo: ${esc(o.codigo)} con ${hDias(o)} días. Se concentran en <b>${esc(top[0])}</b> (${top[1]}).`)}
+ const pv=S.hallazgos.filter(h=>h.estado==='Pendiente de verificación'&&h.corEn&&(Date.now()-new Date(h.corEn))/36e5>CQ_META.verH);
+ if(pv.length)add('wa',`<b>${pv.length} corrección${pv.length>1?'es':''} esperan verificación de Calidad hace más de ${CQ_META.verH} h.</b> Producción ya corrigió: el siguiente paso es del área.`);
+ const lp=(S.lib||[]).filter(l=>l.estado==='Asignada'&&(Date.now()-new Date(l.asigEn||l.creado))/36e5>CQ_META.decH);
+ if(lp.length)add('er',`<b>${lp.length} liberación${lp.length>1?'es':''} sin decidir hace más de ${CQ_META.decH} h.</b> Producción no puede avanzar de etapa mientras espera.`);
+ const ls=(S.lib||[]).filter(l=>l.estado==='Solicitada'&&(Date.now()-new Date(l.creado))/36e5>CQ_META.asigH);
+ if(ls.length)add('wa',`<b>${ls.length} solicitud${ls.length>1?'es':''} de liberación sin inspector asignado</b> hace más de ${CQ_META.asigH} h.`);
+ if(M.rein!=null&&M.n>=3){
+  if(M.rein>CQ_META.reinc){const g={};M.L.filter(h=>h.reinc).forEach(h=>{const k=h.etapa||'Sin etapa';g[k]=(g[k]||0)+1});const top=Object.entries(g).sort((a,b)=>b[1]-a[1])[0];
+   add('er',`<b>Reincidencia en ${nf(M.rein,0)}%</b>, por encima del umbral de ${CQ_META.reinc}%. ${top?`Más repetidos en <b>${esc(top[0])}</b> (${top[1]}). `:''}Conviene revisar la causa raíz con Producción.`)}
+  else add('ok',`Reincidencia en <b>${nf(M.rein,0)}%</b>, dentro del umbral de ${CQ_META.reinc}%.`)}
+ if(M.n>=3){const g={};M.L.forEach(h=>{const k=h.etapa||'Sin etapa';g[k]=(g[k]||0)+1});const top=Object.entries(g).sort((a,b)=>b[1]-a[1])[0];
+  if(top&&top[1]/M.n>=.4)add('wa',`<b>${esc(top[0])}</b> concentra el ${nf(top[1]/M.n*100,0)}% de los hallazgos (${top[1]} de ${M.n}): es la etapa donde más vale intervenir.`);
+  const e={};M.L.forEach(h=>{const k=h.esp||'Sin especialidad';e[k]=(e[k]||0)+1});const te=Object.entries(e).sort((a,b)=>b[1]-a[1])[0];
+  if(te&&te[1]/M.n>=.4)add('i',`La especialidad <b>${esc(te[0])}</b> origina el ${nf(te[1]/M.n*100,0)}% de los hallazgos.`)}
+ const d14=addDays(hoy,-13),ab14=S.hallazgos.filter(h=>h.estado!=='Anulado'&&(h.fecha||'')>=d14).length,ce14=S.hallazgos.filter(h=>h.cierEn&&hDate(h.cierEn)>=d14).length;
+ if(ab14||ce14)add(ce14>=ab14?'ok':'wa',`Últimos 14 días: se abrieron <b>${ab14}</b> y se cerraron <b>${ce14}</b> hallazgos. ${ce14>=ab14?'La cola de pendientes baja.':'La cola de pendientes está creciendo.'}`);
+ if(P&&M.tCierre!=null&&P.tCierre!=null&&Math.abs(M.tCierre-P.tCierre)>2)add(M.tCierre<P.tCierre?'ok':'wa',`El tiempo medio de cierre ${M.tCierre<P.tCierre?'mejoró':'empeoró'}: <b>${fHrs(M.tCierre)}</b> frente a ${fHrs(P.tCierre)} en el periodo anterior.`);
+ if(M.prim!=null&&M.cer.length>=3)add(M.prim>=70?'ok':'wa',`<b>${nf(M.prim,0)}%</b> de los hallazgos cerrados se aprobaron a la primera (${M.cer.filter(h=>h.ciclos<=1).length} de ${M.cer.length}). ${M.prim>=70?'Las correcciones salen bien a la primera.':'Hay muchas correcciones rechazadas: revisar si el criterio está claro para Producción.'}`);
+ const ex=M.cer.filter(h=>h.cierTipo&&h.cierTipo!=='Cumple').length;
+ if(ex)add('i',`${ex} hallazgo${ex>1?'s se cerraron':' se cerró'} <b>con excepción autorizada</b> (sin cumplir el criterio). Revisarlos en “Requiere atención”.`);
+ if(M.cer.length||M.dec.length)add('ok',`Resultado del periodo: Calidad cerró <b>${M.cer.length}</b> hallazgo${M.cer.length===1?'':'s'} y decidió <b>${M.dec.length}</b> liberación${M.dec.length===1?'':'es'} (${M.lib.length} liberadas).`);
+ if(!B.length)add('i','Aún no hay suficientes datos en este periodo para un análisis. Se llenará solo a medida que se usen Hallazgos y Liberaciones.');
+ const ord={er:0,wa:1,i:2,ok:3};return B.sort((a,b)=>ord[a.n]-ord[b.n]).slice(0,9)}
+function cqAtencion(){
+ const R=[];const hoy=Date.now();
+ S.hallazgos.filter(h=>hAb(h)&&h.esc&&!h.autEn).forEach(h=>R.push({k:'Escalado sin decisión',c:'er',cod:h.codigo,a:'hdet',d:hDias(h)+' d',w:hInsp(h),t:(h.escNota||h.desc||'').slice(0,70)}));
+ S.hallazgos.filter(hVenc).forEach(h=>R.push({k:'Hallazgo vencido',c:'er',cod:h.codigo,a:'hdet',d:hDias(h)+' d (plazo '+hPlazo(h)+')',w:h.asigNom||'Sin asignar',t:(h.desc||'').slice(0,70)}));
+ (S.lib||[]).filter(l=>l.estado==='Asignada'&&(hoy-new Date(l.asigEn||l.creado))/36e5>CQ_META.decH).forEach(l=>R.push({k:'Liberación sin decidir',c:l.prio==='Urgente'?'er':'wa',cod:l.codigo,a:'ldet',d:fHrs((hoy-new Date(l.asigEn||l.creado))/36e5),w:l.asigNom||'—',t:l.etapa+' · '+(l.desc||'').slice(0,50)}));
+ (S.lib||[]).filter(l=>l.intento>=3&&lPend(l)).forEach(l=>R.push({k:'Liberación en 3.er intento o más',c:'wa',cod:l.codigo,a:'ldet',d:'intento '+l.intento,w:l.asigNom||'—',t:l.etapa}));
+ S.hallazgos.filter(h=>h.estado==='Cerrado'&&h.cierTipo&&h.cierTipo!=='Cumple'&&hDias(h)<=60).forEach(h=>R.push({k:'Cierre con excepción',c:'i',cod:h.codigo,a:'hdet',d:fmtDT(h.cierEn),w:(h.autPor||h.cierPor||'—'),t:h.cierTipo}));
+ S.hallazgos.filter(h=>h.estado!=='Anulado'&&(h.ciclos||1)>=3).forEach(h=>R.push({k:'3 o más ciclos de corrección',c:'wa',cod:h.codigo,a:'hdet',d:h.ciclos+' ciclos',w:h.asigNom||'—',t:(h.desc||'').slice(0,70)}));
+ const ord={er:0,wa:1,i:2};return R.sort((a,b)=>ord[a.c]-ord[b.c])}
+function pCalidad(){
+ const q=cqQ(),per=+q.per||0,d0=per?addDays(today(),-per+1):'';
+ const M=cqMet(d0,'',q.proy),P=per?cqMet(addDays(d0,-per),d0,q.proy):null;
+ const an=cqAnalisis(M,P),ins=cqInspectores(),att=cqAtencion();
+ const dot={er:'var(--er)',wa:'var(--wa)',i:'var(--pri)',ok:'var(--ok)'};
+ const analisis=card('Análisis rápido','Lo que el sistema ve hoy, ordenado de lo más urgente a lo bueno',`<div style="display:flex;flex-direction:column;gap:2px">${an.map(b=>`<div style="display:flex;gap:11px;padding:9px 0;border-top:1px solid var(--bd);font-size:13.5px;line-height:1.5"><span style="width:10px;height:10px;border-radius:50%;background:${dot[b.n]};margin-top:6px;flex:none"></span><span>${b.t}</span></div>`).join('')}</div>`);
+ const meta=(l,v,m,txt,ok)=>{const p=v==null?0:Math.min(100,v/m*100);return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:13px;gap:8px"><span>${l}</span><b class="${v==null?'mut':ok?'up':'dn'}">${txt}</b></div><div class="prog ${v==null?'':ok?'ok':'wa'}" style="margin-top:5px"><i style="width:${p}%"></i></div></div>`};
+ const metas=card('Metas de Calidad','Verde = cumple la meta',
+  meta('Tasa de cierre (meta '+CQ_META.cierre+'%)',M.tasa,CQ_META.cierre,cqPct(M.tasa),M.tasa!=null&&M.tasa>=CQ_META.cierre)+
+  meta('Reincidencia (máx. '+CQ_META.reinc+'%)',M.rein==null?null:100-M.rein,100-CQ_META.reinc,cqPct(M.rein),M.rein!=null&&M.rein<=CQ_META.reinc)+
+  meta('Verificar en ≤ '+CQ_META.verH+' h',M.tVer==null?null:Math.max(0,100-(M.tVer-CQ_META.verH)),100,fHrs(M.tVer),M.tVer!=null&&M.tVer<=CQ_META.verH)+
+  meta('Decidir liberación en ≤ '+CQ_META.decH+' h',M.lDec==null?null:Math.max(0,100-(M.lDec-CQ_META.decH)),100,fHrs(M.lDec),M.lDec!=null&&M.lDec<=CQ_META.decH));
+ const t=(l,v,o)=>cqTile(l,v,o);
+ const fila1=`<div class="g12">${t('Hallazgos registrados',M.n,{neu:1,cur:M.n,prev:P&&P.n,fmt:x=>nf(x,0)})}${t('Tasa de cierre',cqPct(M.tasa),{c:M.tasa!=null&&M.tasa<CQ_META.cierre?'dn':'up',cur:M.tasa,prev:P&&P.tasa,fmt:x=>nf(x,0)+' pp',sub:M.cer.length+' de '+M.n+' cerrados'})}${t('Tiempo medio de cierre',fHrs(M.tCierre),{cur:M.tCierre,prev:P&&P.tCierre,low:1,fmt:fHrs,sub:'apertura → cierre'})}${t('Verificación de Calidad',fHrs(M.tVer),{c:M.tVer!=null&&M.tVer>CQ_META.verH?'dn':'',cur:M.tVer,prev:P&&P.tVer,low:1,fmt:fHrs,sub:'corrección → verificación'})}${t('Reincidencia',cqPct(M.rein),{c:M.rein!=null&&M.rein>CQ_META.reinc?'dn':'',cur:M.rein,prev:P&&P.rein,low:1,fmt:x=>nf(x,0)+' pp'})}${t('Aprobados a la primera',cqPct(M.prim),{cur:M.prim,prev:P&&P.prim,fmt:x=>nf(x,0)+' pp',sub:M.cer.length?M.cer.filter(h=>h.ciclos<=1).length+' de '+M.cer.length:''})}</div>`;
+ const fila2=`<div class="g12">${t('Liberaciones pedidas',M.lN,{neu:1,cur:M.lN,prev:P&&P.lN,fmt:x=>nf(x,0)})}${t('Tiempo para asignar',fHrs(M.lAsig),{c:M.lAsig!=null&&M.lAsig>CQ_META.asigH?'dn':'',cur:M.lAsig,prev:P&&P.lAsig,low:1,fmt:fHrs,sub:'solicitud → inspector'})}${t('Tiempo de atención',fHrs(M.lDec),{c:M.lDec!=null&&M.lDec>CQ_META.decH?'dn':'',cur:M.lDec,prev:P&&P.lDec,low:1,fmt:fHrs,sub:'solicitud → decisión'})}${t('Liberadas',M.lib.length,{c:'up',sub:'de '+M.dec.length+' decididas'})}${t('Liberadas al 1.er intento',cqPct(M.lPrim),{cur:M.lPrim,prev:P&&P.lPrim,fmt:x=>nf(x,0)+' pp'})}${t('No liberadas',cqPct(M.lRech),{c:M.lRech>25?'dn':'',cur:M.lRech,prev:P&&P.lRech,low:1,fmt:x=>nf(x,0)+' pp',sub:'de las decididas'})}</div>`;
+ const insTab=ins.length?`<div class="tw"><table class="t"><thead><tr><th>Inspector</th><th class="r">Hallazgos abiertos por él</th><th class="r">Vencidos</th><th class="r">Verificaciones</th><th class="r">Tiempo de verificación</th><th class="r">Liberaciones pendientes</th><th class="r">Liberaciones decididas</th><th class="r">No liberó</th><th class="r">Tiempo de decisión</th></tr></thead><tbody>${ins.map(o=>`<tr><td><b>${esc(o.n)}</b></td><td class="num">${o.ab}</td><td class="num ${o.venc?'dn':''}">${o.venc}</td><td class="num">${o.ver}</td><td class="num">${fHrs(hAvg(o.tv))}</td><td class="num ${o.lp?'dn':''}">${o.lp}</td><td class="num">${o.ld}</td><td class="num">${o.lr}</td><td class="num">${fHrs(hAvg(o.td))}</td></tr>`).join('')}</tbody></table></div><p class="mut3" style="font-size:12px;margin-top:8px">El nombre sale de quien eligió “¿Quién de Calidad lo hace?”. Sirve para ver carga de trabajo y rapidez, y para repartir mejor, no para señalar.</p>`:empty('Aún no hay actividad de inspectores');
+ const ab=S.hallazgos.filter(hAb);const bk=[['0 a 2 días',0,2,'#22C55E'],['3 a 5 días',3,5,'#38BDF8'],['6 a 10 días',6,10,'#F59E0B'],['Más de 10 días',11,9999,'#EF4444']].map(([k,a,b,c])=>{const n=ab.filter(h=>hDias(h)>=a&&hDias(h)<=b).length;return{k,v:n,c,tip:k+'\n'+n+' hallazgo'+(n===1?'':'s')}});
+ const aging=card('Antigüedad de los hallazgos abiertos','Cuánto llevan esperando ('+ab.length+' abiertos)',ab.length?hbars(bk):empty('No hay hallazgos abiertos'));
+ const nom=q.insp;const optI=ins.map(o=>[o.n,o.n+' ('+(o.ab+o.lp)+' pendientes)']);
+ const hp=nom?S.hallazgos.filter(h=>hAb(h)&&hInsp(h)===nom):S.hallazgos.filter(hAb),lpd=(S.lib||[]).filter(l=>lPend(l)&&(!nom||iNom(l.asigNom)===nom));
+ const hpT=hp.length?`<div class="tw"><table class="t"><thead><tr><th>Hallazgo</th><th>Proyecto · etapa</th><th>Estado</th><th class="r">Días</th><th>Abierto por</th></tr></thead><tbody>${hp.sort((a,b)=>hDias(b)-hDias(a)).slice(0,12).map(h=>`<tr class="clk" data-act="hdet" data-c="${esc(h.codigo)}"><td>${badge(esc(h.codigo),'v')}</td><td>${esc(h.proy)} · ${esc(h.etapa||'')}</td><td>${badge(esc(h.estado),H_BADGE[h.estado]||'n')}${hVenc(h)?' '+badge('Vencido','er'):''}</td><td class="num">${hDias(h)}</td><td>${esc(hInsp(h))}</td></tr>`).join('')}</tbody></table></div>${hp.length>12?`<p class="mut3" style="font-size:12px;margin-top:6px">Se muestran los 12 más antiguos de ${hp.length}. Para ver todos, usa la página Hallazgos.</p>`:''}`:empty('Sin hallazgos abiertos');
+ const lpT=lpd.length?`<div class="tw"><table class="t"><thead><tr><th>Liberación</th><th>Proyecto · etapa</th><th>Estado</th><th class="r">Espera</th><th>Inspector</th></tr></thead><tbody>${lpd.map(l=>`<tr class="clk" data-act="ldet" data-c="${esc(l.codigo)}"><td>${badge(esc(l.codigo),'v')}</td><td>${esc(l.proy)} · ${esc(l.etapa)}</td><td>${badge(esc(L_NOM[l.estado]||l.estado),L_BADGE[l.estado]||'n')}${l.prio==='Urgente'?' '+badge('Urgente','er'):''}</td><td class="num">${fHrs((Date.now()-new Date(l.creado))/36e5)}</td><td>${esc(l.asigNom||'Sin asignar')}</td></tr>`).join('')}</tbody></table></div>`:empty('Sin liberaciones pendientes');
+ const pend=card('Pendientes por inspector','Elige un inspector para ver lo que tiene abierto'+(nom?'':' (ahora: todos)'),`<div class="fbar">${sel('cq.insp',optI,nom,{ph:'Todos los inspectores'})}</div><div class="lb" style="margin:6px 0">Hallazgos abiertos (${hp.length})</div>${hpT}<div class="lb" style="margin:14px 0 6px">Liberaciones pendientes (${lpd.length})</div>${lpT}`);
+ const sem=[];for(let i=11;i>=0;i--)sem.push(addDays(today(),-7*i));
+ const wk=f=>{for(let i=sem.length-1;i>=0;i--)if(f>=addDays(sem[i],-6))return i;return -1};
+ const op=sem.map(()=>0),cl=sem.map(()=>0),lq=sem.map(()=>0);
+ S.hallazgos.filter(h=>h.estado!=='Anulado'&&(!q.proy||h.proy===q.proy)).forEach(h=>{const a=wk(h.fecha||'');if(a>=0&&h.fecha<=today())op[a]++;if(h.cierEn){const b=wk(hDate(h.cierEn));if(b>=0)cl[b]++}});
+ (S.lib||[]).filter(l=>l.estado==='Liberada'&&(!q.proy||l.proy===q.proy)&&l.decEn).forEach(l=>{const b=wk(hDate(l.decEn));if(b>=0)lq[b]++});
+ const tend=card('Tendencia semanal','Últimas 12 semanas',lineChart({labels:sem,fx:dlabel,series:[{name:'Hallazgos abiertos',color:'#F59E0B',vals:op},{name:'Hallazgos cerrados',color:'#22C55E',vals:cl,area:1},{name:'Etapas liberadas',color:'#38BDF8',vals:lq}],h:220}));
+ const ca=sumBy(M.rt,r=>r.causa||'Sin causa').slice(0,6).map(x=>({k:x.k,v:x.v,c:'#F59E0B'}));
+ const nq=card('Costo de la no calidad','Horas hombre gastadas en rehacer trabajo',`<div style="display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px"><div><div class="m-v ${M.pctRt!=null&&M.pctRt>10?'dn':''}" style="font-size:26px;font-weight:700">${nf(M.hhRt,1)} HH</div><div class="mut" style="font-size:12.5px">en retrabajo</div></div><div><div class="m-v" style="font-size:26px;font-weight:700">${cqPct(M.pctRt)}</div><div class="mut" style="font-size:12.5px">de las HH productivas</div></div></div>${ca.length?hbars(ca):empty('Sin retrabajo en el periodo')}`);
+ const atT=att.length?`<div class="tw"><table class="t"><thead><tr><th>Qué pasa</th><th>Código</th><th>Tiempo</th><th>Responsable</th><th>Detalle</th></tr></thead><tbody>${att.slice(0,40).map(a=>`<tr class="clk" data-act="${a.a}" data-c="${esc(a.cod)}"><td>${badge(esc(a.k),a.c)}</td><td><b>${esc(a.cod)}</b></td><td>${esc(a.d)}</td><td>${esc(a.w)}</td><td class="mut">${esc(a.t)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${icon('check',26)}<p>Nada pendiente de Gerencia. Todo está dentro de plazo.</p></div>`;
+ const aten=card('Requiere atención','Cada fila se abre al tocarla: es lo que Gerencia puede auditar y decidir ('+att.length+')',atT);
+ const bar=`<div class="fbar"><div class="seg" role="group" aria-label="Periodo">${[['30','30 días'],['90','90 días'],['0','Todo']].map(([v,l])=>`<button class="${(q.per||'30')===v?'on':''}" data-act="cqPer" data-v="${v}">${l}</button>`).join('')}</div>${sel('cq.proy',S.proyectos.map(p=>[p.num,'Proyecto '+p.num]),q.proy,{ph:'Todos los proyectos'})}<span class="mut" style="margin-left:6px">${per?'Comparado con los '+per+' días anteriores':'Todo el historial'} · el periodo cuenta desde la fecha de apertura</span></div>`;
+ return bar+`<div class="g12"><div class="c8">${analisis}</div><div class="c4">${metas}</div></div><div class="lb" style="margin:6px 0">Hallazgos</div>${fila1}<div class="lb" style="margin:6px 0">Liberaciones (Quality Gate)</div>${fila2}
+ <div class="g12"><div class="c12">${card('Gestión por inspector','Carga, rapidez y resultados de cada persona de Calidad',insTab)}</div></div>
+ <div class="g12"><div class="c5">${aging}</div><div class="c7">${tend}</div></div>
+ <div class="g12"><div class="c12">${pend}</div></div>
+ <div class="g12"><div class="c5">${nq}</div><div class="c7">${aten}</div></div>`}
+Object.assign(A,{cqPer:t=>{cqQ().per=t.dataset.v;renderPage(true)}});
+PAGES.calidad=pCalidad;
+
 
 /* ---------- Técnico por QR: pedir liberación y ver el estado ---------- */
 NB.libMis=NB.libMis||[];NB.libOk=false;
