@@ -1130,7 +1130,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v3.9.1',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v4.0',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
  <div class="c6">${card('Historial de cambios','Valor anterior, valor nuevo, fecha y usuario',S.historial.length?`<div style="max-height:260px;overflow:auto">${S.historial.slice(-40).reverse().map(h=>`<div style="padding:8px 0;border-top:1px solid var(--bd);font-size:13px"><b>${esc(h.campo)}</b> <span class="mut">${esc(h.ref||'')}</span><div>${esc(h.antes)} → ${esc(h.despues)}</div><div class="mut3" style="font-size:12px">${esc(h.ts.slice(0,16).replace('T',' '))} · ${esc(h.por)}</div></div>`).join('')}</div>`:empty('Aún no hay modificaciones'))}</div></div>`;
@@ -1153,7 +1153,7 @@ function renderSide(){
   return `<div class="grp"><span>${g.g}</span></div>`+its.map(i=>`<button class="ni ${U.page===i[0]?'on':''}" data-act="go" data-p="${i[0]}" data-nav data-tip="${i[1]}">${icon(i[2],20)}<span class="lbl">${i[1]}</span>${i[0]==='alertas'&&ac?`<span class="nb">${ac}</span>`:''}${i[0]==='liberaciones'&&typeof lBadge==='function'&&lBadge()?`<span class="nb">${lBadge()}</span>`:''}</button>`).join('')}).join('');
  $('#side').innerHTML=`<div class="brand"><img class="logoimg" src="${LOGO}" alt="Latamks HH"><div class="brand-t"><b>Latamks HH</b><small>Control de horas hombre</small></div></div>
  <div class="pw" style="position:relative;margin:4px 12px 10px"><button class="prof" style="margin:0;width:100%" data-act="menu" data-nav data-tip="${esc(U.name+' · '+U.role)}" aria-haspopup="menu"><div class="av lg">${esc(ini2(U.name))}</div><div class="prof-t"><b>${esc(U.name)}</b><small>${U.role}</small></div></button>
- ${U.menu?`<div class="menu" role="menu"><div class="mut3" style="font-size:11.5px;padding:6px 11px;word-break:break-all">${esc(NB.email||'')}</div><button data-act="logout" role="menuitem">${icon('x',15)}Cerrar sesión</button></div>`:''}</div>
+ ${U.menu?`<div class="menu" role="menu"><div class="mut3" style="font-size:11.5px;padding:6px 11px;word-break:break-all">${esc(NB.email||'')}</div><button data-act="chPass" role="menuitem">${icon('edit',15)}Cambiar contraseña</button><button data-act="logout" role="menuitem">${icon('x',15)}Cerrar sesión</button></div>`:''}</div>
  <button class="sbox" data-act="pal" data-nav data-tip="Buscar (Ctrl K)">${icon('search',18)}<span class="sb-l">Buscar…</span><span class="kbd">Ctrl K</span></button>
  <nav class="nav" id="nav" aria-label="Navegación principal"><i class="ind" id="ind"></i>${nav}</nav>
  <div class="sfoot"><button class="ni" data-act="help" data-nav data-tip="Ayuda">${icon('help',20)}<span class="lbl">Ayuda</span></button><button class="ni" data-act="collapse" data-nav data-tip="Expandir / contraer" aria-label="Expandir o contraer menú">${U.collapsed&&!isMob()?icon('cr',20):icon('cl',20)}<span class="lbl">Contraer menú</span></button></div>`;
@@ -1910,7 +1910,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.9.1</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 4.0</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -1963,6 +1963,27 @@ async function nbStart(){
   await nbLoad();U.page=DEFP[U.role]||'dashboard';U.f=newF();U.c=newC();renderAll();
   clearInterval(NB.poll);NB.poll=setInterval(nbPoll,45000);nbIdleArm();nbBakCheck();nbInvLoad().then(()=>{if(U.page==='ajustes')renderPage(true)})}
  catch(e){if(e&&e.status===401){sessSave(null);nbShowLogin('Tu sesión terminó. Ingresa de nuevo.')}else nbShowLogin(nbMsg(e))}}
+function chPassOpen(){
+ if(NB.guest||NB.kiosk||!NB.sess)return;U.menu=false;renderSide();
+ openModal(mh('Cambiar mi contraseña')+`<p class="mut" style="margin-bottom:10px">Cuenta: <b style="color:var(--tx)">${esc(NB.email||'')}</b></p>
+ <div class="fld"><label>Contraseña actual</label><input id="cp0" class="inp" type="password" autocomplete="current-password"></div>
+ <div class="fld"><label>Nueva contraseña (mínimo 8 caracteres)</label><input id="cp1" class="inp" type="password" autocomplete="new-password"></div>
+ <div class="fld"><label>Repite la nueva contraseña</label><input id="cp2" class="inp" type="password" autocomplete="new-password"></div>
+ <div id="cp_e" style="min-height:22px;color:var(--er);font-size:13px"></div>
+ <div class="mf">${btn('Cancelar','mClose','','ghost')}${btn('Guardar contraseña','chPassSave')}</div>`,'s')}
+async function chPassSave(){
+ const a=($('#cp0')||{}).value||'',b=($('#cp1')||{}).value||'',c=($('#cp2')||{}).value||'',er=$('#cp_e');
+ if(!a){er.textContent='Escribe tu contraseña actual.';return}
+ if(b.length<8){er.textContent='La nueva debe tener mínimo 8 caracteres.';return}
+ if(b!==c){er.textContent='Las dos contraseñas nuevas no coinciden.';return}
+ if(b===a){er.textContent='Elige una contraseña distinta a la actual.';return}
+ er.style.color='var(--tx2)';er.textContent='Guardando…';
+ try{
+  const r0=await fetch(NUBE.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:NUBE.key,'Content-Type':'application/json'},body:JSON.stringify({email:NB.email,password:a})});
+  if(!r0.ok){er.style.color='var(--er)';er.textContent='La contraseña actual no es correcta.';return}
+  await nbReq('PUT','/auth/v1/user',{body:{password:b}});
+  closeModal();toast('Contraseña cambiada. Úsala la próxima vez que ingreses.','ok')}
+ catch(e){er.style.color='var(--er)';er.textContent=nbMsg(e)}}
 async function nbLogout(){
  if(NB.guest){history.replaceState(null,'',location.pathname);location.reload();return}
  try{if(NB.dirty)await nbPush()}catch(e){}
@@ -2172,7 +2193,7 @@ Object.assign(A,{
   const cur=(S.settings.lineas&&S.settings.lineas.length)?S.settings.lineas:['Tanques'];if(cur.length<=1){toast('Debe quedar al menos una línea.','wa');return}
   S.settings.lineas=cur.filter(x=>x!==v);logH('Líneas de producción',v,'','Ajustes');save();renderPage(true)},
  capAcepta:()=>nbConsentAccept(),capNoAcepta:()=>nbConsentDecline(),
- login:()=>nbLogin(),logout:()=>nbLogout(),
+ login:()=>nbLogin(),logout:()=>nbLogout(),chPass:()=>chPassOpen(),chPassSave:()=>chPassSave(),
  verPass:t=>{const i=document.getElementById(t.dataset.for);if(!i)return;const v=i.type==='password';i.type=v?'text':'password';t.textContent=v?'Ocultar':'Ver'},
  olvide:()=>nbShowForgot(),volverLogin:()=>nbShowLogin(''),enviarRec:()=>nbSendRec(),guardarPass:()=>nbSaveNewPass(),
  nbRetry:()=>{nbPush()},
@@ -2468,6 +2489,7 @@ function hCierreAviso(h){
  if(!hCierreGrave(h))return '';
  const m=[];if(h.prio==='Alta')m.push('tiene prioridad <b>Alta</b>');if(h.reinc)m.push('es una <b>reincidencia</b>');if(h.esc)m.push('fue <b>escalado a Gerencia</b>');if(h.estado!=='Verificado')m.push('<b>no ha sido verificado</b> como cumple');
  return `<div class="alrt er" style="margin:0 0 12px"><div class="ai">${icon('warn',17)}</div><div style="flex:1"><b>Antes de cerrar, lee esto</b><small style="display:block;line-height:1.5">Este hallazgo ${m.join(', ')}. Al cerrarlo declaras que el criterio de Calidad se cumple o que se acepta con excepción. Si la corrección no es real, el defecto puede llegar al cliente. Quedan registrados tu nombre, la fecha y la observación en el historial.</small><label class="mut" style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="checkbox" id="ha_ack"> Entiendo las consecuencias y quiero cerrarlo</label></div></div>`}
+const H_ACT_W=['verificar','cerrar','escalar','anular','reabrir'];
 function hAct(k,code){
  const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;M={type:'hact',kind:k,code};
  const T={
@@ -2479,23 +2501,25 @@ function hAct(k,code){
   autorizar:['Autorizar continuar bajo responsabilidad',`<p class="mut" style="margin-bottom:8px">Nota de Calidad: ${esc(h.escNota)}</p>`+fld('Quién de Producción comparte la responsabilidad *',`<input class="inp" id="ha_prod" placeholder="Nombre y cargo">`)+fld('Nota (opcional)',hTxt('ha_txt','')),'Autorizar'],
   anular:['Anular hallazgo',fld('Motivo *',hTxt('ha_txt','Ej.: creado por error / duplicado')),'Anular'],
   reabrir:['Reabrir hallazgo',fld('Motivo *',hTxt('ha_txt','')),'Reabrir']}[k];
- if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+`<div class="mf">${btn('Volver','hdet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'hallDo',`data-k="${k}" data-c="${esc(code)}"`,k==='anular'?'dng':'')}</div>`,'s')}
+ if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+(H_ACT_W.includes(k)?actorFld('ha_who'):'')+`<div class="mf">${btn('Volver','hdet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'hallDo',`data-k="${k}" data-c="${esc(code)}"`,k==='anular'?'dng':'')}</div>`,'s')}
 async function hRpc(fn,args,ok,code){
  if(NB.hbusy)return;NB.hbusy=true;
  try{await nbRpc(fn,args);await nbReloadHall();renderPage(true);toast(ok,'ok');const h=S.hallazgos.find(x=>x.codigo===(code||args.p_codigo));if(h)hDet(h.codigo);else closeModal()}
  catch(e){toast(nbMsg(e),'er')}finally{NB.hbusy=false}}
 function hDo(k,code){
  const tx=(val('ha_txt')||'').trim();
+ if(H_ACT_W.includes(k)&&!actorOk('ha_who'))return;
+ const W=t=>H_ACT_W.includes(k)?actorTx(t,'ha_who'):t;
  const R={
   iniciar:()=>hRpc('hallazgo_iniciar',{p_codigo:code},'Corrección iniciada'),
   asignar:()=>{const t=val('ha_tec');if(!t){toast('Elige el técnico.','wa');return}hRpc('hallazgo_asignar',{p_codigo:code,p_tecnico:t,p_comentario:tx},'Responsable asignado')},
-  corregida:()=>{if(!tx){toast('Describe qué se hizo.','wa');return}hRpc('hallazgo_corregida',{p_codigo:code,p_obs:tx},'Enviado a verificación de Calidad')},
-  verificar:()=>{const ok=val('ha_res')==='1';if(!ok&&!tx){toast('Si no cumple, explica por qué.','wa');return}hRpc('hallazgo_verificar',{p_codigo:code,p_cumple:ok,p_obs:tx},ok?'Verificado: cumple':'No cumple: vuelve a corrección')},
-  cerrar:()=>{const h=S.hallazgos.find(x=>x.codigo===code);if(h&&hCierreGrave(h)&&!val('ha_ack')){toast('Marca la casilla para confirmar que entiendes las consecuencias de cerrar este hallazgo.','wa');return}hRpc('hallazgo_cerrar',{p_codigo:code,p_obs:tx},'Hallazgo cerrado')},
-  escalar:()=>{if(!tx){toast('Escribe el motivo técnico.','wa');return}hRpc('hallazgo_escalar',{p_codigo:code,p_nota:tx},'Escalado a Gerencia')},
-  autorizar:()=>{const p=(val('ha_prod')||'').trim();if(!p){toast('Escribe quién de Producción comparte la responsabilidad.','wa');return}hRpc('hallazgo_autorizar',{p_codigo:code,p_produccion:p,p_nota:tx},'Autorización registrada')},
-  anular:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_anular',{p_codigo:code,p_motivo:tx},'Hallazgo anulado')},
-  reabrir:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_reabrir',{p_codigo:code,p_motivo:tx},'Hallazgo reabierto')}}[k];
+  corregida:()=>{if(!tx){toast('Describe qué se hizo.','wa');return}hRpc('hallazgo_corregida',{p_codigo:code,p_obs:W(tx)},'Enviado a verificación de Calidad')},
+  verificar:()=>{const ok=val('ha_res')==='1';if(!ok&&!tx){toast('Si no cumple, explica por qué.','wa');return}hRpc('hallazgo_verificar',{p_codigo:code,p_cumple:ok,p_obs:W(tx)},ok?'Verificado: cumple':'No cumple: vuelve a corrección')},
+  cerrar:()=>{const h=S.hallazgos.find(x=>x.codigo===code);if(h&&hCierreGrave(h)&&!val('ha_ack')){toast('Marca la casilla para confirmar que entiendes las consecuencias de cerrar este hallazgo.','wa');return}hRpc('hallazgo_cerrar',{p_codigo:code,p_obs:W(tx)},'Hallazgo cerrado')},
+  escalar:()=>{if(!tx){toast('Escribe el motivo técnico.','wa');return}hRpc('hallazgo_escalar',{p_codigo:code,p_nota:W(tx)},'Escalado a Gerencia')},
+  autorizar:()=>{const p=(val('ha_prod')||'').trim();if(!p){toast('Escribe quién de Producción comparte la responsabilidad.','wa');return}hRpc('hallazgo_autorizar',{p_codigo:code,p_produccion:p,p_nota:W(tx)},'Autorización registrada')},
+  anular:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_anular',{p_codigo:code,p_motivo:W(tx)},'Hallazgo anulado')},
+  reabrir:()=>{if(!tx){toast('Escribe el motivo.','wa');return}hRpc('hallazgo_reabrir',{p_codigo:code,p_motivo:W(tx)},'Hallazgo reabierto')}}[k];
  if(R)R()}
 
 /* ---------- Crear / editar ---------- */
@@ -2509,13 +2533,15 @@ function hForm(h){
  <div class="two">${fld('Interior / exterior',selM('hf_ie',[['','No aplica'],'Interior','Exterior'],ie))}${fld('Ubicación (cuerpo, zona, detalle)',`<input class="inp" id="hf_u" value="${esc(det)}" placeholder="Ej. cuerpo principal, parte inferior, junto a la boquilla">`)}</div>
  <div class="two">${fld('Prioridad',selM('hf_pr',['Alta','Media','Baja'],h?h.prio:'Media'))}${fld('¿Es reincidencia?',selM('hf_r',[['0','No'],['1','Sí']],h&&h.reinc?'1':'0'))}</div>
  ${fld('Reincidencia de (opcional)',selM('hf_rd',[['','—'],...previos],h?h.reDe:''))}
+ ${h?'':actorFld('hf_who')}
  <p class="mut3" style="font-size:12px">${h?'Los cambios quedan en el historial.':'El código lo genera el sistema (LQ-proyecto-consecutivo). El inspector que abre queda registrado.'}</p>`}
 function hNew(){M={type:'hnew'};openModal(mh('Nuevo hallazgo')+hForm(null)+mf('Crear hallazgo','hallSave'),'w')}
 function hEdit(code){const h=S.hallazgos.find(x=>x.codigo===code);if(!h)return;M={type:'hedit',code};openModal(mh('Editar '+esc(code))+hForm(h)+mf('Guardar cambios','hallSave'),'w')}
 async function hSave(){
  if(NB.hbusy)return;
- const d=(val('hf_d')||'').trim(),e=val('hf_e'),s=val('hf_s');
+ let d=(val('hf_d')||'').trim();const e=val('hf_e'),s=val('hf_s');
  if(!d||!e||!s){toast('Completa descripción, etapa y especialidad.','wa');return}
+ if(M.type!=='hedit'){if(!actorOk('hf_who'))return;const a=actorNeed()?val('hf_who'):'';if(a)d+=' (Inspector: '+a+')'}
  const ub=[val('hf_ie'),(val('hf_u')||'').trim()].filter(Boolean).join(' · ');
  NB.hbusy=true;
  try{
@@ -2715,6 +2741,11 @@ const lHrs=l=>l.creado?(Date.now()-new Date(l.creado))/36e5:0;
 const lCal=()=>can(['Calidad','Gerencia']);
 const lSup=()=>can(['Gerencia','Supervisor','Calidad']);
 const lInsp=()=>S.tecnicos.filter(t=>t.rol==='Calidad'&&t.activo!==false);
+/* v4.0 · rastro: la cuenta de Calidad es compartida, así que se elige quién hace cada acción */
+const actorNeed=()=>U.role==='Calidad'&&!NB.kiosk&&!NB.guest&&lInsp().length>0;
+const actorFld=id=>actorNeed()?fld('¿Quién de Calidad lo hace? *',selM(id,lInsp().map(t=>[t.nombre,t.ini+' · '+t.nombre]),'','Elegir persona…'))+'<p class="mut3" style="font-size:12px;margin:-4px 0 8px">La cuenta de Calidad es compartida: aquí queda registrado quién lo hizo de verdad.</p>':'';
+const actorTx=(tx,id)=>{const a=actorNeed()?(val(id)||''):'';return a?(tx?tx+' · ':'')+'Realizado por: '+a:tx};
+const actorOk=id=>{if(actorNeed()&&!val(id)){toast('Elige quién de Calidad hace esta acción.','wa');return false}return true};
 /* última solicitud (no anulada) de una etapa de un proyecto */
 function lUlt(p,e){const L=S.lib.filter(l=>l.proy===p&&l.etapa===e&&l.estado!=='Anulada').sort((a,b)=>a.creado<b.creado?1:-1);return L[0]||null}
 
@@ -2840,17 +2871,19 @@ function lAct(k,code){
   rechazar:['No liberar la etapa',`<p class="mut" style="margin-bottom:8px">Producción no debe avanzar hasta corregir. Explica qué falta; después podrá solicitar la liberación de nuevo.</p>`+fld('Motivo *',hTxt('la_txt','Qué no cumple y dónde',4))+fld('Hallazgo relacionado (opcional)',selM('la_h',S.hallazgos.filter(h=>h.proy===l.proy&&!['Cerrado','Anulado'].includes(h.estado)).map(h=>[h.codigo,h.codigo+' · '+(h.desc||'').slice(0,40)]),'','Sin hallazgo')),'No liberar'],
   reintentar:['Solicitar de nuevo',`<p class="mut">Se crea una nueva solicitud con la misma etapa y descripción, enlazada a ${esc(code)} (intento ${l.intento+1}).</p>`,'Solicitar'],
   anular:['Anular solicitud',fld('Motivo *',hTxt('la_txt','Ej.: duplicada / se pidió por error')),'Anular']}[k];
- if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+`<div class="mf">${btn('Volver','ldet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'lDo',`data-k="${k}" data-c="${esc(code)}"`,['anular','rechazar'].includes(k)?'dng':'')}</div>`,'s')}
+ if(!T)return;openModal(mh(T[0]+' · '+esc(code))+T[1]+(['liberar','rechazar'].includes(k)?actorFld('la_who'):'')+`<div class="mf">${btn('Volver','ldet',`data-c="${esc(code)}"`,'ghost')}${btn(T[2],'lDo',`data-k="${k}" data-c="${esc(code)}"`,['anular','rechazar'].includes(k)?'dng':'')}</div>`,'s')}
 async function lRpc(fn,args,ok,code){
  if(NB.lbusy)return;NB.lbusy=true;
  try{const r=await nbRpc(fn,args);await nbReloadLib();renderPage(true);toast(ok,'ok');const c=(r&&r.codigo)||code;if(S.lib.find(x=>x.codigo===c))lDet(c);else closeModal()}
  catch(e){toast(nbMsg(e),'er')}finally{NB.lbusy=false}}
 function lDo(k,code){
  const tx=(val('la_txt')||'').trim(),l=S.lib.find(x=>x.codigo===code);
+ if(['liberar','rechazar'].includes(k)&&!actorOk('la_who'))return;
+ const W=t=>['liberar','rechazar'].includes(k)?actorTx(t,'la_who'):t;
  const R={
   asignar:()=>{const t=val('la_tec');if(!t){toast('Elige el inspector.','wa');return}lRpc('liberacion_asignar',{p_codigo:code,p_tecnico:t,p_comentario:tx},'Inspector asignado',code)},
-  liberar:()=>lRpc('liberacion_decidir',{p_codigo:code,p_libera:true,p_obs:tx,p_hallazgo:null},'Etapa liberada',code),
-  rechazar:()=>{if(!tx){toast('Explica por qué no se libera.','wa');return}lRpc('liberacion_decidir',{p_codigo:code,p_libera:false,p_obs:tx,p_hallazgo:val('la_h')||null},'Etapa no liberada: Producción debe corregir',code)},
+  liberar:()=>lRpc('liberacion_decidir',{p_codigo:code,p_libera:true,p_obs:W(tx),p_hallazgo:null},'Etapa liberada',code),
+  rechazar:()=>{if(!tx){toast('Explica por qué no se libera.','wa');return}lRpc('liberacion_decidir',{p_codigo:code,p_libera:false,p_obs:W(tx),p_hallazgo:val('la_h')||null},'Etapa no liberada: Producción debe corregir',code)},
   reintentar:()=>lRpc('liberacion_crear',{p_proyecto:l.proy,p_etapa:l.etapa,p_descripcion:l.desc,p_prioridad:l.prio,p_reintento_de:code},'Nueva solicitud creada'),
   anular:()=>{if(!tx){toast('Escribe el motivo.','wa');return}lRpc('liberacion_anular',{p_codigo:code,p_motivo:tx},'Solicitud anulada',code)}}[k];
  if(R)R()}
@@ -2861,12 +2894,14 @@ function lForm(pre){
  ${fld('Etapa que se pide liberar *',selM('lf_e',ETAPAS,pre.e||'','Elegir etapa…'))}
  ${fld('¿Qué se pide liberar? *',`<textarea class="inp" id="lf_d" rows="3" style="height:auto;padding:10px" placeholder="Ej.: cuerpo principal con cordones longitudinales y circunferenciales terminados"></textarea>`)}
  ${fld('Prioridad',selM('lf_pr',['Normal','Urgente'],'Normal'))}
+ ${actorFld('lf_who')}
  <p class="mut3" style="font-size:12px">El código lo genera el sistema (QG-proyecto-consecutivo). Queda registrado quién pide, quién asigna y quién decide.</p>`}
 function lNew(pre){M={type:'lnew'};openModal(mh('Solicitar liberación (Quality Gate)')+lForm(pre)+mf('Enviar solicitud','lSave'),'w')}
 async function lSave(){
  if(NB.lbusy)return;const p=val('lf_p'),e=val('lf_e'),d=(val('lf_d')||'').trim();
  if(!p||!e||!d){toast('Completa proyecto, etapa y qué se pide liberar.','wa');return}
- await lRpc('liberacion_crear',{p_proyecto:p,p_etapa:e,p_descripcion:d,p_prioridad:val('lf_pr')||'Normal',p_reintento_de:null},'Solicitud enviada')}
+ if(!actorOk('lf_who'))return;const dd=d+(actorNeed()&&val('lf_who')?' (Solicitó: '+val('lf_who')+')':'');
+ await lRpc('liberacion_crear',{p_proyecto:p,p_etapa:e,p_descripcion:dd,p_prioridad:val('lf_pr')||'Normal',p_reintento_de:null},'Solicitud enviada')}
 function lWA(code){const l=S.lib.find(x=>x.codigo===code);if(!l)return;
  const m=`Liberación ${l.codigo} · Proyecto ${l.proy}\nEtapa: ${l.etapa}\nEstado: ${L_NOM[l.estado]||l.estado}${l.prio==='Urgente'?' · URGENTE':''}\n${l.desc}${l.asigIni?'\nInspector: '+l.asigIni+' · '+l.asigNom:''}${l.obs?'\nObservación: '+l.obs:''}\nAbrir la app: ${invBase()}`;
  window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank','noopener')}
