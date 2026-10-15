@@ -1910,7 +1910,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.7g</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 3.9.1</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
