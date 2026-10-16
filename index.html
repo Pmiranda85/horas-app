@@ -1132,7 +1132,7 @@ function qrUrl(){return ((S.settings.url||'').trim()||DEFAULT_URL).split('#')[0]
 function pAjustes(){
  const st=S.settings;const pend=S.registros.filter(r=>!r.sync&&!r.demo).length;
  return `<div class="g12"><div class="c4">${card('QR único de registro','Imprímelo y colócalo en producción',`<div style="text-align:center"><div class="qrbox" id="qrhost"></div><p class="mut3" style="font-size:12px;margin:10px 0;word-break:break-all">${esc(qrUrl())}</p>${btn(icon('print',16)+' Imprimir QR','printQR','','ghost')}</div><div class="fld" style="margin-top:14px"><label>Dirección pública de esta aplicación</label><input class="inp" id="urlIn" placeholder="Por defecto: la dirección actual de esta aplicación" value="${esc(st.url||'')}"></div>${btn('Actualizar QR','saveUrl','','sm ghost')}<p class="mut3" style="font-size:12px;margin-top:8px">El QR lleva a la captura rápida de la dirección indicada. Todos los datos se guardan en la base de datos compartida de la empresa.</p>`)}</div>
- <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v4.1.5',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
+ <div class="c8">${card('Conexión con la nube','Base de datos compartida (Supabase) · app v4.1.6',`<div class="sub-panel" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06)"><div class="ttl" style="color:#86efac">${icon('check',18)} Conectado</div><p class="mut" style="font-size:13px;line-height:1.7">Sesión: <b style="color:var(--tx)">${esc(NB.email||'')}</b> · Rol: <b style="color:var(--tx)">${esc(U.role)}</b><br>Todos los registros, proyectos, técnicos y turnos se guardan automáticamente y los ven todos los usuarios según su rol.</p></div><p class="mut3" style="font-size:12.5px;margin-top:12px">Los técnicos registran sus horas con el QR (código + iniciales, sin contraseña). Sus registros quedan <b style="color:var(--tx2)">por validar</b> hasta que un supervisor los confirme. Supabase gratuito no hace copias automáticas: descarga la copia de seguridad cada semana (botón en “Datos y respaldo”).</p>`)}</div></div>
  ${listasCard()}${invitadosCard()}<div class="g12"><div class="c12">${card('Empezar de cero','Para dejar el sistema limpio y comenzar la operación real',`<ol class="mut" style="padding-left:18px;line-height:1.9"><li><b style="color:var(--tx)">Datos de prueba:</b> los técnicos, proyectos y registros ficticios (marcados como demo) se limpian desde la base de datos; Soporte te guía.</li><li><b style="color:var(--tx)">Turnos:</b> ajusta los horarios reales y asigna el personal.</li><li><b style="color:var(--tx)">Técnicos:</b> crea cada persona (código, iniciales, nombre, área, turno).</li><li><b style="color:var(--tx)">Proyectos:</b> crea el proyecto (escribe su número y la fecha de entrega) y define su expectativa por etapa.</li><li>Listo: ya se pueden registrar horas en Captura rápida.</li></ol><div class="acts" style="margin-top:12px">${btn('Ir a Turnos','go','data-p="turnos"','sm ghost')}${btn('Ir a Técnicos','go','data-p="tecnicos"','sm ghost')}${btn('Ir a Proyectos','go','data-p="proyectos"','sm ghost')}</div>`)}</div></div>
   <div class="g12"><div class="c6">${can(['Gerencia'])?card('Limpiar fotos de hallazgos','Libera espacio borrando fotos que ya no se necesitan',fotosCardHtml()):''}</div></div>
   <div class="g12"><div class="c6">${card('Datos y respaldo','Exporta una copia de tus datos',`<div style="display:flex;gap:10px;flex-wrap:wrap">${btn(icon('down',16)+' Exportar registros (Excel)','expXLSX','','ghost')}${can(['Gerencia','Calidad'])?btn(icon('down',16)+' Constancia de consentimientos (PDF)','consPdf','','ghost'):''}</div><p class="mut3" style="font-size:12.5px;margin-top:10px">El Excel es para analizar los registros. <b style="color:var(--tx2)">No es una copia de seguridad.</b></p>${backupCardExtra()}${nbSinceNote()}<input type="file" id="impFile" accept=".json" style="display:none"></div>`)}</div>
@@ -1155,11 +1155,15 @@ async function fotosCalc(){
   const mb=FT.lista.reduce((a,x)=>a+(+x.bytes||0),0)/1048576;
   const res=$('#ftRes');
   if(!FT.lista.length){res.innerHTML='<span class="mut3">No hay fotos con ese criterio.</span>';return}
+  FT.zip=false;
   res.innerHTML=`<div>Se borrarían <b>${FT.lista.length}</b> fotos (<b>${mb.toFixed(1)} MB</b>)${modo==='uno'?' del proyecto '+esc(pr):modo==='menos'?' de todos los proyectos menos '+esc(pr):' de todos los proyectos'}.</div>
+  <div style="margin-top:8px">${btn(icon('down',15)+' Descargar copia de estas fotos (ZIP)','fotosZip','','ghost')} <span id="ftZ" class="mut3" style="font-size:12.5px"></span></div>
+  <label style="display:block;margin-top:8px;font-size:12.5px"><input type="checkbox" id="ftNo"> Ya las tengo guardadas o no necesito conservarlas</label>
   <div style="margin-top:8px">Para confirmar escribe <b>BORRAR</b>: <input id="ftOk" class="inp" style="max-width:120px"> ${btn('Borrar fotos','fotosBorrar','','danger')}</div>`}
  catch(e){toast(e.message&&/fotos_candidatas/.test(e.message)?'Falta instalar el SQL de limpieza de fotos':(e.message||'Error'),'er')}}
 async function fotosBorrar(){
  if(!FT.lista||!FT.lista.length)return;
+ if(!FT.zip&&!(($('#ftNo')||{}).checked)){toast('Primero descarga la copia (ZIP) o marca que no la necesitas','wa');return}
  if((($('#ftOk')||{}).value||'').trim().toUpperCase()!=='BORRAR'){toast('Escribe BORRAR para confirmar','wa');return}
  const rutas=FT.lista.map(x=>x.ruta);let ok=0,falla=0;
  try{
@@ -1173,6 +1177,37 @@ async function fotosBorrar(){
   FT.lista=null;FT.txt=`Listo: ${ok} fotos borradas`+(falla?` · ${falla} no se pudieron borrar (repite el proceso)`:'')+'.';
   toast(FT.txt,falla?'wa':'ok');await nbLoad();renderAll(true)}
  catch(e){toast(e.message||'Error al borrar','er')}}
+
+/* ---------- Copia de las fotos en un ZIP (sin compresión: son JPEG) ---------- */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function zipBlob(files){
+ const enc=new TextEncoder(),parts=[],cen=[];let off=0;const d=new Date();
+ const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF,dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+ files.forEach(f=>{const nm=enc.encode(f.name),crc=crc32(f.data),sz=f.data.length;
+  const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dt,true);lh.setUint16(12,dd,true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nm.length,true);lh.setUint16(28,0,true);
+  parts.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dt,true);ch.setUint16(14,dd,true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);
+  cen.push(ch.buffer,nm);off+=30+nm.length+sz});
+ const csz=cen.reduce((a,b)=>a+(b.byteLength!==undefined?b.byteLength:b.length),0);
+ const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,csz,true);end.setUint32(16,off,true);
+ return new Blob([...parts,...cen,end.buffer],{type:'application/zip'})}
+async function fotosZip(){
+ if(!FT.lista||!FT.lista.length)return;
+ const z=$('#ftZ'),files=[];let n=0,mal=0;const enc=new TextEncoder();
+ try{
+  for(const f of FT.lista){
+   n++;z.textContent='Descargando '+n+' de '+FT.lista.length+'…';
+   if(Date.now()>NB.sess.exp-60000)await nbRefresh();
+   const r=await fetch(NUBE.url+'/storage/v1/object/authenticated/hallazgos/'+f.ruta.split('/').map(encodeURIComponent).join('/'),{headers:{apikey:NUBE.key,Authorization:'Bearer '+NB.sess.access_token}});
+   if(!r.ok){mal++;continue}
+   files.push({name:(f.proyecto||'sin-proyecto')+'/'+f.ruta,data:new Uint8Array(await r.arrayBuffer())})}
+  if(mal){z.textContent=mal+' fotos no se pudieron descargar. No se creó el ZIP; intenta de nuevo.';toast('Faltaron '+mal+' fotos: intenta de nuevo','er');return}
+  const csv='proyecto,codigo_hallazgo,archivo,bytes\n'+FT.lista.map(f=>[f.proyecto,f.codigo,f.ruta,f.bytes].join(',')).join('\n');
+  files.push({name:'LEEME_listado.csv',data:enc.encode('﻿'+csv)});
+  nbDownload('latamks-hh_fotos_'+today()+'.zip',zipBlob(files));
+  FT.zip=true;z.textContent='Copia descargada: '+(files.length-1)+' fotos. Ya puedes borrar.';toast('Copia de fotos lista','ok')}
+ catch(e){z.textContent='';toast(e.message||'Error al descargar las fotos','er')}}
 /* ================= Navegación ================= */
 const G_=['Gerencia'],GS=['Gerencia','Supervisor'],GSC=['Gerencia','Supervisor','Calidad'];
 const NAV=[
@@ -1951,7 +1986,7 @@ function nbShowLogin(msg){
  <div style="text-align:right;margin:-4px 0 6px"><a href="#" data-act="olvide" style="font-size:13px;color:var(--ac,#38bdf8)">¿Olvidaste tu contraseña?</a></div>
  <div id="lg_e" style="min-height:22px;color:var(--er);font-size:13px;margin:4px 0 10px">${esc(msg||'')}</div>
  <div>${btn('Ingresar','login','','big')}</div>
- <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 4.1.5</p></div></div></div></div>`}
+ <p class="mut3" style="margin-top:18px;font-size:12.5px">¿Eres técnico? Registra tus horas escaneando el QR de producción: no necesitas contraseña.</p><p class="mut3" style="margin-top:10px;font-size:11px">Versión 4.1.6</p></div></div></div></div>`}
 async function nbLogin(){
  const u=($('#lg_u')||{}).value||'',p=($('#lg_p')||{}).value||'';const er=$('#lg_e');
  if(!u.trim()||!p){if(er)er.textContent='Escribe tu correo y tu contraseña.';return}
@@ -2392,7 +2427,7 @@ function cmpPanel(){
 
 /* ---------- Acciones nuevas ---------- */
 Object.assign(A,{
- backup:()=>nbBackup(),fotosCalc:()=>fotosCalc(),fotosBorrar:()=>fotosBorrar(),bakLater:()=>{NB.bakHide=true;nbBakCheck()},
+ backup:()=>nbBackup(),fotosCalc:()=>fotosCalc(),fotosZip:()=>fotosZip(),fotosBorrar:()=>fotosBorrar(),bakLater:()=>{NB.bakHide=true;nbBakCheck()},
  loadAll:async()=>{NB.all=true;toast('Cargando todo el historial…','ok');try{await nbLoad();renderAll(true);nbBakCheck();toast('Historial completo cargado','ok')}catch(e){NB.all=false;toast(nbMsg(e),'er')}},
  cmpToggle:()=>{U.cmpOn=!U.cmpOn;renderPage(true)},
  tarjUna:t=>tarjetasOpen([t.dataset.c]),tarjTodas:()=>tarjetasOpen('todas'),tarjPrint:()=>tarjetasPrint(),
